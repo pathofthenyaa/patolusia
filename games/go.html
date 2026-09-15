@@ -2,7 +2,7 @@
 
 .gob{position:relative;width:min(100%,620px);aspect-ratio:1;margin:auto;background:#d8ad63;border-radius:18px;padding:5%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12);overflow:hidden}
 .go-inner{position:relative;width:100%;height:100%}
-.grid{position:absolute;inset:0;background-image:linear-gradient(#6e532c 1px,transparent 1px),linear-gradient(90deg,#6e532c 1px,transparent 1px);background-size:var(--step) var(--step);background-position:0 0}
+.grid{position:absolute;inset:0;pointer-events:none}.gline{position:absolute;background:#6e532c}.gline.v{top:0;bottom:0;width:1px;transform:translateX(-.5px)}.gline.h{left:0;right:0;height:1px;transform:translateY(-.5px)}
 .points{position:absolute;inset:0}
 .pt{position:absolute;border:0;background:transparent;padding:0;width:var(--stoneSize);height:var(--stoneSize);min-width:16px;min-height:16px;transform:translate(-50%,-50%);touch-action:manipulation}
 .stone{position:absolute;width:88%;height:88%;border-radius:50%;left:6%;top:6%;box-shadow:0 2px 4px rgba(0,0,0,.35)}
@@ -18,10 +18,11 @@ function ns(i){let r=Math.floor(i/n),c=i%n,a=[];if(r)a.push(i-n);if(r<n-1)a.push
 function group(start,a){let col=a[start],seen=new Set([start]),st=[start],libs=new Set();while(st.length){let i=st.pop();for(let j of ns(i)){if(a[j]===0)libs.add(j);else if(a[j]===col&&!seen.has(j)){seen.add(j);st.push(j)}}}return{stones:[...seen],libs}}
 function simulate(i,col){if(b[i])return null;let a=b.slice();a[i]=col,cap=0;for(let j of ns(i))if(a[j]&&a[j]!==col){let g=group(j,a);if(!g.libs.size){cap+=g.stones.length;g.stones.forEach(x=>a[x]=0)}}let own=group(i,a);if(!own.libs.size||a.join("")===previous)return null;return{a,cap,libs:own.libs.size}}
 function commit(i,col){let s=simulate(i,col);if(!s)return false;previous=b.join("");b=s.a;caps[col]+=s.cap;passes=0;turn=3-col;render();return true}
-function human(i){if(turn!==1||busy)return;if(commit(i,1)){status.textContent="CPU myśli…";busy=true;setTimeout(cpu,420)}else status.textContent="Tego ruchu nie można zagrać."}
-function cpu(){if(turn!==2){busy=false;return}let moves=[];for(let i=0;i<b.length;i++){let s=simulate(i,2);if(s){let r=Math.floor(i/n),c=i%n,edge=Math.min(r,c,n-1-r,n-1-c),near=ns(i).filter(j=>b[j]).length;let score=s.cap*12+s.libs*1.5+near*1.2+Math.min(edge,3)*.5+Math.random()*6;moves.push([score,i])}}if(!moves.length){passes++;turn=1;busy=false;render();return}moves.sort((a,b)=>b[0]-a[0]);let lvl=$("#level").value,top=lvl==="calm"?Math.min(14,moves.length):lvl==="normal"?Math.min(7,moves.length):Math.min(3,moves.length);let choice=moves[Math.floor(Math.random()*top)][1];commit(choice,2);busy=false;status.textContent="Twój ruch."}
+function human(i){if(turn!==1||busy)return;if(commit(i,1)){$("#status").textContent="CPU myśli…";busy=true;setTimeout(cpu,420)}else $("#status").textContent="Tego ruchu nie można zagrać."}
+function cpu(){if(turn!==2){busy=false;return}let moves=[];for(let i=0;i<b.length;i++){let s=simulate(i,2);if(s){let r=Math.floor(i/n),c=i%n,edge=Math.min(r,c,n-1-r,n-1-c),near=ns(i).filter(j=>b[j]).length;let score=s.cap*12+s.libs*1.5+near*1.2+Math.min(edge,3)*.5+Math.random()*6;moves.push([score,i])}}if(!moves.length){passes++;turn=1;busy=false;render();return}moves.sort((a,b)=>b[0]-a[0]);let lvl=$("#level").value,top=lvl==="calm"?Math.min(14,moves.length):lvl==="normal"?Math.min(7,moves.length):Math.min(3,moves.length);let choice=moves[Math.floor(Math.random()*top)][1];commit(choice,2);busy=false;$("#status").textContent="Twój ruch."}
+function drawGrid(){let g=document.querySelector(".grid");g.innerHTML="";for(let k=0;k<n;k++){let pos=(k/(n-1)*100)+"%";let v=document.createElement("i"),h=document.createElement("i");v.className="gline v";h.className="gline h";v.style.left=pos;h.style.top=pos;g.append(v,h)}}
 function render(){
-document.documentElement.style.setProperty("--n",n);document.documentElement.style.setProperty("--step",(100/(n-1))+"%");document.documentElement.style.setProperty("--stoneSize",(82/(n-1))+"%");
+document.documentElement.style.setProperty("--stoneSize",(82/(n-1))+"%");drawGrid();
 let p=$("#points");p.innerHTML="";
 b.forEach((v,i)=>{let q=document.createElement("button"),r=Math.floor(i/n),c=i%n;q.className="pt";q.style.left=(c/(n-1)*100)+"%";q.style.top=(r/(n-1)*100)+"%";q.onclick=()=>human(i);
 if(v){let st=document.createElement("span");st.className="stone "+(v===1?"black":"white");q.append(st)}p.append(q)});
@@ -29,5 +30,8 @@ $("#turn").textContent=busy?"CPU…":"Twój ruch ●";$("#caps").textContent=`Zb
 }
 function reset(){n=+$("#size").value;b=Array(n*n).fill(0);turn=1;passes=0;caps={1:0,2:0};previous="";busy=false;$("#modal").hidden=true;render()}
 $("#pass").onclick=()=>{if(busy)return;passes++;turn=2;if(passes>=2)return finish();busy=true;render();setTimeout(cpu,350)};function finish(){$("#summary").textContent=`Zbicia — Ty: ${caps[1]}, CPU: ${caps[2]}. To spokojny tryb: bez turniejowego rozstrzygania martwych grup.`;$("#modal").hidden=false}
-document.querySelector("[data-new]").onclick=reset;$("#again").onclick=reset;$("#size").onchange=reset;reset();
-document.querySelector("[data-options]").onclick=()=>{let o=$("#options");o.hidden=!o.hidden;document.querySelector("[data-options]").textContent=o.hidden?"Opcje ▾":"Opcje ▴"};</script></body></html>
+const optionsBtn=document.querySelector("[data-options]"),optionsPanel=$("#options");
+optionsBtn.addEventListener("click",()=>{optionsPanel.hidden=!optionsPanel.hidden;optionsBtn.textContent=optionsPanel.hidden?"Opcje ▾":"Opcje ▴"});
+document.querySelector("[data-new]").onclick=reset;$("#again").onclick=reset;
+$("#size").onchange=()=>{reset();optionsPanel.hidden=true;optionsBtn.textContent="Opcje ▾"};
+reset();</script></body></html>
