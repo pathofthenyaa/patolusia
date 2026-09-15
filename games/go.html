@@ -1,16 +1,18 @@
 <!doctype html><html lang="pl" data-theme="auto"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow,noarchive"><link rel="stylesheet" href="../css/app.css"><title>Go</title><style>
 
-.gob{position:relative;width:min(100%,620px);aspect-ratio:1;margin:auto;background:#d8ad63;border-radius:18px;padding:5%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12);overflow:hidden}
+
+.gob{position:relative;width:min(100%,620px);aspect-ratio:1;margin:auto;background:#d8ad63;border-radius:18px;padding:18px;box-sizing:border-box;overflow:hidden}
 .go-inner{position:relative;width:100%;height:100%}
-.grid{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}.grid line{stroke:#6e532c;stroke-width:1;vector-effect:non-scaling-stroke}
+.grid{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
 .points{position:absolute;inset:0}
-.pt{position:absolute;border:0;background:transparent;padding:0;width:var(--stoneSize);height:var(--stoneSize);min-width:16px;min-height:16px;transform:translate(-50%,-50%);touch-action:manipulation}
-.stone{position:absolute;width:88%;height:88%;border-radius:50%;left:6%;top:6%;box-shadow:0 2px 4px rgba(0,0,0,.35)}
+.pt{position:absolute;border:0;background:transparent;padding:0;transform:translate(-50%,-50%);touch-action:manipulation}
+.stone{position:absolute;inset:8%;border-radius:50%;box-shadow:0 2px 4px rgba(0,0,0,.35)}
 .black{background:#17181b}.white{background:#f6f3eb;border:1px solid #bbb}.scoreline{text-align:center;margin:8px;color:var(--muted)}
+
 
 </style></head><body><header class="appbar"><div class="appbar-inner"><a class="back" href="../index.html">‹</a><div class="app-title">Go</div><div class="spacer"></div><button class="btn" data-options>Opcje ▾</button><button class="btn" data-new>Nowa gra</button><button class="iconbtn" data-theme-button>◐</button></div></header>
 <div class="game-options" id="options" hidden><div class="game-options-row"><label for="size">Plansza</label><select class="select" id="size"><option value="9">9×9</option><option value="13">13×13</option><option value="19">19×19</option></select><label for="level">CPU</label><select class="select" id="level"><option value="calm">Spokojny</option><option value="normal">Normalny</option><option value="clever">Sprytny</option></select></div></div>
-<main class="shell"><section class="card panel"><div class="toolbar"><button class="btn" id="pass">Pas</button><span class="muted" id="turn"></span></div><div class="scoreline" id="caps"></div><div class="gob"><div class="go-inner"><svg class="grid" id="grid" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg><div class="points" id="points"></div></div></div><div id="status" hidden></div></section></main>
+<main class="shell"><section class="card panel"><div class="toolbar"><button class="btn" id="pass">Pas</button><span class="muted" id="turn"></span></div><div class="scoreline" id="caps"></div><div class="gob"><div class="go-inner"><canvas class="grid" id="grid" aria-hidden="true"></canvas><div class="points" id="points"></div></div></div><div id="status" hidden></div></section></main>
 <div class="modal" id="modal" hidden><div class="modalbox"><h2>Koniec partii</h2><p id="summary"></p><button class="btn primary" id="again">Nowa partia</button></div></div>
 <script src="../js/app.js"></script><script>
 const $=s=>document.querySelector(s);let n=9,b=[],turn=1,passes=0,caps={1:0,2:0},previous="",busy=false;
@@ -21,22 +23,29 @@ function commit(i,col){let s=simulate(i,col);if(!s)return false;previous=b.join(
 function human(i){if(turn!==1||busy)return;if(commit(i,1)){$("#status").textContent="CPU myśli…";busy=true;setTimeout(cpu,420)}else $("#status").textContent="Tego ruchu nie można zagrać."}
 function cpu(){if(turn!==2){busy=false;return}let moves=[];for(let i=0;i<b.length;i++){let s=simulate(i,2);if(s){let r=Math.floor(i/n),c=i%n,edge=Math.min(r,c,n-1-r,n-1-c),near=ns(i).filter(j=>b[j]).length;let score=s.cap*12+s.libs*1.5+near*1.2+Math.min(edge,3)*.5+Math.random()*6;moves.push([score,i])}}if(!moves.length){passes++;turn=1;busy=false;render();return}moves.sort((a,b)=>b[0]-a[0]);let lvl=$("#level").value,top=lvl==="calm"?Math.min(14,moves.length):lvl==="normal"?Math.min(7,moves.length):Math.min(3,moves.length);let choice=moves[Math.floor(Math.random()*top)][1];commit(choice,2);busy=false;$("#status").textContent="Twój ruch."}
 function drawGrid(){
- const g=$("#grid"); g.innerHTML="";
- const NS="http://www.w3.org/2000/svg";
+ const canvas=$("#grid"),box=canvas.parentElement.getBoundingClientRect(),dpr=window.devicePixelRatio||1;
+ const w=Math.max(1,Math.round(box.width)),h=Math.max(1,Math.round(box.height));
+ canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);canvas.style.width=w+"px";canvas.style.height=h+"px";
+ const ctx=canvas.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);
+ ctx.strokeStyle="#6e532c";ctx.lineWidth=1;
  for(let k=0;k<n;k++){
-   const pos=k/(n-1)*100;
-   const v=document.createElementNS(NS,"line"),h=document.createElementNS(NS,"line");
-   v.setAttribute("x1",pos);v.setAttribute("x2",pos);v.setAttribute("y1",0);v.setAttribute("y2",100);
-   h.setAttribute("x1",0);h.setAttribute("x2",100);h.setAttribute("y1",pos);h.setAttribute("y2",pos);
-   g.append(v,h);
+   const x=Math.round(k*w/(n-1))+.5,y=Math.round(k*h/(n-1))+.5;
+   ctx.beginPath();ctx.moveTo(x,.5);ctx.lineTo(x,h-.5);ctx.stroke();
+   ctx.beginPath();ctx.moveTo(.5,y);ctx.lineTo(w-.5,y);ctx.stroke();
  }
 }
 function render(){
-document.documentElement.style.setProperty("--stoneSize",(82/(n-1))+"%");drawGrid();
-let p=$("#points");p.innerHTML="";
-b.forEach((v,i)=>{let q=document.createElement("button"),r=Math.floor(i/n),c=i%n;q.className="pt";q.style.left=(c/(n-1)*100)+"%";q.style.top=(r/(n-1)*100)+"%";q.onclick=()=>human(i);
-if(v){let st=document.createElement("span");st.className="stone "+(v===1?"black":"white");q.append(st)}p.append(q)});
-$("#turn").textContent=busy?"CPU…":"Twój ruch ●";$("#caps").textContent=`Zbicia: Ty ${caps[1]} · CPU ${caps[2]}`}
+ const p=$("#points"),box=p.getBoundingClientRect(),w=box.width,h=box.height;
+ drawGrid();p.innerHTML="";
+ const step=Math.min(w,h)/(n-1),hit=Math.max(18,Math.min(step*.9,44));
+ b.forEach((v,i)=>{
+   const q=document.createElement("button"),r=Math.floor(i/n),c=i%n;
+   q.className="pt";q.style.left=(c*w/(n-1))+"px";q.style.top=(r*h/(n-1))+"px";q.style.width=hit+"px";q.style.height=hit+"px";
+   q.onclick=()=>human(i);
+   if(v){const st=document.createElement("span");st.className="stone "+(v===1?"black":"white");q.append(st)}
+   p.append(q)
+ });
+ $("#turn").textContent=busy?"CPU…":"Twój ruch ●";$("#caps").textContent=`Zbicia: Ty ${caps[1]} · CPU ${caps[2]}`
 }
 function reset(){n=+$("#size").value;b=Array(n*n).fill(0);turn=1;passes=0;caps={1:0,2:0};previous="";busy=false;$("#modal").hidden=true;render()}
 $("#pass").onclick=()=>{if(busy)return;passes++;turn=2;if(passes>=2)return finish();busy=true;render();setTimeout(cpu,350)};function finish(){$("#summary").textContent=`Zbicia — Ty: ${caps[1]}, CPU: ${caps[2]}. To spokojny tryb: bez turniejowego rozstrzygania martwych grup.`;$("#modal").hidden=false}
@@ -44,4 +53,4 @@ const optionsBtn=document.querySelector("[data-options]"),optionsPanel=$("#optio
 optionsBtn.addEventListener("click",()=>{optionsPanel.hidden=!optionsPanel.hidden;optionsBtn.textContent=optionsPanel.hidden?"Opcje ▾":"Opcje ▴"});
 document.querySelector("[data-new]").onclick=reset;$("#again").onclick=reset;
 $("#size").onchange=()=>{reset()};$("#level").onchange=()=>{render()};
-reset();</script></body></html>
+reset();window.addEventListener("resize",()=>requestAnimationFrame(render));</script></body></html>
