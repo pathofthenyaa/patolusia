@@ -7,5 +7,3 @@ Zmiany względem v2:
 - w Go rozmiar planszy i poziom CPU przeniesiono z nagłówka do kontrolek gry
 - w Statkach plansze pozostają zawsze pionowo, jedna pod drugą
 - cache PWA podniesiony do v2.1
-
-Wgraj całą zawartość ZIP-a do głównego katalogu repozytorium, zastępując stare pliki.
