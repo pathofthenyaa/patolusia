@@ -2,9 +2,9 @@
 
 .gob{position:relative;width:min(100%,620px);aspect-ratio:1;margin:auto;background:#d8ad63;border-radius:18px;padding:5%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12);overflow:hidden}
 .go-inner{position:relative;width:100%;height:100%}
-.grid{position:absolute;inset:0;background-image:linear-gradient(#6e532c 1px,transparent 1px),linear-gradient(90deg,#6e532c 1px,transparent 1px);background-size:calc(100% / var(--n1)) calc(100% / var(--n1));background-position:0 0}
+.grid{position:absolute;inset:0;background-image:linear-gradient(#6e532c 1px,transparent 1px),linear-gradient(90deg,#6e532c 1px,transparent 1px);background-size:var(--step) var(--step);background-position:0 0}
 .points{position:absolute;inset:0}
-.pt{position:absolute;border:0;background:transparent;padding:0;width:calc(82% / var(--n1));height:calc(82% / var(--n1));min-width:16px;min-height:16px;transform:translate(-50%,-50%);touch-action:manipulation}
+.pt{position:absolute;border:0;background:transparent;padding:0;width:var(--stoneSize);height:var(--stoneSize);min-width:16px;min-height:16px;transform:translate(-50%,-50%);touch-action:manipulation}
 .stone{position:absolute;width:88%;height:88%;border-radius:50%;left:6%;top:6%;box-shadow:0 2px 4px rgba(0,0,0,.35)}
 .black{background:#17181b}.white{background:#f6f3eb;border:1px solid #bbb}.scoreline{text-align:center;margin:8px;color:var(--muted)}
 
@@ -21,7 +21,7 @@ function commit(i,col){let s=simulate(i,col);if(!s)return false;previous=b.join(
 function human(i){if(turn!==1||busy)return;if(commit(i,1)){status.textContent="CPU myśli…";busy=true;setTimeout(cpu,420)}else status.textContent="Tego ruchu nie można zagrać."}
 function cpu(){if(turn!==2){busy=false;return}let moves=[];for(let i=0;i<b.length;i++){let s=simulate(i,2);if(s){let r=Math.floor(i/n),c=i%n,edge=Math.min(r,c,n-1-r,n-1-c),near=ns(i).filter(j=>b[j]).length;let score=s.cap*12+s.libs*1.5+near*1.2+Math.min(edge,3)*.5+Math.random()*6;moves.push([score,i])}}if(!moves.length){passes++;turn=1;busy=false;render();return}moves.sort((a,b)=>b[0]-a[0]);let lvl=$("#level").value,top=lvl==="calm"?Math.min(14,moves.length):lvl==="normal"?Math.min(7,moves.length):Math.min(3,moves.length);let choice=moves[Math.floor(Math.random()*top)][1];commit(choice,2);busy=false;status.textContent="Twój ruch."}
 function render(){
-document.documentElement.style.setProperty("--n",n);document.documentElement.style.setProperty("--n1",n-1);
+document.documentElement.style.setProperty("--n",n);document.documentElement.style.setProperty("--step",(100/(n-1))+"%");document.documentElement.style.setProperty("--stoneSize",(82/(n-1))+"%");
 let p=$("#points");p.innerHTML="";
 b.forEach((v,i)=>{let q=document.createElement("button"),r=Math.floor(i/n),c=i%n;q.className="pt";q.style.left=(c/(n-1)*100)+"%";q.style.top=(r/(n-1)*100)+"%";q.onclick=()=>human(i);
 if(v){let st=document.createElement("span");st.className="stone "+(v===1?"black":"white");q.append(st)}p.append(q)});
