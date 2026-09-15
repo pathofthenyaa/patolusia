@@ -11,3 +11,10 @@ html[data-theme=dark]{color-scheme:dark;--bg:#0e1015;--card:#171a21;--text:#f5f6
 .appbar-inner{width:min(100%,760px);height:46px;margin:auto;display:flex;align-items:center;gap:9px}.app-title{font-size:18px;font-weight:850;letter-spacing:-.4px}.home-title{font-size:20px;font-weight:900}
 .homegrid{display:grid;grid-template-columns:1fr;gap:14px}.homecard{min-height:165px;padding:20px;position:relative;overflow:hidden;text-decoration:none;color:inherit}.homecard h2{font-size:26px;margin:64px 0 4px}.homecard p{margin:0;color:var(--muted)}.homeart{position:absolute;right:18px;top:13px;font-size:72px;opacity:.9}
 @media(min-width:650px){.homegrid{grid-template-columns:repeat(3,1fr)}.homecard{min-height:230px}.homecard h2{margin-top:105px}}
+
+/* v2.2 */
+.btn,.iconbtn,.select,.back{border:1px solid var(--line)}
+html[data-theme=dark] .btn,html[data-theme=dark] .iconbtn,html[data-theme=dark] .select,html[data-theme=dark] .back{background:#252a34}
+@media(prefers-color-scheme:dark){html[data-theme=auto] .btn,html[data-theme=auto] .iconbtn,html[data-theme=auto] .select,html[data-theme=auto] .back{background:#252a34}}
+.game-options{width:min(100% - 18px,760px);position:fixed;z-index:45;left:50%;top:62px;transform:translateX(-50%);padding:10px;background:var(--card);border:1px solid var(--line);border-radius:0 0 18px 18px;box-shadow:var(--shadow)}
+.game-options[hidden]{display:none}.game-options-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.game-options label{font-size:13px;color:var(--muted);font-weight:700}

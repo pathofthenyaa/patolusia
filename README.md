@@ -1,9 +1,10 @@
-# Mini Gry PWA v2.1
-
-Zmiany względem v2:
-- wspólny schemat nagłówka: Wstecz | nazwa gry | motyw
-- „Nowa gra” ma tę samą nazwę we wszystkich trzech grach
-- przyciski i opcje konkretnej gry są pod wspólnym nagłówkiem
-- w Go rozmiar planszy i poziom CPU przeniesiono z nagłówka do kontrolek gry
-- w Statkach plansze pozostają zawsze pionowo, jedna pod drugą
-- cache PWA podniesiony do v2.1
+# Mini Gry PWA v2.2
+- wspólny pasek: Wstecz | nazwa | Opcje | Nowa gra | motyw
+- rozwijany panel Opcje
+- Sudoku: trudność przeniesiona do Opcji
+- Go: rozmiar i CPU w Opcjach, usunięty podpis pod planszą
+- Statki: przeciwnik nad własną planszą po starcie
+- Statki: własne statki można zaznaczać, przesuwać i obracać przed startem
+- Losuj i Start znikają po rozpoczęciu
+- zatopione statki wyglądają inaczej niż częściowo trafione
+- poprawiony kontrast przycisków w ciemnym motywie
