@@ -1,8 +1,7 @@
-# Mini Gry PWA v2.4
-- Na ekranie głównym widoczny numer wersji: Mini Gry v2.4.
-- Go: siatka nie korzysta już z CSS background ani obliczeń CSS.
-- Wszystkie linie planszy Go są tworzone jako osobne elementy DOM i ustawiane dokładnie na przecięciach.
-- Kamienie pozostają centrowane na tych samych współrzędnych.
-- Go: poprawione działanie przycisku Opcje i zmiany rozmiaru planszy.
-- Usunięto zależność od niejawnej zmiennej `status`.
-- cache PWA v2.4.
+# Mini Gry PWA v2.5
+- Widoczny numer wersji na głównym pasku: Mini Gry v2.5.
+- Go: siatka jest teraz SVG, nie CSS ani zestawem pozycjonowanych elementów.
+- Linie SVG i kamienie używają tych samych współrzędnych przecięć.
+- Panel Opcje nie zamyka się już po zmianie rozmiaru planszy.
+- Zmiana CPU również nie chowa Opcji.
+- cache PWA v2.5.
