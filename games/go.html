@@ -24,16 +24,18 @@ function human(i){if(turn!==1||busy)return;if(commit(i,1)){$("#status").textCont
 function cpu(){if(turn!==2){busy=false;return}let moves=[];for(let i=0;i<b.length;i++){let s=simulate(i,2);if(s){let r=Math.floor(i/n),c=i%n,edge=Math.min(r,c,n-1-r,n-1-c),near=ns(i).filter(j=>b[j]).length;let score=s.cap*12+s.libs*1.5+near*1.2+Math.min(edge,3)*.5+Math.random()*6;moves.push([score,i])}}if(!moves.length){passes++;turn=1;busy=false;render();return}moves.sort((a,b)=>b[0]-a[0]);let lvl=$("#level").value,top=lvl==="calm"?Math.min(14,moves.length):lvl==="normal"?Math.min(7,moves.length):Math.min(3,moves.length);let choice=moves[Math.floor(Math.random()*top)][1];commit(choice,2);busy=false;$("#status").textContent="Twój ruch."}
 function boardGeometry(){
  const inner=document.querySelector(".go-inner"),box=inner.getBoundingClientRect();
- return {w:Math.max(1,box.width),h:Math.max(1,box.height)};
+ const size=Math.max(1,Math.floor(Math.min(box.width,box.height)));
+ return {w:size,h:size};
 }
 function drawGrid(){
- const canvas=$("#grid"),box=canvas.parentElement.getBoundingClientRect(),dpr=window.devicePixelRatio||1;
- const w=Math.max(1,Math.round(box.width)),h=Math.max(1,Math.round(box.height));
+ const canvas=$("#grid"),{w,h}=boardGeometry(),dpr=window.devicePixelRatio||1;
  canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);canvas.style.width=w+"px";canvas.style.height=h+"px";
  const ctx=canvas.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);
  ctx.strokeStyle="#6e532c";ctx.lineWidth=1;
  for(let k=0;k<n;k++){
-   const x=Math.round(k*w/(n-1))+.5,y=Math.round(k*h/(n-1))+.5;
+   const rawX=k*w/(n-1),rawY=k*h/(n-1);
+   const x=k===0?.5:k===n-1?w-.5:Math.round(rawX)+.5;
+   const y=k===0?.5:k===n-1?h-.5:Math.round(rawY)+.5;
    ctx.beginPath();ctx.moveTo(x,.5);ctx.lineTo(x,h-.5);ctx.stroke();
    ctx.beginPath();ctx.moveTo(.5,y);ctx.lineTo(w-.5,y);ctx.stroke();
  }
