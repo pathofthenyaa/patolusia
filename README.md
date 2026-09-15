@@ -1,16 +1,11 @@
-# Mini Gry PWA
+# Mini Gry PWA v2.1
 
-Wgraj całą zawartość tego folderu do katalogu głównego repozytorium GitHub Pages.
+Zmiany względem v2:
+- wspólny schemat nagłówka: Wstecz | nazwa gry | motyw
+- „Nowa gra” ma tę samą nazwę we wszystkich trzech grach
+- przyciski i opcje konkretnej gry są pod wspólnym nagłówkiem
+- w Go rozmiar planszy i poziom CPU przeniesiono z nagłówka do kontrolek gry
+- w Statkach plansze pozostają zawsze pionowo, jedna pod drugą
+- cache PWA podniesiony do v2.1
 
-Gry:
-- Sudoku — przeniesiona obecna wersja
-- Statki — 10×10 przeciwko komputerowi
-- Go — lokalnie dla dwóch graczy, 9×9 / 13×13 / 19×19
-
-PWA:
-- manifest
-- service worker
-- cache offline
-- ikony 192/512
-
-Uwaga: Go obsługuje bicie, zakaz samobójstwa, proste ko i pas. Końcowe pełne liczenie terytorium/martwych grup nie jest jeszcze automatyczne.
+Wgraj całą zawartość ZIP-a do głównego katalogu repozytorium, zastępując stare pliki.
