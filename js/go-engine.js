@@ -9,6 +9,6 @@ let r=Math.floor(i/n),c=i%n,edge=Math.min(r,c,n-1-r,n-1-c),score=s.cap*35+own.li
 if(friends&&enemies===0&&!s.cap&&!saved&&!attack)score-=friends*1.5;let desperate=own.libs.size===1&&!s.cap&&!saved;if(desperate)score-=40;
 return{i,score,desperate,cap:s.cap,saved,attack,libs:own.libs.size}}
 function rank(b,n,previous,col=2){let a=[];for(let i=0;i<b.length;i++){let m=evaluate(b,n,previous,i,col);if(m)a.push(m)}return a.sort((x,y)=>y.score-x.score)}
-function choose(moves,level){let a=moves.slice(0,10);if(!a.length)return null;let bands={calm:[5,4],normal:[3,2],clever:[1,0]},band=bands[level]||bands.normal,scale=k=>Math.min(a.length-1,Math.round(k*(a.length-1)/9)),pool=[...new Set(band.map(scale))].map(k=>a[k]).filter(Boolean);return pool[Math.floor(Math.random()*pool.length)]||a[0]}
+function choose(moves,level){let a=moves.slice(0,10);if(!a.length)return null;let bands={calm:[6,5],normal:[4,3],clever:[2,1]},band=bands[level]||bands.normal,scale=k=>Math.min(a.length-1,Math.round(k*(a.length-1)/9)),pool=[...new Set(band.map(scale))].map(k=>a[k]).filter(Boolean);return pool[Math.floor(Math.random()*pool.length)]||a[0]}
 return{ns,group,simulate,rank,choose}
 })();
