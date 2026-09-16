@@ -10,16 +10,26 @@
 .black{background:#17181b}.white{background:#f6f3eb;border:1px solid #bbb}.scoreline{text-align:center;margin:8px;color:var(--muted)}
 
 
+
+.preview-note{text-align:center;margin:6px 0;color:var(--muted);font-weight:700}
+.pt.preview-changed .stone{box-shadow:0 0 0 4px #e8a12b,0 2px 4px rgba(0,0,0,.35)}
+.pt.preview-played::after{content:"";position:absolute;width:34%;height:34%;border-radius:50%;background:#e8a12b;box-shadow:0 0 0 2px rgba(0,0,0,.35)}
 </style></head><body><header class="appbar"><div class="appbar-inner"><a class="back" href="../index.html">‹</a><div class="app-title">Go</div><div class="spacer"></div><button class="btn" data-options>Opcje ▾</button><button class="btn" data-new>Nowa gra</button><button class="iconbtn" data-theme-button>◐</button></div></header>
 <div class="game-options" id="options" hidden><div class="game-options-row"><label for="size">Plansza</label><select class="select" id="size"><option value="9">9×9</option><option value="13">13×13</option><option value="19">19×19</option></select><label for="level">CPU</label><select class="select" id="level"><option value="calm">Spokojny</option><option value="normal">Normalny</option><option value="clever">Sprytny</option></select></div></div>
-<main class="shell"><section class="card panel"><div class="toolbar"><button class="btn" id="pass">Pas</button><span class="muted" id="turn"></span></div><div class="scoreline" id="caps"></div><div class="gob"><div class="go-inner"><canvas class="grid" id="grid" aria-hidden="true"></canvas><div class="points" id="points"></div></div></div><div id="status" hidden></div></section></main>
+<main class="shell"><section class="card panel"><div class="toolbar"><button class="btn" id="pass">Pas</button><button class="btn" id="lastMove" disabled>Ostatni ruch</button><span class="muted" id="turn"></span></div><div class="scoreline" id="caps"></div><div class="preview-note" id="previewNote" hidden>Podgląd stanu sprzed ostatniego ruchu</div><div class="gob"><div class="go-inner"><canvas class="grid" id="grid" aria-hidden="true"></canvas><div class="points" id="points"></div></div></div><div id="status" hidden></div></section></main>
 <div class="modal" id="modal" hidden><div class="modalbox"><h2>Koniec partii</h2><p id="summary"></p><button class="btn primary" id="again">Nowa partia</button></div></div>
 <script src="../js/app.js"></script><script src="../js/go-engine.js"></script><script>
-const $=s=>document.querySelector(s);let n=9,b=[],turn=1,passes=0,caps={1:0,2:0},previous="",busy=false,cpuPasses=0;
+const $=s=>document.querySelector(s);let n=9,b=[],turn=1,passes=0,caps={1:0,2:0},previous="",busy=false,cpuPasses=0,lastSnapshot=null,previewing=false;
 function ns(i){return GoEngine.ns(i,n)}
 function group(i,a){return GoEngine.group(i,a,n)}
 function simulate(i,col){return GoEngine.simulate(b,n,previous,i,col)}
-function commit(i,col){let s=simulate(i,col);if(!s)return false;previous=b.join("");b=s.a;caps[col]+=s.cap;passes=0;turn=3-col;render();return true}
+function commit(i,col){
+ let s=simulate(i,col);if(!s)return false;
+ let before=b.slice(),beforeCaps={1:caps[1],2:caps[2]};
+ previous=b.join("");b=s.a;caps[col]+=s.cap;passes=0;turn=3-col;
+ lastSnapshot={before,after:b.slice(),played:i,col,beforeCaps,afterCaps:{1:caps[1],2:caps[2]}};
+ previewing=false;render();return true
+}
 function human(i){if(turn!==1||busy)return;if(commit(i,1)){setTurnText("CPU…");busy=true;render();setTimeout(cpu,420)}else setTurnText("Tego ruchu nie można zagrać.")}
 function setTurnText(t){$("#turn").textContent=t}
 function cpuPass(){cpuPasses++;passes++;turn=1;busy=false;render();setTurnText("CPU Pas. Twój ruch");if(passes>=2)finish()}
@@ -47,18 +57,31 @@ function drawGrid(){
 function render(){
  const p=$("#points"),{w,h}=boardGeometry();
  p.style.width=w+"px";p.style.height=h+"px";
- drawGrid();p.innerHTML="";
+ drawGrid();p.innerHTML="";let shown=previewing&&lastSnapshot?lastSnapshot.before:b;
  const step=Math.min(w,h)/(n-1),hit=Math.max(18,Math.min(step*.9,44));
- b.forEach((v,i)=>{
+ shown.forEach((v,i)=>{
    const q=document.createElement("button"),r=Math.floor(i/n),c=i%n;
-   q.className="pt";q.style.left=(c*w/(n-1))+"px";q.style.top=(r*h/(n-1))+"px";q.style.width=hit+"px";q.style.height=hit+"px";
-   q.onclick=()=>human(i);
+   q.className="pt";if(previewing&&lastSnapshot){
+     let was=lastSnapshot.before[i],now=lastSnapshot.after[i];
+     if(was!==now)q.classList.add("preview-changed");
+     if(i===lastSnapshot.played)q.classList.add("preview-played");
+   }q.style.left=(c*w/(n-1))+"px";q.style.top=(r*h/(n-1))+"px";q.style.width=hit+"px";q.style.height=hit+"px";
+   q.onclick=()=>{if(!previewing)human(i)};
    if(v){const st=document.createElement("span");st.className="stone "+(v===1?"black":"white");q.append(st)}
    p.append(q)
  });
- $("#turn").textContent=busy?"CPU…":turn===1?"Twój ruch":"CPU…";$("#caps").textContent=`Zbicia: Ty ${caps[1]} · CPU ${caps[2]}`
+ $("#turn").textContent=busy?"CPU…":turn===1?"Twój ruch":"CPU…";$("#caps").textContent=`Zbicia: Ty ${caps[1]} · CPU ${caps[2]}`;$("#lastMove").disabled=!lastSnapshot||busy;$("#lastMove").textContent=previewing?"Wróć do gry":"Ostatni ruch";$("#previewNote").hidden=!previewing
 }
 function reset(){n=+$("#size").value;b=Array(n*n).fill(0);turn=1;passes=0;caps={1:0,2:0};previous="";busy=false;$("#modal").hidden=true;render();setTurnText("Twój ruch")}
+
+$("#lastMove").onclick=()=>{
+ if(!lastSnapshot||busy)return;
+ previewing=!previewing;
+ $("#previewNote").hidden=!previewing;
+ $("#lastMove").textContent=previewing?"Wróć do gry":"Ostatni ruch";
+ render();
+ $("#previewNote").hidden=!previewing;
+};
 $("#pass").onclick=()=>{if(busy||turn!==1)return;passes++;turn=2;if(passes>=2)return finish();busy=true;render();setTurnText("Ty: Pas. CPU…");setTimeout(cpu,350)};function finish(){$("#summary").textContent=`Zbicia — Ty: ${caps[1]}, CPU: ${caps[2]}. To spokojny tryb: bez turniejowego rozstrzygania martwych grup.`;$("#modal").hidden=false}
 const optionsBtn=document.querySelector("[data-options]"),optionsPanel=$("#options");
 optionsBtn.addEventListener("click",()=>{optionsPanel.hidden=!optionsPanel.hidden;optionsBtn.textContent=optionsPanel.hidden?"Opcje ▾":"Opcje ▴"});
