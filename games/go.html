@@ -14,104 +14,18 @@
 <div class="game-options" id="options" hidden><div class="game-options-row"><label for="size">Plansza</label><select class="select" id="size"><option value="9">9×9</option><option value="13">13×13</option><option value="19">19×19</option></select><label for="level">CPU</label><select class="select" id="level"><option value="calm">Spokojny</option><option value="normal">Normalny</option><option value="clever">Sprytny</option></select></div></div>
 <main class="shell"><section class="card panel"><div class="toolbar"><button class="btn" id="pass">Pas</button><span class="muted" id="turn"></span></div><div class="scoreline" id="caps"></div><div class="gob"><div class="go-inner"><canvas class="grid" id="grid" aria-hidden="true"></canvas><div class="points" id="points"></div></div></div><div id="status" hidden></div></section></main>
 <div class="modal" id="modal" hidden><div class="modalbox"><h2>Koniec partii</h2><p id="summary"></p><button class="btn primary" id="again">Nowa partia</button></div></div>
-<script src="../js/app.js"></script><script>
-const $=s=>document.querySelector(s);let n=9,b=[],turn=1,passes=0,caps={1:0,2:0},previous="",busy=false;
-function ns(i){let r=Math.floor(i/n),c=i%n,a=[];if(r)a.push(i-n);if(r<n-1)a.push(i+n);if(c)a.push(i-1);if(c<n-1)a.push(i+1);return a}
-function group(start,a){let col=a[start],seen=new Set([start]),st=[start],libs=new Set();while(st.length){let i=st.pop();for(let j of ns(i)){if(a[j]===0)libs.add(j);else if(a[j]===col&&!seen.has(j)){seen.add(j);st.push(j)}}}return{stones:[...seen],libs}}
-function simulateOn(board,i,col,ko=""){
- if(board[i])return null;
- let a=board.slice();a[i]=col,cap=0;
- for(let j of ns(i))if(a[j]&&a[j]!==col){let g=group(j,a);if(!g.libs.size){cap+=g.stones.length;g.stones.forEach(x=>a[x]=0)}}
- let own=group(i,a);if(!own.libs.size||a.join("")===ko)return null;
- return{a,cap,libs:own.libs.size,own};
-}
-function simulate(i,col){return simulateOn(b,i,col,previous)}
-function commit(i,col){let s=simulate(i,col);if(!s)return false;previous=b.join("");b=s.a;caps[col]+=s.cap;passes=0;turn=3-col;return true}
-function setTurnText(text){$("#turn").textContent=text}
-function human(i){
- if(turn!==1||busy)return;
- if(commit(i,1)){
-  busy=true;render();setTurnText("CPU…");setTimeout(cpu,420)
- }else setTurnText("Ruch niedozwolony. Twój ruch")
-}
-function allGroups(arr,col){
- let out=[],seen=new Set();
- for(let i=0;i<arr.length;i++)if(arr[i]===col&&!seen.has(i)){
-  let g=group(i,arr);g.stones.forEach(x=>seen.add(x));out.push(g)
- }
- return out
-}
-function boardHealth(arr,col){
- let groups=allGroups(arr,col),score=0,danger=0,stones=0;
- for(let g of groups){
-  let z=g.stones.length,l=g.libs.size;stones+=z;
-  score+=z*Math.min(l,5)*1.25;
-  if(l===1){score-=z*15;danger+=z}
-  else if(l===2){score-=z*4;danger+=z*.35}
-  else if(l>=4)score+=Math.min(z,6)*1.5
- }
- return{score,danger,stones,groups}
-}
-function localMoveInfo(i){
- let s=simulate(i,2);if(!s)return null;
- let own=group(i,s.a),friends=0,enemies=0,friendGroups=[],enemyGroups=[],seenF=new Set(),seenE=new Set();
- for(let j of ns(i)){
-  if(b[j]===2){friends++;if(!seenF.has(j)){let g=group(j,b);friendGroups.push(g);g.stones.forEach(x=>seenF.add(x))}}
-  else if(b[j]===1){enemies++;if(!seenE.has(j)){let g=group(j,b);enemyGroups.push(g);g.stones.forEach(x=>seenE.add(x))}}
- }
- let urgentSave=0;
- for(let g of friendGroups)if(g.libs.size===1)urgentSave+=g.stones.length*12;else if(g.libs.size===2)urgentSave+=g.stones.length*2;
- let attack=0;
- for(let g of enemyGroups){
-  let x=g.stones.find(q=>s.a[q]===1);if(x===undefined)continue;
-  let after=group(x,s.a).libs.size;
-  if(after<g.libs.size)attack+=(g.libs.size-after)*4;
-  if(after===1)attack+=10+g.stones.length*3
- }
- let joined=Math.max(0,friendGroups.length-1),r=Math.floor(i/n),c=i%n,edge=Math.min(r,c,n-1-r,n-1-c);
- let beforeHealth=boardHealth(b,2),afterHealth=boardHealth(s.a,2);
- let score=s.cap*38+attack+urgentSave+joined*5+(afterHealth.score-beforeHealth.score)*.8+own.libs.size*2+Math.min(edge,3)*.2;
- // Nie buduj stada tylko dlatego, że obok jest własny kamień.
- if(friends&&enemies===0&&s.cap===0&&urgentSave===0)score-=friends*3;
- if(own.libs.size===1&&s.cap===0&&urgentSave===0)score-=60;
- return{i,s,score,libs:own.libs.size};
-}
-function replyRisk(move){
- // CPU patrzy o jeden ruch gracza do przodu. Szukamy najgroźniejszej odpowiedzi,
- // ale tylko wśród ruchów, które realnie szkodzą CPU.
- let arr=move.s.a,before=boardHealth(arr,2),worst=0;
- for(let j=0;j<arr.length;j++){
-  let r=simulateOn(arr,j,1,b.join(""));if(!r)continue;
-  let after=boardHealth(r.a,2);
-  let harm=r.cap*42+(before.score-after.score)+(after.danger-before.danger)*12;
-  if(harm>worst)worst=harm
- }
- return worst
-}
-function cpuPass(){
- passes++;turn=1;busy=false;render();setTurnText("CPU Pas. Twój ruch");
- if(passes>=2)finish()
-}
-function cpu(){
- if(turn!==2){busy=false;render();setTurnText("Twój ruch");return}
- let moves=[];
- for(let i=0;i<b.length;i++){let m=localMoveInfo(i);if(m)moves.push(m)}
- if(!moves.length){cpuPass();return}
- moves.sort((a,b)=>b.score-a.score);
- // Pełne spojrzenie o ruch naprzód tylko dla najlepszych kandydatów — działa płynnie także na 19×19.
- let limit=n===19?10:n===13?14:18,candidates=moves.slice(0,Math.min(limit,moves.length));
- for(let m of candidates){let risk=replyRisk(m);m.final=m.score-risk*.72}
- candidates.sort((a,b)=>b.final-a.final);
- let viable=candidates.filter(m=>m.final>-18&&m.libs>1);
- if(!viable.length){cpuPass();return}
- let lvl=$("#level").value,choice;
- if(lvl==="calm"){
-  let pool=viable.slice(0,Math.min(5,viable.length));choice=pool[Math.floor(Math.random()*pool.length)]
- }else if(lvl==="normal"){
-  let pool=viable.slice(0,Math.min(2,viable.length));choice=pool[Math.floor(Math.random()*pool.length)]
- }else choice=viable[0];
- commit(choice.i,2);busy=false;render();setTurnText("Twój ruch")
-}
+<script src="../js/app.js"></script><script src="../js/go-engine.js"></script><script>
+const $=s=>document.querySelector(s);let n=9,b=[],turn=1,passes=0,caps={1:0,2:0},previous="",busy=false,cpuPasses=0;
+function ns(i){return GoEngine.ns(i,n)}
+function group(i,a){return GoEngine.group(i,a,n)}
+function simulate(i,col){return GoEngine.simulate(b,n,previous,i,col)}
+function commit(i,col){let s=simulate(i,col);if(!s)return false;previous=b.join("");b=s.a;caps[col]+=s.cap;passes=0;turn=3-col;render();return true}
+function human(i){if(turn!==1||busy)return;if(commit(i,1)){setTurnText("CPU…");busy=true;render();setTimeout(cpu,420)}else setTurnText("Tego ruchu nie można zagrać.")}
+function setTurnText(t){$("#turn").textContent=t}
+function cpuPass(){cpuPasses++;passes++;turn=1;busy=false;render();setTurnText("CPU Pas. Twój ruch");if(passes>=2)finish()}
+function cpuResign(){busy=false;setTurnText("CPU się poddaje");$("#summary").textContent=`CPU się poddaje. Zbicia — Ty: ${caps[1]}, CPU: ${caps[2]}.`;$("#modal").hidden=false}
+function cpu(){if(turn!==2){busy=false;return}let moves=GoEngine.rank(b,n,previous,2);if(!moves.length){cpuPass();return}let tactical=moves.filter(m=>m.cap||m.saved||m.attack),safe=moves.filter(m=>!m.desperate),pool=tactical.length?tactical:safe;if(!pool.length){if(cpuPasses<2)cpuPass();else cpuResign();return}if(!tactical.length&&pool[0].score<-10){if(cpuPasses<2)cpuPass();else cpuResign();return}let choice=GoEngine.choose(pool,$("#level").value);if(!choice){cpuPass();return}commit(choice.i,2);busy=false;render();setTurnText("Twój ruch")}
+
 function boardGeometry(){
  const inner=document.querySelector(".go-inner"),box=inner.getBoundingClientRect();
  const size=Math.max(1,Math.floor(Math.min(box.width,box.height)));
