@@ -8,7 +8,7 @@
 .memory-card.matched{background:rgba(70,180,110,.14);box-shadow:inset 0 0 0 2px rgba(70,180,110,.45)}
 </style></head><body>
 <header class="appbar"><div class="appbar-inner"><a class="back" href="../index.html">‹</a><div class="app-title">Memory</div><div class="spacer"></div><button class="btn" data-options>Opcje ▾</button><button class="btn" data-new>Nowa gra</button><button class="iconbtn" data-theme-button aria-label="Zmień motyw">◐</button></div></header>
-<div class="game-options" id="options" hidden><div class="game-options-row"><label for="level">Poziom</label><select class="select" id="level"><option value="5">Łatwy · 5 par</option><option value="10" selected>Standard · 10 par</option><option value="15">Trudny · 15 par</option></select></div></div>
+<div class="game-options" id="options" hidden><div class="game-options-row"><label for="level">Poziom</label><select class="select" id="level"><option value="5">Łatwy · 5 par</option><option value="10" selected>Standard · 10 par</option><option value="15">Trudny · 15 par</option></select><label style="display:flex;align-items:center;gap:7px"><input type="checkbox" id="shuffleWrong"> Przetasuj po błędzie</label></div></div>
 <main class="shell"><section class="card panel memory-panel">
 <div class="memory-toolbar"><span class="memory-info" id="moves">Ruchy: 0</span><span class="memory-info" id="pairs">Pary: 0/10</span></div>
 <div class="memory-board" id="board" aria-label="Plansza Memory"></div>
@@ -49,7 +49,13 @@ function choose(i){
  lock=true;render();
  setTimeout(()=>{
   cards[first].open=false;cards[second].open=false;
-  first=null;second=null;lock=false;render()
+  first=null;second=null;
+  if($("#shuffleWrong").checked){
+   const free=cards.map((x,i)=>!x.matched?i:null).filter(i=>i!==null);
+   const values=shuffle(free.map(i=>cards[i].symbol));
+   free.forEach((i,k)=>cards[i].symbol=values[k]);
+  }
+  lock=false;render()
  },650)
 }
 function render(){
