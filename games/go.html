@@ -15,7 +15,7 @@
 .pt.preview-changed .stone{box-shadow:0 0 0 4px #e8a12b,0 2px 4px rgba(0,0,0,.35)}
 .pt.preview-played::after{content:"";position:absolute;width:34%;height:34%;border-radius:50%;background:#e8a12b;box-shadow:0 0 0 2px rgba(0,0,0,.35)}
 </style></head><body><header class="appbar"><div class="appbar-inner"><a class="back" href="../index.html">‹</a><div class="app-title">Go</div><div class="spacer"></div><button class="btn" data-options>Opcje ▾</button><button class="btn" data-new>Nowa gra</button><button class="iconbtn" data-theme-button>◐</button></div></header>
-<div class="game-options" id="options" hidden><div class="game-options-row"><label for="size">Plansza</label><select class="select" id="size"><option value="9">9×9</option><option value="13">13×13</option><option value="19">19×19</option></select><label for="level">CPU</label><select class="select" id="level"><option value="calm">Spokojny</option><option value="normal">Normalny</option><option value="clever">Sprytny</option></select></div></div>
+<div class="game-options" id="options" hidden><div class="game-options-row"><label for="size">Plansza</label><select class="select" id="size"><option value="9">9×9</option><option value="13">13×13</option><option value="19">19×19</option></select><label for="level">CPU</label><select class="select" id="level"><option value="calm">Łatwy</option><option value="normal">Standard</option><option value="clever">Trudny</option></select></div></div>
 <main class="shell"><section class="card panel"><div class="toolbar"><button class="btn" id="pass">Pas</button><button class="btn" id="lastMove" disabled>Ostatni ruch</button><span class="muted" id="turn"></span></div><div class="scoreline" id="caps"></div><div class="preview-note" id="previewNote" hidden>Podgląd stanu sprzed ostatniego ruchu</div><div class="gob"><div class="go-inner"><canvas class="grid" id="grid" aria-hidden="true"></canvas><div class="points" id="points"></div></div></div><div id="status" hidden></div></section></main>
 <div class="modal" id="modal" hidden><div class="modalbox"><h2>Koniec partii</h2><p id="summary"></p><button class="btn primary" id="again">Nowa partia</button></div></div>
 <script src="../js/app.js"></script><script src="../js/go-engine.js"></script><script>
@@ -72,7 +72,7 @@ function render(){
  });
  $("#turn").textContent=busy?"CPU…":turn===1?"Twój ruch":"CPU…";$("#caps").textContent=`Zbicia: Ty ${caps[1]} · CPU ${caps[2]}`;$("#lastMove").disabled=!lastSnapshot||busy;$("#lastMove").textContent=previewing?"Wróć do gry":"Ostatni ruch";$("#previewNote").hidden=!previewing
 }
-function reset(){n=+$("#size").value;b=Array(n*n).fill(0);turn=1;passes=0;caps={1:0,2:0};previous="";busy=false;$("#modal").hidden=true;render();setTurnText("Twój ruch")}
+function reset(){n=+$("#size").value;b=Array(n*n).fill(0);turn=1;passes=0;caps={1:0,2:0;$("#previewNote").hidden=true;$("#lastMove").textContent="Ostatni ruch";$("#lastMove").disabled=true};previous="";busy=false;$("#modal").hidden=true;render();setTurnText("Twój ruch")}
 
 $("#lastMove").onclick=()=>{
  if(!lastSnapshot||busy)return;
