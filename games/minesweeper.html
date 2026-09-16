@@ -2,8 +2,8 @@
 .mine-panel{max-width:620px;margin:auto}
 .mine-toolbar{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;margin-bottom:12px}
 .mine-info{font-weight:800;color:var(--muted);white-space:nowrap}
-.mine-board{width:min(100%,520px);aspect-ratio:1;margin:auto;display:grid;grid-template-columns:repeat(9,1fr);gap:3px;padding:6px;box-sizing:border-box;border-radius:16px;background:rgba(127,127,127,.16);touch-action:manipulation;user-select:none;-webkit-user-select:none}
-.mine-cell{appearance:none;border:0;border-radius:7px;padding:0;min-width:0;font:800 clamp(14px,5vw,25px)/1 system-ui,sans-serif;background:var(--card,#fff);box-shadow:inset 0 0 0 1px rgba(127,127,127,.22);color:inherit;touch-action:manipulation}
+.mine-board{width:min(100%,520px);aspect-ratio:1;margin:auto;display:grid;grid-template-columns:repeat(9,minmax(0,1fr));grid-template-rows:repeat(9,minmax(0,1fr));gap:3px;padding:6px;box-sizing:border-box;border-radius:16px;background:rgba(127,127,127,.16);touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.mine-cell{appearance:none;border:0;border-radius:7px;padding:0;min-width:0;min-height:0;width:100%;height:100%;font:800 clamp(14px,5vw,25px)/1 system-ui,sans-serif;background:var(--card,#fff);box-shadow:inset 0 0 0 1px rgba(127,127,127,.22);color:inherit;touch-action:manipulation}
 .mine-cell.open{background:rgba(127,127,127,.10);box-shadow:none}
 .mine-cell.flag{font-size:clamp(15px,5vw,23px)}
 .mine-cell.mine{background:rgba(220,70,70,.16)}
