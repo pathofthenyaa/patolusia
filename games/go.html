@@ -21,7 +21,80 @@ function group(start,a){let col=a[start],seen=new Set([start]),st=[start],libs=n
 function simulate(i,col){if(b[i])return null;let a=b.slice();a[i]=col,cap=0;for(let j of ns(i))if(a[j]&&a[j]!==col){let g=group(j,a);if(!g.libs.size){cap+=g.stones.length;g.stones.forEach(x=>a[x]=0)}}let own=group(i,a);if(!own.libs.size||a.join("")===previous)return null;return{a,cap,libs:own.libs.size}}
 function commit(i,col){let s=simulate(i,col);if(!s)return false;previous=b.join("");b=s.a;caps[col]+=s.cap;passes=0;turn=3-col;render();return true}
 function human(i){if(turn!==1||busy)return;if(commit(i,1)){$("#status").textContent="CPU myśli…";busy=true;setTimeout(cpu,420)}else $("#status").textContent="Tego ruchu nie można zagrać."}
-function cpu(){if(turn!==2){busy=false;return}let moves=[];for(let i=0;i<b.length;i++){let s=simulate(i,2);if(s){let r=Math.floor(i/n),c=i%n,edge=Math.min(r,c,n-1-r,n-1-c),near=ns(i).filter(j=>b[j]).length;let score=s.cap*12+s.libs*1.5+near*1.2+Math.min(edge,3)*.5+Math.random()*6;moves.push([score,i])}}if(!moves.length){passes++;turn=1;busy=false;render();return}moves.sort((a,b)=>b[0]-a[0]);let lvl=$("#level").value,top=lvl==="calm"?Math.min(14,moves.length):lvl==="normal"?Math.min(7,moves.length):Math.min(3,moves.length);let choice=moves[Math.floor(Math.random()*top)][1];commit(choice,2);busy=false;$("#status").textContent="Twój ruch."}
+function cpuMoveInfo(i){
+ let s=simulate(i,2);if(!s)return null;
+ let own=group(i,s.a),friends=0,enemies=0,friendGroups=[],enemyGroups=[],seenF=new Set(),seenE=new Set();
+ for(let j of ns(i)){
+  if(b[j]===2){
+   friends++;
+   if(!seenF.has(j)){let g=group(j,b);friendGroups.push(g);g.stones.forEach(x=>seenF.add(x))}
+  }else if(b[j]===1){
+   enemies++;
+   if(!seenE.has(j)){let g=group(j,b);enemyGroups.push(g);g.stones.forEach(x=>seenE.add(x))}
+  }
+ }
+
+ let saved=0,urgentSave=0;
+ for(let g of friendGroups){
+  if(g.libs.size===1){saved+=g.stones.length;urgentSave+=g.stones.length*8}
+  else if(g.libs.size===2)saved+=g.stones.length*.6;
+ }
+
+ let attack=0,atari=0;
+ for(let g of enemyGroups){
+  let afterStone=g.stones.find(x=>s.a[x]===1);
+  if(afterStone!==undefined){
+   let ag=group(afterStone,s.a);
+   let before=g.libs.size,after=ag.libs.size;
+   if(after<before)attack+=(before-after)*3;
+   if(after===1){atari+=g.stones.length;attack+=8+g.stones.length*2}
+  }
+ }
+
+ let joined=Math.max(0,friendGroups.length-1);
+ let r=Math.floor(i/n),c=i%n,edge=Math.min(r,c,n-1-r,n-1-c);
+
+ // Sama bliskość własnych kamieni nie jest już nagrodą.
+ let score=s.cap*32 + own.libs.size*2.6 + joined*4 + saved*3 + urgentSave + attack + atari*4;
+ score+=Math.min(edge,3)*.25 + Math.random()*1.6;
+
+ // Kara za "stadko dla samego stadka".
+ if(friends>0 && enemies===0 && s.cap===0 && attack===0 && urgentSave===0)score-=friends*2.4;
+
+ // Oczywiste karmienie przeciwnika.
+ let doomed=false;
+ if(own.libs.size===1 && s.cap===0 && urgentSave===0){score-=45;doomed=true}
+ if(own.libs.size===2 && s.cap===0 && enemies>=2 && urgentSave===0)score-=12;
+
+ return {i,score,doomed,cap:s.cap,attack,urgentSave,libs:own.libs.size};
+}
+function cpuPass(message){
+ passes++;turn=1;busy=false;render();$("#status").textContent=message||"CPU pasuje.";
+ if(passes>=2)finish();
+}
+function cpu(){
+ if(turn!==2){busy=false;return}
+ let moves=[];
+ for(let i=0;i<b.length;i++){let m=cpuMoveInfo(i);if(m)moves.push(m)}
+ if(!moves.length){cpuPass("CPU pasuje — brak legalnego ruchu.");return}
+
+ moves.sort((a,b)=>b.score-a.score);
+ let sensible=moves.filter(m=>!m.doomed&&m.score>-6);
+ if(!sensible.length){cpuPass("CPU pasuje — nie widzi sensownego ruchu.");return}
+
+ let lvl=$("#level").value,choice;
+ if(lvl==="calm"){
+  // Łatwy: nadal popełnia błędy, ale wybiera spośród ruchów mających sens.
+  let pool=sensible.slice(0,Math.min(7,sensible.length));
+  choice=pool[Math.floor(Math.random()*pool.length)];
+ }else if(lvl==="normal"){
+  let pool=sensible.slice(0,Math.min(3,sensible.length));
+  choice=pool[Math.floor(Math.random()*pool.length)];
+ }else{
+  choice=sensible[0];
+ }
+ commit(choice.i,2);busy=false;$("#status").textContent="Twój ruch.";
+}
 function boardGeometry(){
  const inner=document.querySelector(".go-inner"),box=inner.getBoundingClientRect();
  const size=Math.max(1,Math.floor(Math.min(box.width,box.height)));
