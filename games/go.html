@@ -72,7 +72,24 @@ function render(){
  });
  $("#turn").textContent=busy?"CPU…":turn===1?"Twój ruch":"CPU…";$("#caps").textContent=`Zbicia: Ty ${caps[1]} · CPU ${caps[2]}`;$("#lastMove").disabled=!lastSnapshot||busy;$("#lastMove").textContent=previewing?"Wróć do gry":"Ostatni ruch";$("#previewNote").hidden=!previewing
 }
-function reset(){n=+$("#size").value;b=Array(n*n).fill(0);turn=1;passes=0;caps={1:0,2:0;$("#previewNote").hidden=true;$("#lastMove").textContent="Ostatni ruch";$("#lastMove").disabled=true};previous="";busy=false;$("#modal").hidden=true;render();setTurnText("Twój ruch")}
+function reset(){
+ n=+$("#size").value;
+ b=Array(n*n).fill(0);
+ turn=1;
+ passes=0;
+ caps={1:0,2:0};
+ previous="";
+ busy=false;
+ cpuPasses=0;
+ lastSnapshot=null;
+ previewing=false;
+ $("#modal").hidden=true;
+ $("#previewNote").hidden=true;
+ $("#lastMove").textContent="Ostatni ruch";
+ $("#lastMove").disabled=true;
+ render();
+ setTurnText("Twój ruch")
+}
 
 $("#lastMove").onclick=()=>{
  if(!lastSnapshot||busy)return;
