@@ -56,7 +56,7 @@ function requestMove(i){if(!state||state.turn!==myColor||!state.awaitingMove)ret
 function pos(el,x,y){el.style.left=x+'%';el.style.top=y+'%'}
 function drawBoard(){const b=$('board');const route=[[4,0],[5,0],[6,0],[6,1],[6,2],[6,3],[6,4],[7,4],[8,4],[9,4],[10,4],[10,5],[10,6],[9,6],[8,6],[7,6],[6,6],[6,7],[6,8],[6,9],[6,10],[5,10],[4,10],[4,9],[4,8],[4,7],[4,6],[3,6],[2,6],[1,6],[0,6],[0,5],[0,4],[1,4],[2,4],[3,4],[4,4],[4,3],[4,2],[4,1]];const maxX=10,maxY=10;const P=(n,max)=>4.5+n*(91/max);
 route.forEach((q,i)=>{let d=document.createElement('div'),sc=COLORS.find(c=>START[c]===i);d.className='cell'+(sc?' start-'+sc:'');pos(d,P(q[0],maxX),P(q[1],maxY));d.dataset.cell=i;b.appendChild(d)});
-const lanes={red:[[4,1],[4,2],[4,3],[4,4]],blue:[[7,4],[6,4],[5,4],[4,4]],green:[[4,7],[4,6],[4,5],[4,4]],yellow:[[1,4],[2,4],[3,4],[4,4]]};
+const lanes={red:[[5,2],[5,3],[5,4],[5,5]],blue:[[8,5],[7,5],[6,5],[5,5]],green:[[5,8],[5,7],[5,6],[5,5]],yellow:[[2,5],[3,5],[4,5],[5,5]]};
 for(const c of COLORS)for(let j=0;j<4;j++){let d=document.createElement('div');d.className='lane '+c;pos(d,P(lanes[c][j][0],maxX),P(lanes[c][j][1],maxY));d.dataset.lane=c+'-'+(40+j);b.appendChild(d)}
 for(const c of COLORS){let base=$(c+'Base');for(let i=0;i<4;i++){let h=document.createElement('div');h.className='basehole';h.dataset.base=c+'-'+i;base.appendChild(h)}}}
 function statusOf(p){return p===-1?'Baza':p===44?'Dom':p<40?'Plansza':`Dom ${p-39}/4`}
