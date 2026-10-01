@@ -1,4 +1,4 @@
-const CACHE="mini-gry-v2.4.17";
+const CACHE="mini-gry-v2.4.19";
 const ASSETS=["./","./index.html","./css/app.css","./js/app.js","./games/sudoku.html","./games/battleships.html","./games/go.html","./games/minesweeper.html","./games/memory.html","./games/lights-out.html","./games/charades.html","./games/randomizer.html","./games/connection-test.html","./games/chinczyk.html","./manifest.webmanifest","./icons/icon-192.png","./icons/icon-512.png"];
 self.addEventListener("install",e=>e.waitUntil((async()=>{const c=await caches.open(CACHE);await c.addAll(ASSETS.map(x=>new Request(x,{cache:"reload"})));await self.skipWaiting()})()));
 self.addEventListener("activate",e=>e.waitUntil((async()=>{for(const k of await caches.keys())if(k.startsWith("mini-gry-")&&k!==CACHE)await caches.delete(k);await self.clients.claim()})()));
