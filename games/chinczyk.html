@@ -54,38 +54,20 @@ function hostMove(color,i){if(!isHost||state.turn!==color||!state.awaitingMove||
 function requestRoll(){if(!state||state.winner||state.turn!==myColor||state.awaitingMove)return;if(isHost)hostRoll(myColor);else sendGuest({type:'roll'})}
 function requestMove(i){if(!state||state.turn!==myColor||!state.awaitingMove)return;if(isHost)hostMove(myColor,i);else sendGuest({type:'move',index:i})}
 function pos(el,x,y){el.style.left=x+'%';el.style.top=y+'%'}
-function drawBoard(){const b=$('board');const P=n=>4.5+n*9.1;
-const route=[
-[4,0],[5,0],[6,0],
-[6,1],[6,2],[6,3],[7,4],[8,4],
-[9,4],[10,4],[10,5],[10,6],[10,7],
-[9,7],[8,7],[7,7],
-[6,7],[6,8],[6,9],[6,10],[5,10],
-[4,10],[4,9],[4,8],[4,7],[3,7],
-[2,7],[1,7],[0,7],
-[0,6],[0,5],[0,4],[1,4],[2,4],
-[3,4],[4,3],[4,2],[4,1],[3,0],
-[2,0],[2,1],
-[2,2],[2,3],[3,3],[4,4],[5,4],
-[5,3],[5,2],[5,1],[5,0],[4,0],[4,0]
-];
-// Use a canonical 52-cell cross path generated from the classic 15x15 Ludo topology.
-const classic=[
-[6,0],[7,0],[8,0],[8,1],[8,2],[8,3],[9,4],[10,4],[11,4],[12,4],[13,4],[14,4],[14,5],
-[14,6],[14,7],[14,8],[13,8],[12,8],[11,8],[10,8],[9,8],[8,9],[8,10],[8,11],[8,12],[8,13],
-[8,14],[7,14],[6,14],[6,13],[6,12],[6,11],[5,10],[4,10],[3,10],[2,10],[1,10],[0,10],[0,9],
-[0,8],[0,7],[0,6],[1,6],[2,6],[3,6],[4,5],[4,4],[4,3],[4,2],[4,1],[4,0],[5,0]
-];
-const Q=n=>3.5+n*(93/14);
-classic.forEach((q,i)=>{let d=document.createElement('div'),sc=COLORS.find(c=>START[c]===i);d.className='cell'+(sc?' start-'+sc:'');pos(d,Q(q[0]),Q(q[1]));d.dataset.cell=i;b.appendChild(d)});
+function drawBoard(){const b=$('board');
+const route=[[5,0],[6,0],[7,0],[8,0],[8,1],[8,2],[8,3],[8,4],[8,5],[9,5],[10,5],[11,5],[12,5],[13,5],[13,6],[13,7],[13,8],[12,8],[11,8],[10,8],[9,8],[8,8],[8,9],[8,10],[8,11],[8,12],[8,13],[7,13],[6,13],[5,13],[5,12],[5,11],[5,10],[5,9],[5,8],[4,8],[3,8],[2,8],[1,8],[0,8],[0,7],[0,6],[0,5],[1,5],[2,5],[3,5],[4,5],[5,5],[5,4],[5,3],[5,2],[5,1]];
+const maxX=Math.max(...route.map(q=>q[0])),maxY=Math.max(...route.map(q=>q[1]));
+const P=(n,max)=>4.5+n*(91/max);
+route.forEach((q,i)=>{let d=document.createElement('div'),sc=COLORS.find(c=>START[c]===i);d.className='cell'+(sc?' start-'+sc:'');pos(d,P(q[0],maxX),P(q[1],maxY));d.dataset.cell=i;b.appendChild(d)});
 const lanes={
- red:[[7,1],[7,2],[7,3],[7,4]],
- blue:[[13,7],[12,7],[11,7],[10,7]],
- green:[[7,13],[7,12],[7,11],[7,10]],
- yellow:[[1,7],[2,7],[3,7],[4,7]]
+ red:[[5,1],[5,2],[5,3],[5,4]],
+ blue:[[9,5],[8,5],[7,5],[6,5]],
+ green:[[5,9],[5,8],[5,7],[5,6]],
+ yellow:[[1,5],[2,5],[3,5],[4,5]]
 };
-for(const c of COLORS)for(let j=0;j<4;j++){let d=document.createElement('div');d.className='lane '+c;pos(d,Q(lanes[c][j][0]),Q(lanes[c][j][1]));d.dataset.lane=c+'-'+(52+j);b.appendChild(d)}
-for(const c of COLORS){let base=$(c+'Base');for(let i=0;i<4;i++){let h=document.createElement('div');h.className='basehole';h.dataset.base=c+'-'+i;base.appendChild(h)}}}
+for(const c of COLORS)for(let j=0;j<4;j++){let d=document.createElement('div');d.className='lane '+c;pos(d,P(lanes[c][j][0],maxX),P(lanes[c][j][1],maxY));d.dataset.lane=c+'-'+(52+j);b.appendChild(d)}
+for(const c of COLORS){let base=$(c+'Base');for(let i=0;i<4;i++){let h=document.createElement('div');h.className='basehole';h.dataset.base=c+'-'+i;base.appendChild(h)}}
+}
 function statusOf(p){return p===-1?'Baza':p===56?'Dom':p<52?'Plansza':`Dom ${p-51}/4`}
 function renderBoard(){document.querySelectorAll('.cell,.lane,.basehole').forEach(c=>c.replaceChildren());for(const color of state.players)state.pieces[color].forEach((p,i)=>{let target;if(p===-1)target=document.querySelector(`[data-base="${color}-${i}"]`);else if(p<52)target=document.querySelector(`.cell[data-cell="${(START[color]+p)%52}"]`);else if(p<56)target=document.querySelector(`[data-lane="${color}-${p}"]`);if(!target)return;let pawn=document.createElement('div'),can=color===myColor&&state.turn===myColor&&state.awaitingMove&&legal(myColor,i,state.roll);pawn.className=`pawn ${color}${color===myColor?' mine':''}${can?' legal':''}`;pawn.textContent=i+1;if(can)pawn.onclick=e=>{e.stopPropagation();requestMove(i)};target.appendChild(pawn)})}
 function render(){if(!state)return;COLORS.forEach(c=>$(c+'Base').classList.toggle('inactive',!state.players.includes(c)));let mine=state.pieces[myColor];$('myTitle').textContent=`${ICON[myColor]} Twoje pionki`;$('myInfo').textContent=`Baza: ${mine.filter(x=>x===-1).length} · Dom: ${mine.filter(x=>x===56).length}/4`;$('dicebox').innerHTML='';for(const c of COLORS){let d=document.createElement('div');d.className='dieplayer '+(!state.players.includes(c)?'inactive ':'')+(state.turn===c?'active':'');d.innerHTML=`<div class="label">${ICON[c]} ${NAME[c]}</div><div class="value">${state.lastRolls[c]??'–'}</div>`;$('dicebox').appendChild(d)}
