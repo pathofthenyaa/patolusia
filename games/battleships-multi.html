@@ -1,5 +1,5 @@
 <!doctype html><html lang="pl" data-theme="auto"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow,noarchive"><link rel="stylesheet" href="../css/app.css"><title>Statki Multi</title><style>
-.wrap{width:min(100%,560px);margin:0 auto}.conn{padding:14px;margin-bottom:12px}.conn h1{font-size:20px;margin:0 0 5px}.muted2{color:var(--muted);font-size:13px}.modepick{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.connsummary{width:100%;min-height:44px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--text);display:flex;align-items:center;gap:8px;padding:0 12px;font-weight:800}.connsummary .dot{width:10px;height:10px;border-radius:50%;background:var(--ok)}.connsummary .grow{flex:1;text-align:left}.connsummary small{opacity:.65}.conn.collapsed>h1,.conn.collapsed>.intro,.conn.collapsed>.modepick,.conn.collapsed>.panes,.conn.collapsed>.lobby,.conn.collapsed>.status,.conn.collapsed>.gameadmin{display:none}.conn.collapsed .connsummary{display:flex!important}.panes{margin-top:10px}.pane{padding:12px;border:1px solid var(--line);border-radius:16px}.roomcode{font-size:36px;letter-spacing:.16em;font-weight:950;text-align:center;margin:8px 0}.codeinput{width:100%;min-height:48px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--text);font-size:28px;font-weight:900;letter-spacing:.15em;text-align:center}.btnwide{width:100%}.lobby{margin-top:10px;padding:10px 12px;border:1px solid var(--line);border-radius:14px;display:flex;align-items:center;gap:8px}.lobby .grow{flex:1}.gameadmin{margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}.diag{font-size:11px;color:var(--muted);text-align:center;margin-top:7px}
+.wrap{width:min(100%,560px);margin:0 auto}.conn{padding:14px;margin-bottom:12px}.conn h1{font-size:20px;margin:0 0 5px}.muted2{color:var(--muted);font-size:13px}.modepick{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.connsummary{width:100%;min-height:44px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--text);display:flex;align-items:center;gap:8px;padding:0 12px;font-weight:800}.connsummary .dot{width:10px;height:10px;border-radius:50%;background:var(--ok)}.connsummary .grow{flex:1;text-align:left}.connsummary small{opacity:.65}.conn.collapsed>h1,.conn.collapsed>.intro,.conn.collapsed>.modepick,.conn.collapsed>.panes,.conn.collapsed>.lobby,.conn.collapsed>.status,.conn.collapsed>.diag,.conn.collapsed>.gameadmin{display:none}.conn.collapsed .connsummary{display:flex!important}.panes{margin-top:10px}.pane{padding:12px;border:1px solid var(--line);border-radius:16px}.roomcode{font-size:36px;letter-spacing:.16em;font-weight:950;text-align:center;margin:8px 0}.codeinput{width:100%;min-height:48px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--text);font-size:28px;font-weight:900;letter-spacing:.15em;text-align:center}.btnwide{width:100%}.lobby{margin-top:10px;padding:10px 12px;border:1px solid var(--line);border-radius:14px;display:flex;align-items:center;gap:8px}.lobby .grow{flex:1}.gameadmin{margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}.diag{font-size:11px;color:var(--muted);text-align:center;margin-top:7px}
 
 .setupfleet{padding:14px}.setuphead{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.setuphead strong{font-size:17px}.setuphead .grow{flex:1}.setupbar{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.dock{display:flex;gap:7px;align-items:center;justify-content:center;flex-wrap:wrap;margin:10px 0}.dockship{border:1px solid var(--line);border-radius:12px;background:var(--card);padding:7px 9px;font-weight:900;min-height:40px;touch-action:none;user-select:none}.dockship.active{outline:2px solid var(--accent);background:var(--soft)}.dockship[hidden]{display:none}.hint{text-align:center;color:var(--muted);font-size:12px;min-height:18px;margin:6px 0 0}.sea{display:grid;grid-template-columns:repeat(10,1fr);aspect-ratio:1;gap:2px;background:var(--line);padding:2px;border-radius:16px;overflow:hidden;touch-action:none}.cell{position:relative;border:0;padding:0;background:var(--card);min-width:0}.cell.ship{background:#9aa7bd}.cell.hit{background:#ef6a61}.cell.miss{background:#83b8d9}.cell.sunk{background:#762b3b;box-shadow:inset 0 0 0 2px #ffc1c1}.cell.preview-ok{background:color-mix(in srgb,var(--ok) 48%,var(--card));box-shadow:inset 0 0 0 2px var(--ok)}.cell.preview-bad{background:color-mix(in srgb,var(--danger) 42%,var(--card));box-shadow:inset 0 0 0 2px var(--danger)}.cell.targetable:active{box-shadow:inset 0 0 0 3px var(--accent)}.fleetboard{margin-top:10px}.fleetboard h3,.battle h3{text-align:center;margin:0 0 7px;font-size:15px}.dragghost{position:fixed;z-index:100;pointer-events:none;transform:translate(-50%,-50%);padding:7px 10px;border-radius:12px;border:2px solid var(--accent);background:color-mix(in srgb,var(--card) 92%,transparent);box-shadow:var(--shadow);font-weight:950;letter-spacing:2px;opacity:.92}.dragghost.vertical{writing-mode:vertical-rl;letter-spacing:0}
 
@@ -44,7 +44,7 @@
 <script src="../js/app.js"></script><script src="../js/connect.js"></script><script>
 const sizes=[4,3,3,2,2,2,1,1,1,1],$=s=>document.querySelector(s);
 let P=Array(100).fill(0),placed=Array(10).fill(false),selected=0,horizontal=true;
-let localReady=false,opponentReady=false,gameStarted=false,myTurn=false,shotPending=false,starting=false;
+let localReady=false,opponentReady=false,gameStarted=false,myTurn=false,shotPending=false,starting=false,hadOpponent=false,connectionInterrupted=false;
 let pShots=new Map(),eShots=new Set(),drag=null,ghost=null,preview=[];
 let transportMode='relay';
 
@@ -52,7 +52,15 @@ const conn=new PatolusiaConnect({
  game:'battleships',maxPlayers:2,
  onPresence:(players)=>{updatePresence(players);},
  onMessage:(data,from,transport)=>{transportMode=transport||transportMode;updateTransport();handleMessage(data,from);},
- onStatus:(s)=>{if(s.state==='disconnected'&&conn.code)setNet('Rozłączono — ponawiam połączenie…');},
+ onStatus:(s)=>{
+  if(!conn.code)return;
+  if(s.state==='disconnected'){
+   setNet('Połączenie z serwerem przerwane — ponawiam…');
+   expandConnection();
+  }else if(s.state==='connected'&&conn.connectedPlayers().length<2){
+   setNet('Połączono z pokojem — czekam na przeciwnika…');
+  }
+ },
  onTransport:(e)=>{transportMode=e.transport||transportMode;updateTransport();}
 });
 
@@ -60,30 +68,63 @@ function setNet(s){$('#netStatus').textContent=s}
 function updateTransport(){$('#transport').textContent='Transport: '+(transportMode==='p2p'?'P2P':'Relay')}
 function opponentId(){return conn.connectedPlayers().find(p=>p.playerId!==conn.playerId)?.playerId||null}
 function sendOpponent(data){if(conn.isHost){let id=opponentId();return id?conn.sendTo(id,data):null}return conn.send(data)}
-function updatePresence(players){
- let n=players.filter(p=>p.connected).length;$('#lobbyCount').textContent=n+'/2';
- $('#lobby').hidden=!conn.code;$('#fleetSetup').hidden=!conn.code||gameStarted;
- $('#connSummary').hidden=!conn.code;
- $('#connSummaryText').textContent=conn.code?`Pokój ${conn.code} · ${n}/2`:'Pokój';
- if(conn.code)setNet(n===2?'Przeciwnik połączony ✓':'Czekam na drugiego gracza…');
- updateReadyButton();
- if(n===2&&conn.isHost&&localReady&&opponentReady)maybeStart();
+function setCollapsed(v){
+ let panel=$('#connPanel');panel.classList.toggle('collapsed',!!v);
+ let small=$('#connSummary small');if(small)small.textContent=v?'Połączenie ▾':'Połączenie ▴'
 }
-function collapseConnection(){if(conn.code)$('#connPanel').classList.add('collapsed')}
-$('#connSummary').onclick=()=>$('#connPanel').classList.toggle('collapsed');
+function collapseConnection(){if(conn.code)setCollapsed(true)}
+function expandConnection(){setCollapsed(false)}
+function interruptForDisconnect(hostGone){
+ if(connectionInterrupted)return;
+ connectionInterrupted=true;gameStarted=false;myTurn=false;shotPending=false;starting=false;opponentReady=false;
+ $('#gameAdmin').hidden=true;
+ if(!$('#battle').hidden){
+  renderBattle();
+  $('#result').textContent=hostGone?'Host rozłączył się':'Przeciwnik rozłączył się';
+  $('#resultText').textContent='Partia została przerwana. Po ponownym połączeniu rozpocznijcie nową partię.';
+  $('#modal').hidden=false;
+ }
+ expandConnection();
+}
+function updatePresence(players){
+ let connected=players.filter(p=>p.connected),n=connected.length;
+ let host=players.find(p=>p.playerNumber===1),hostGone=!!host&&!host.connected;
+ let opponentConnected=connected.some(p=>p.playerId!==conn.playerId);
+ $('#lobbyCount').textContent=n+'/2';
+ $('#lobby').hidden=!conn.code;$('#connSummary').hidden=!conn.code;
+ $('#connSummaryText').textContent=conn.code?`Pokój ${conn.code} · ${n}/2`:'Pokój';
+
+ if(opponentConnected){
+  let firstArrival=!hadOpponent;hadOpponent=true;
+  setNet(connectionInterrupted?'Przeciwnik wrócił — rozpocznijcie nową partię.':'Przeciwnik połączony ✓');if(connectionInterrupted&&conn.isHost)$('#gameAdmin').hidden=false;
+  if(firstArrival&&!gameStarted&&!connectionInterrupted)collapseConnection();
+ }else if(conn.code){
+  if(hadOpponent){
+   interruptForDisconnect(!conn.isHost&&hostGone);
+   setNet(!conn.isHost&&hostGone?'Host rozłączył się — czekam na powrót…':'Przeciwnik rozłączył się — czekam na powrót…');
+  }else{
+   setNet('Czekam na drugiego gracza…');
+  }
+ }
+
+ $('#fleetSetup').hidden=!conn.code||gameStarted||connectionInterrupted;
+ updateReadyButton();
+ if(n===2&&conn.isHost&&localReady&&opponentReady&&!connectionInterrupted)maybeStart();
+}
+$('#connSummary').onclick=()=>setCollapsed(!$('#connPanel').classList.contains('collapsed'));
 
 async function createRoom(){
  try{
   setNet('Tworzę pokój…');let r=await conn.createRoom();
   $('#roomCode').textContent=r.code;$('#hostPane').hidden=false;$('#joinPane').hidden=true;$('#modePick').hidden=true;
-  $('#fleetSetup').hidden=false;$('#lobby').hidden=false;setNet('Czekam na drugiego gracza…');renderSetup();
+  $('#fleetSetup').hidden=false;$('#lobby').hidden=false;connectionInterrupted=false;hadOpponent=false;expandConnection();setNet('Czekam na drugiego gracza…');renderSetup();
  }catch(e){setNet('Nie udało się utworzyć pokoju')}
 }
 async function joinRoom(){
  let code=$('#joinCode').value.replace(/\D/g,'').slice(0,4);if(code.length!==4){setNet('Wpisz 4-cyfrowy kod');return}
  try{
   setNet('Łączenie…');await conn.joinRoom(code);$('#joinPane').hidden=true;$('#modePick').hidden=true;
-  $('#fleetSetup').hidden=false;$('#lobby').hidden=false;setNet('Połączono ✓');renderSetup();
+  $('#fleetSetup').hidden=false;$('#lobby').hidden=false;connectionInterrupted=false;hadOpponent=false;expandConnection();setNet('Połączono ✓');renderSetup();
  }catch(e){setNet(e.code==='ROOM_FULL'?'Pokój jest pełny':'Nie udało się dołączyć')}
 }
 $('#createRoom').onclick=createRoom;
@@ -169,10 +210,10 @@ function updateReadyButton(){
 }
 $('#orient').onclick=()=>{if(localReady)return;horizontal=!horizontal;$('#orient').textContent=horizontal?'↔ Poziomo':'↕ Pionowo'};
 $('#random').onclick=()=>{if(!localReady)randomFleet()};
-$('#ready').onclick=()=>{if(gameStarted)return;localReady=!localReady;sendOpponent({type:'ready',ready:localReady});$('#hint').textContent=localReady?'Czekam na przeciwnika…':'Możesz zmienić ustawienie floty.';renderSetup();if(conn.isHost&&localReady&&opponentReady)maybeStart()};
+$('#ready').onclick=()=>{if(gameStarted||connectionInterrupted)return;localReady=!localReady;sendOpponent({type:'ready',ready:localReady});$('#hint').textContent=localReady?'Czekam na przeciwnika…':'Możesz zmienić ustawienie floty.';renderSetup();if(conn.isHost&&localReady&&opponentReady)maybeStart()};
 
 async function maybeStart(){
- if(starting||gameStarted||!conn.isHost||!localReady||!opponentReady||conn.connectedPlayers().length!==2)return;
+ if(starting||gameStarted||connectionInterrupted||!conn.isHost||!localReady||!opponentReady||conn.connectedPlayers().length!==2)return;
  starting=true;try{
   if(!conn.started)await conn.startRoom();
   let opp=opponentId(),first=Math.random()<.5?conn.playerId:opp;
@@ -183,11 +224,11 @@ function enterBattle(first){
  gameStarted=true;shotPending=false;myTurn=first===conn.playerId;$('#fleetSetup').hidden=true;$('#battle').hidden=false;$('#gameAdmin').hidden=!conn.isHost;collapseConnection();renderBattle();window.scrollTo({top:0,behavior:'smooth'})
 }
 function fire(i){
- if(!gameStarted||!myTurn||shotPending||pShots.has(i))return;
+ if(connectionInterrupted||!gameStarted||!myTurn||shotPending||pShots.has(i))return;
  shotPending=true;sendOpponent({type:'shot',index:i});renderBattle()
 }
 function handleShot(i){
- if(!gameStarted||myTurn||eShots.has(i)||i<0||i>99)return;
+ if(connectionInterrupted||!gameStarted||myTurn||eShots.has(i)||i<0||i>99)return;
  eShots.add(i);let id=P[i],hit=!!id,sunk=false,sunkCells=[];
  if(hit&&sunkOwn(id)){sunk=true;sunkCells=P.map((v,j)=>v===id?j:-1).filter(j=>j>=0)}
  let win=allSunk();sendOpponent({type:'shotResult',index:i,hit,sunk,sunkCells,win});
@@ -195,14 +236,15 @@ function handleShot(i){
  myTurn=true;renderBattle()
 }
 function handleShotResult(m){
- if(!gameStarted||!shotPending)return;let i=m.index;if(i<0||i>99)return;
+ if(connectionInterrupted||!gameStarted||!shotPending)return;let i=m.index;if(i<0||i>99)return;
  pShots.set(i,m.hit?'hit':'miss');if(m.sunk&&Array.isArray(m.sunkCells))m.sunkCells.forEach(x=>pShots.set(x,'sunk'));
  shotPending=false;if(m.win){end(true);return}myTurn=false;renderBattle()
 }
 function renderBattle(){
  buildSea($('#enemy'),'enemy');buildSea($('#ownBattle'),'own');
  let t=$('#turn');
- if(!gameStarted)t.textContent='Czekam…';
+ if(connectionInterrupted)t.textContent='Partia przerwana — brak przeciwnika';
+ else if(!gameStarted)t.textContent='Czekam…';
  else if(shotPending)t.textContent='Strzał wysłany…';
  else if(myTurn)t.textContent='Twoja kolej — wybierz pole przeciwnika';
  else t.textContent='Kolej przeciwnika';
@@ -221,9 +263,9 @@ function end(win){
  $('#modal').hidden=false;renderBattle();$('#gameAdmin').hidden=!conn.isHost
 }
 function resetRound(send=true){
- if(send&&conn.isHost)sendOpponent({type:'reset'});
- P.fill(0);placed.fill(false);selected=0;horizontal=true;localReady=false;opponentReady=false;gameStarted=false;myTurn=false;shotPending=false;pShots.clear();eShots.clear();
- $('#orient').textContent='↔ Poziomo';$('#modal').hidden=true;$('#battle').hidden=true;$('#fleetSetup').hidden=false;$('#gameAdmin').hidden=true;$('#hint').textContent='Przeciągnij statek na planszę albo wybierz go i dotknij pola.';renderSetup();setNet('Ustaw flotę do nowej partii.')
+ if(send&&conn.isHost&&conn.connectedPlayers().length===2)sendOpponent({type:'reset'});
+ P.fill(0);placed.fill(false);selected=0;horizontal=true;localReady=false;opponentReady=false;gameStarted=false;myTurn=false;shotPending=false;starting=false;connectionInterrupted=false;pShots.clear();eShots.clear();
+ $('#orient').textContent='↔ Poziomo';$('#modal').hidden=true;$('#battle').hidden=true;$('#fleetSetup').hidden=conn.connectedPlayers().length!==2;$('#gameAdmin').hidden=true;$('#hint').textContent='Przeciągnij statek na planszę albo wybierz go i dotknij pola.';renderSetup();expandConnection();setNet(conn.connectedPlayers().length===2?'Ustaw flotę do nowej partii.':'Czekam na przeciwnika…')
 }
 $('#newRound').onclick=()=>{if(conn.isHost)resetRound(true)};
 $('#closeResult').onclick=()=>$('#modal').hidden=true;
