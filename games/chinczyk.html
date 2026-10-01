@@ -26,27 +26,30 @@
 <div class="boardwrap"><div class="board" id="board"><div class="base red" id="redBase"></div><div class="base blue" id="blueBase"></div><div class="base green" id="greenBase"></div><div class="base yellow" id="yellowBase"></div><div class="center"></div></div></div>
 <div class="mypieces"><div class="pieces" id="myPieces"></div></div>
 <div class="actions"><button class="btn primary btnwide" id="roll">Rzuć kostką</button></div></section>
-</main><script src="../js/app.js"></script><script>
+</main><script src="../js/app.js"></script><script src="../js/connect.js"></script><script>
 const SIGNAL='https://patolusia.margoth.workers.dev', COLORS=['red','blue','green','yellow'], ICON={red:'🔴',blue:'🔵',green:'🟢',yellow:'🟡'}, NAME={red:'Czerwony',blue:'Niebieski',green:'Zielony',yellow:'Żółty'}, START={red:0,blue:10,green:20,yellow:30};
-const $=id=>document.getElementById(id);let isHost=false,myColor=null,roomCode='',guestId='',guestPoll=null,hostPoll=null,state=null,started=false;let ch=null,pc=null;const peers=new Map();
+const $=id=>document.getElementById(id);let isHost=false,myColor=null,roomCode='',state=null,started=false,net=null;
 function setStatus(t,k=''){$('status').textContent=t;$('status').className='status '+k}
-async function api(path,opt={}){const r=await fetch(SIGNAL+path,{cache:'no-store',...opt,headers:{'Content-Type':'application/json',...(opt.headers||{})}});let d={};try{d=await r.json()}catch{}if(!r.ok||d.ok===false){let e=new Error(d.error||'HTTP '+r.status);e.code=d.error;throw e}return d}
-function waitIce(p){return new Promise(res=>{if(p.iceGatheringState==='complete')return res();let f=()=>{if(p.iceGatheringState==='complete'){p.removeEventListener('icegatheringstatechange',f);res()}};p.addEventListener('icegatheringstatechange',f);setTimeout(res,6000)})}
-function lobbyUI(count=1){$('lobby').hidden=false;$('lobbyCount').textContent=count+'/4';let box=$('players');box.innerHTML='';for(let i=0;i<4;i++){let d=document.createElement('div');d.className='playerchip'+(i<count?'':' off');d.innerHTML=`<span class="pnum">${ICON[COLORS[i]]}</span>Gracz ${i+1}`;box.appendChild(d)}$('startGame').hidden=!isHost;$('startGame').disabled=!isHost||count<2}
+function lobbyUI(players=[]){$('lobby').hidden=false;const connected=players.filter(p=>p.connected);$('lobbyCount').textContent=connected.length+'/4';let box=$('players');box.innerHTML='';for(let i=1;i<=4;i++){let p=players.find(x=>x.playerNumber===i),d=document.createElement('div');d.className='playerchip'+(p?.connected?'':' off');d.innerHTML=`<span class="pnum">${ICON[COLORS[i-1]]}</span>Gracz ${i}`;box.appendChild(d)}$('startGame').hidden=!isHost;$('startGame').disabled=!isHost||connected.length<2}
 function connectedSummary(){ $('connText').textContent=`Połączono · Pokój ${roomCode}`;$('connSummary').hidden=false }
 function collapseSetup(){connectedSummary();$('setup').classList.add('connected')}
 function fresh(active){let pieces={},lastRolls={};active.forEach(c=>{pieces[c]=[-1,-1,-1,-1];lastRolls[c]=null});return{players:active,turn:active[0],roll:null,lastRolls,awaitingMove:false,winner:null,pieces,seq:0}}
 function nextColor(c){let a=state.players,i=a.indexOf(c);return a[(i+1)%a.length]}
-function sendGuest(m){if(ch&&ch.readyState==='open')ch.send(JSON.stringify(m))}
-function sendTo(gid,m){let p=peers.get(gid);if(p?.ch?.readyState==='open')p.ch.send(JSON.stringify(m))}
-function broadcast(){if(!isHost||!state)return;state.seq++;for(const [gid] of peers)sendTo(gid,{type:'state',state});render()}
-function hostHandle(gid,color,m){if(m.type==='hello')sendTo(gid,{type:'lobby',started,playerCount:connectedPlayers()});else if(m.type==='roll')hostRoll(color);else if(m.type==='move')hostMove(color,m.index);else if(m.type==='new'){state=fresh(state.players);broadcast()}}
-function guestHandle(m){if(m.type==='state'){state=m.state;started=true;collapseSetup();$('game').hidden=false;render()}else if(m.type==='lobby'){lobbyUI(m.playerCount)}}
-function connectedPlayers(){return 1+[...peers.values()].filter(p=>p.ch?.readyState==='open').length}
-function wireHost(gid,color,c){let p=peers.get(gid);if(!p)return;p.ch=c;c.onopen=()=>{setStatus('Gracz dołączył ✓','ok');lobbyUI(connectedPlayers());sendTo(gid,{type:'lobby',started,playerCount:connectedPlayers()})};c.onmessage=e=>{try{hostHandle(gid,color,JSON.parse(e.data))}catch{}};c.onclose=()=>{lobbyUI(connectedPlayers())}}
-function wireGuest(c){ch=c;c.onopen=()=>{setStatus('Połączono ✓','ok');connectedSummary();sendGuest({type:'hello'})};c.onmessage=e=>{try{guestHandle(JSON.parse(e.data))}catch{}};c.onclose=()=>resetUI()}
-async function hostSync(){if(!isHost||!roomCode)return;try{let s=await api('/v2/status?code='+roomCode);lobbyUI(connectedPlayers());for(const g of s.guests){if(!peers.has(g.guestId)){let color=COLORS[g.playerNumber-1],p=new RTCPeerConnection({iceServers:[]}),c=p.createDataChannel('chinczyk');peers.set(g.guestId,{pc:p,ch:c,color,answered:false});wireHost(g.guestId,color,c);await p.setLocalDescription(await p.createOffer());await waitIce(p);await api('/v2/offer',{method:'POST',body:JSON.stringify({code:roomCode,guestId:g.guestId,offer:p.localDescription})})}let local=peers.get(g.guestId);if(g.answer&&!local.answered){await local.pc.setRemoteDescription(g.answer);local.answered=true}}}catch{}}
-async function guestSync(){if(isHost||!roomCode||!guestId||pc)return;try{let d=await api(`/v2/offer?code=${roomCode}&guestId=${encodeURIComponent(guestId)}`);if(!d.offer)return;pc=new RTCPeerConnection({iceServers:[]});pc.ondatachannel=e=>wireGuest(e.channel);await pc.setRemoteDescription(d.offer);await pc.setLocalDescription(await pc.createAnswer());await waitIce(pc);await api('/v2/answer',{method:'POST',body:JSON.stringify({code:roomCode,guestId,answer:pc.localDescription})});setStatus('Łączenie…')}catch{}}
+function sendGuest(m){return net?.send(m)}
+function sendTo(pid,m){return net?.sendTo(pid,m)}
+function broadcast(){if(!isHost||!state)return;state.seq++;net?.broadcast({type:'state',state});render()}
+function hostHandle(pid,m){const pn=net?.playerNumberOf(pid)||0,color=COLORS[pn-1];if(!color)return;if(m.type==='roll')hostRoll(color);else if(m.type==='move')hostMove(color,m.index);else if(m.type==='new'){state=fresh(state.players);broadcast()}}
+function guestHandle(m){if(m.type==='state'){state=m.state;started=true;collapseSetup();$('game').hidden=false;render()}}
+function connectedPlayers(){return net?.connectedPlayers().length||0}
+function makeNet(){
+ if(net)net.close();
+ net=new PatolusiaConnect({signalUrl:SIGNAL,game:'chinczyk',maxPlayers:4});
+ net.onPresence=players=>{lobbyUI(players);if(!started&&roomCode){const n=players.filter(p=>p.connected).length;if(isHost)setStatus(`Pokój ${roomCode} · ${n}/4`);}};
+ net.onMessage=(m,from)=>{try{isHost?hostHandle(from,m):guestHandle(m)}catch{}};
+ net.onRoomStarted=()=>{if(!isHost)setStatus('Gra startuje…','ok')};
+ net.onStatus=e=>{if(e.state==='disconnected'&&roomCode)setStatus('Łączenie ponownie…','bad')};
+ return net;
+}
 function legal(color,i,roll){
  let p=state.pieces[color][i];
  if(p===-1)return roll===6;
@@ -86,20 +89,18 @@ function render(){if(!state)return;$('gameAdmin').hidden=false;COLORS.forEach(c=
  }
  $('roll').textContent=rollLabel;
  $('roll').disabled=!!state.winner||state.turn!==myColor||state.awaitingMove;renderBoard();let box=$('myPieces');box.innerHTML='';mine.forEach((p,i)=>{let bt=document.createElement('button'),can=state.turn===myColor&&state.awaitingMove&&legal(myColor,i,state.roll);bt.className='piecebtn '+myColor+(can?' legal':'');bt.innerHTML=`<span>${ICON[myColor]} ${i+1}</span><span class="ps">${statusOf(p)}</span>`;bt.disabled=!can;bt.onclick=()=>requestMove(i);box.appendChild(bt)})}
-function resetUI(){backMode();if(guestPoll)clearInterval(guestPoll);if(hostPoll)clearInterval(hostPoll);guestPoll=hostPoll=null;$('setup').classList.remove('connected');$('connSummary').hidden=true;$('connText').textContent='Nie połączono';$('room').hidden=true;$('lobby').hidden=true;$('game').hidden=true;$('gameAdmin').hidden=true;setStatus('Nie połączono');state=null;started=false}
+function resetUI(closeNet=true){if(closeNet&&net){net.close();net=null}backMode();$('setup').classList.remove('connected');$('connSummary').hidden=true;$('connText').textContent='Nie połączono';$('room').hidden=true;$('lobby').hidden=true;$('game').hidden=true;$('gameAdmin').hidden=true;setStatus('Nie połączono');state=null;started=false;isHost=false;myColor=null;roomCode=''}
 $('connSummary').onclick=()=>{$('setup').classList.toggle('connected')};
 function chooseMode(mode){$('modePick').hidden=true;$('createPane').classList.toggle('active',mode==='create');$('joinPane').classList.toggle('active',mode==='join')}
 function backMode(){$('modePick').hidden=false;$('createPane').classList.remove('active');$('joinPane').classList.remove('active')}
 $('pickCreate').onclick=()=>createRoom();$('pickJoin').onclick=()=>chooseMode('join');document.querySelectorAll('[data-backmode]').forEach(b=>b.onclick=backMode);
-
 async function createRoom(){try{
  resetUI();isHost=true;myColor='red';$('modePick').hidden=true;$('joinPane').classList.remove('active');$('createPane').classList.add('active');setStatus('Tworzę pokój…');
- let d=await api('/v2/create',{method:'POST',body:'{}'});roomCode=String(d.code);$('roomCode').textContent=roomCode;$('room').hidden=false;$('lobby').hidden=false;lobbyUI(1);setStatus('Pokój '+roomCode+' — czekam na graczy');hostPoll=setInterval(hostSync,700)
+ const n=makeNet(),d=await n.createRoom();roomCode=d.code;$('roomCode').textContent=roomCode;$('room').hidden=false;$('lobby').hidden=false;lobbyUI(n.players);setStatus('Pokój '+roomCode+' — czekam na graczy')
 }catch{backMode();setStatus('Błąd tworzenia pokoju','bad')}}
 $('joinCode').oninput=e=>e.target.value=e.target.value.replace(/\D/g,'').slice(0,4);
-$('join').onclick=async()=>{let code=$('joinCode').value;if(!/^\d{4}$/.test(code))return setStatus('Wpisz 4 cyfry','bad');try{resetUI();isHost=false;roomCode=code;setStatus('Dołączam…');let d=await api('/v2/join',{method:'POST',body:JSON.stringify({code})});guestId=d.guestId;myColor=COLORS[d.playerNumber-1];$('lobby').hidden=false;lobbyUI(d.playerNumber);setStatus(`${ICON[myColor]} Dołączono do lobby — czekam na hosta`);guestPoll=setInterval(guestSync,600)}catch(e){setStatus(e.code==='ROOM_FULL'?'Pokój jest pełny':e.code==='GAME_ALREADY_STARTED'?'Gra już się rozpoczęła':'Nie znaleziono pokoju','bad')}};
-$('startGame').onclick=async()=>{if(!isHost||connectedPlayers()<2)return;try{await api('/v2/start',{method:'POST',body:JSON.stringify({code:roomCode})});started=true;let active=['red',...[...peers.values()].filter(p=>p.ch?.readyState==='open').sort((a,b)=>COLORS.indexOf(a.color)-COLORS.indexOf(b.color)).map(p=>p.color)];state=fresh(active);collapseSetup();$('game').hidden=false;broadcast()}catch{setStatus('Nie udało się rozpocząć gry','bad')}};
+$('join').onclick=async()=>{let code=$('joinCode').value;if(!/^\d{4}$/.test(code))return setStatus('Wpisz 4 cyfry','bad');try{resetUI();isHost=false;roomCode=code;setStatus('Dołączam…');let n=makeNet(),d=await n.joinRoom(code);myColor=COLORS[d.playerNumber-1];$('lobby').hidden=false;lobbyUI(n.players);setStatus(`${ICON[myColor]} Dołączono do lobby — czekam na hosta`)}catch(e){setStatus(e.code==='ROOM_FULL'?'Pokój jest pełny':e.code==='GAME_ALREADY_STARTED'?'Gra już się rozpoczęła':'Nie znaleziono pokoju','bad')}};
+$('startGame').onclick=async()=>{if(!isHost||connectedPlayers()<2)return;try{await net.startRoom();started=true;let active=net.connectedPlayers().sort((a,b)=>a.playerNumber-b.playerNumber).map(p=>COLORS[p.playerNumber-1]);state=fresh(active);collapseSetup();$('game').hidden=false;broadcast()}catch{setStatus('Nie udało się rozpocząć gry','bad')}};
 $('roll').onclick=requestRoll;$('newGame').onclick=()=>{if(!state)return;if(isHost){state=fresh(state.players);broadcast()}else sendGuest({type:'new'})};
-window.addEventListener('pagehide',()=>{if(guestPoll)clearInterval(guestPoll);if(hostPoll)clearInterval(hostPoll);try{ch?.close();pc?.close()}catch{}for(const p of peers.values())try{p.ch?.close();p.pc?.close()}catch{}});
-window.addEventListener('pageshow',()=>{if(!started)resetUI()});drawBoard();
+window.addEventListener('pagehide',()=>{try{net?.close()}catch{}});window.addEventListener('pageshow',e=>{if(e.persisted)resetUI()});drawBoard();
 </script></body></html>
