@@ -74,17 +74,23 @@ function setCollapsed(v){
 }
 function collapseConnection(){if(conn.code)setCollapsed(true)}
 function expandConnection(){setCollapsed(false)}
+function resetToLaunch(reason='Nie połączono'){
+ conn.close();
+ P.fill(0);placed.fill(false);selected=0;horizontal=true;
+ localReady=false;opponentReady=false;gameStarted=false;myTurn=false;shotPending=false;starting=false;
+ hadOpponent=false;connectionInterrupted=false;transportMode='relay';pShots.clear();eShots.clear();
+ clearPreview();ghost?.remove();ghost=null;drag=null;
+ $('#orient').textContent='↔ Poziomo';
+ $('#roomCode').textContent='----';$('#joinCode').value='';
+ $('#modePick').hidden=false;$('#hostPane').hidden=true;$('#joinPane').hidden=true;
+ $('#lobby').hidden=true;$('#connSummary').hidden=true;$('#connSummaryText').textContent='Pokój';
+ $('#fleetSetup').hidden=true;$('#battle').hidden=true;$('#gameAdmin').hidden=true;$('#modal').hidden=true;
+ $('#lobbyCount').textContent='1/2';$('#transport').textContent='Transport: —';
+ $('#hint').textContent='Przeciągnij statek na planszę albo wybierz go i dotknij pola.';
+ setCollapsed(false);setNet(reason);renderSetup();window.scrollTo({top:0,behavior:'smooth'});
+}
 function interruptForDisconnect(hostGone){
- if(connectionInterrupted)return;
- connectionInterrupted=true;gameStarted=false;myTurn=false;shotPending=false;starting=false;opponentReady=false;
- $('#gameAdmin').hidden=true;
- if(!$('#battle').hidden){
-  renderBattle();
-  $('#result').textContent=hostGone?'Host rozłączył się':'Przeciwnik rozłączył się';
-  $('#resultText').textContent='Partia została przerwana. Po ponownym połączeniu rozpocznijcie nową partię.';
-  $('#modal').hidden=false;
- }
- expandConnection();
+ resetToLaunch(hostGone?'Host rozłączył się — utwórz lub dołącz do pokoju.':'Przeciwnik rozłączył się — utwórz lub dołącz do pokoju.');
 }
 function updatePresence(players){
  let connected=players.filter(p=>p.connected),n=connected.length;
@@ -96,12 +102,12 @@ function updatePresence(players){
 
  if(opponentConnected){
   let firstArrival=!hadOpponent;hadOpponent=true;
-  setNet(connectionInterrupted?'Przeciwnik wrócił — rozpocznijcie nową partię.':'Przeciwnik połączony ✓');if(connectionInterrupted&&conn.isHost)$('#gameAdmin').hidden=false;
-  if(firstArrival&&!gameStarted&&!connectionInterrupted)collapseConnection();
+  setNet('Przeciwnik połączony ✓');
+  if(firstArrival&&!gameStarted)collapseConnection();
  }else if(conn.code){
   if(hadOpponent){
    interruptForDisconnect(!conn.isHost&&hostGone);
-   setNet(!conn.isHost&&hostGone?'Host rozłączył się — czekam na powrót…':'Przeciwnik rozłączył się — czekam na powrót…');
+   return;
   }else{
    setNet('Czekam na drugiego gracza…');
   }
