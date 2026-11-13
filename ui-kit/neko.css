@@ -201,7 +201,10 @@ button:disabled,input:disabled{opacity:.42;cursor:not-allowed}
 .neko-app-dropdown [aria-checked="true"]>.neko-app-dropdown__check{visibility:visible}
 .neko-app-dropdown .neko-app-dropdown__modified{width:8px;height:8px;margin:auto;border-radius:50%;background:var(--primary)}
 .neko-app-dropdown .neko-app-dropdown__clean{width:8px;height:8px}
+/* Build 013: checked toggle rows stay neutral; the accent is carried by the checkmark alone. */
 .neko-app-dropdown [aria-checked="true"]{background:var(--primary-soft);color:var(--primary)}
+.neko-app-dropdown [role="menuitemcheckbox"][aria-checked="true"]{background:transparent;color:var(--text)}
+.neko-app-dropdown [role="menuitemcheckbox"][aria-checked="true"]:is(:hover,:focus-visible,:active){background:var(--primary-soft);color:var(--primary)}
 .neko-app-demo-canvas{padding:15px 14px 20px;min-height:137px;background:var(--surface-solid);border-radius:0 0 15px 15px}
 .neko-app-demo-canvas__header{display:flex;justify-content:space-between;gap:12px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line);font-size:10px;color:var(--text-faint)}
 .neko-app-demo-canvas__header strong{color:var(--text-soft);font-size:10px;max-width:65%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
