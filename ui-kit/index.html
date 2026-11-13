@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#f7f9ff">
-  <title>Neko UI Kit — Neko Style v1.1 · Build 010</title>
-  <link rel="stylesheet" href="./neko.css?v=010">
-  <script type="module" src="./neko.js?v=010"></script>
+  <title>Neko UI Kit — Neko Style v1.1 · Build 011</title>
+  <link rel="stylesheet" href="./neko.css?v=011">
+  <script type="module" src="./neko.js?v=011"></script>
 </head>
 <body>
   <svg class="icon-library" aria-hidden="true">
@@ -39,7 +39,7 @@
   </svg>
 
   <header class="kit-header">
-    <div class="kit-brand"><span class="brand-mark" aria-hidden="true">⌒ᴗ⌒</span><div><strong>Neko <span>UI Kit</span></strong><small>Neko Style v1.1 · Build 010</small></div></div>
+    <div class="kit-brand"><span class="brand-mark" aria-hidden="true">⌒ᴗ⌒</span><div><strong>Neko <span>UI Kit</span></strong><small>Neko Style v1.1 · Build 011</small></div></div>
     <div class="header-actions">
       <button class="icon-button" id="theme-btn" type="button" aria-label="Przełącz motyw" title="Jasny / ciemny"><svg><use href="#i-palette"/></svg></button>
       <a class="icon-button" href="https://github.com/margoth-gh/NekoNaBoku/blob/main/NEKO_STYLE.md" aria-label="Otwórz Neko Style" title="Neko Style"><svg><use href="#i-info"/></svg></a>
@@ -56,7 +56,7 @@
       <a href="#listy" class="side-link">Karty i listy</a>
       <a href="#warstwy" class="side-link">Menu i dialogi</a>
       <a href="#tokeny" class="side-link">Tokeny i kod</a>
-      <div class="sidebar-note">Status: <strong>kanon bazowy zatwierdzony</strong><br>Build 010 · nowa kontrolka wymaga zatwierdzenia.</div>
+      <div class="sidebar-note">Status: <strong>kanon bazowy zatwierdzony</strong><br>Build 011 · wariant Tabs wymaga zatwierdzenia.</div>
     </aside>
 
     <div class="kit-content">
@@ -64,7 +64,7 @@
         <div class="eyebrow">WSPÓLNY WZORZEC UI</div>
         <h1>Komponenty rodziny Neko</h1>
         <p><strong>Neko UI Kit jest nadrzędnym, zatwierdzonym kanonem</strong> wyglądu i zachowania wspólnych kontrolek rodziny Neko. Sprawdź motywy, szerokości, stany i interakcje. NekoGit był inspiracją, ale jego ewentualne niedoróbki nie definiują standardu.</p>
-        <div class="kit-status"><span class="status-dot"></span> Kanon bazowy zatwierdzony · Build 010 wymaga zatwierdzenia</div>
+        <div class="kit-status"><span class="status-dot"></span> Kanon bazowy zatwierdzony · Tabs Build 011 wymaga zatwierdzenia</div>
       </section>
 
       <section id="podglad" class="kit-section">
@@ -156,21 +156,30 @@
       </section>
 
       <section id="zakladki" class="kit-section">
-        <div class="section-line"><h2>Zakładki / Tabs</h2><span class="section-caption">Przełączanie widoków bez zmiany strony</span></div>
+        <div class="section-line"><h2>Zakładki / Tabs</h2><span class="section-caption">Segregator · makieta 027 do odbioru</span></div>
         <div class="sample-surface">
-          <div class="sample-label">Klasyczne zakładki · aktywna zakładka z podkreśleniem</div>
+          <div class="sample-label">Trzy pełne zakładki · swipe z wyrównaniem · klikalne języczki</div>
           <div class="neko-tabs" data-tabs>
-            <div class="neko-tablist" role="tablist" aria-label="Przykładowe zakładki">
-              <button class="neko-tab is-active" role="tab" type="button" id="tab-files" aria-controls="panel-files" aria-selected="true" tabindex="0">Pliki</button>
-              <button class="neko-tab" role="tab" type="button" id="tab-history" aria-controls="panel-history" aria-selected="false" tabindex="-1">Historia</button>
-              <button class="neko-tab" role="tab" type="button" id="tab-settings" aria-controls="panel-settings" aria-selected="false" tabindex="-1">Ustawienia</button>
-              <button class="neko-tab" role="tab" type="button" id="tab-disabled" aria-selected="false" tabindex="-1" disabled>Niedostępna</button>
+            <div class="neko-tab-assembly">
+              <button type="button" class="neko-tab-tongue is-left" data-tab-prev aria-label="Pokaż poprzednią zakładkę" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button>
+              <div class="neko-tab-viewport" role="tablist" aria-label="Przykładowe zakładki">
+                <button class="neko-tab is-active" role="tab" type="button" id="tab-general" aria-controls="panel-general" aria-selected="true" tabindex="0" title="Ogólne"><span>Ogólne</span></button>
+                <button class="neko-tab" role="tab" type="button" id="tab-local" aria-controls="panel-local" aria-selected="false" tabindex="-1" title="Pliki lokalne"><span>Pliki lokalne</span></button>
+                <button class="neko-tab" role="tab" type="button" id="tab-history" aria-controls="panel-history" aria-selected="false" tabindex="-1" title="Historia zmian i operacji"><span>Historia zmian i operacji</span></button>
+                <button class="neko-tab" role="tab" type="button" id="tab-advanced" aria-controls="panel-advanced" aria-selected="false" tabindex="-1" title="Ustawienia zaawansowane"><span>Ustawienia zaawansowane</span></button>
+                <button class="neko-tab" role="tab" type="button" id="tab-diagnostics" aria-controls="panel-diagnostics" aria-selected="false" tabindex="-1" title="Diagnostyka"><span>Diagnostyka</span></button>
+                <button class="neko-tab" role="tab" type="button" id="tab-about" aria-controls="panel-about" aria-selected="false" tabindex="-1" title="Informacje"><span>Informacje</span></button>
+              </div>
+              <button type="button" class="neko-tab-tongue is-right" data-tab-next aria-label="Pokaż następną zakładkę"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
             </div>
-            <div class="neko-tabpanel" id="panel-files" role="tabpanel" aria-labelledby="tab-files" tabindex="0"><strong>Pliki</strong><p>Zawartość pierwszej zakładki. Zmiana zakładki zastępuje panel, bez przesuwania całej strony.</p></div>
-            <div class="neko-tabpanel" id="panel-history" role="tabpanel" aria-labelledby="tab-history" tabindex="0" hidden><strong>Historia</strong><p>Przykładowa historia operacji. Aktywna pozostaje tylko jedna zakładka.</p></div>
-            <div class="neko-tabpanel" id="panel-settings" role="tabpanel" aria-labelledby="tab-settings" tabindex="0" hidden><strong>Ustawienia</strong><p>Konfiguracja powiązana z wybranym widokiem. Nawigacja działa także strzałkami klawiatury.</p></div>
+            <div class="neko-tabs-panel" id="panel-general" role="tabpanel" aria-labelledby="tab-general" tabindex="0"><strong>Ogólne</strong><p>Główne ustawienia aplikacji. Aktywna karta łączy się z panelem, a boczne języczki przesuwają pasek o jedną zakładkę.</p><div class="neko-tabs-detail"><span>Wygląd</span><b>Neko</b></div><div class="neko-tabs-detail"><span>Układ</span><b>Segregator</b></div></div>
+            <div class="neko-tabs-panel" id="panel-local" role="tabpanel" aria-labelledby="tab-local" tabindex="0" hidden><strong>Pliki lokalne</strong><p>Ustawienia sposobu wyświetlania plików na urządzeniu.</p><div class="neko-tabs-detail"><span>Widok</span><b>Lista</b></div></div>
+            <div class="neko-tabs-panel" id="panel-history" role="tabpanel" aria-labelledby="tab-history" tabindex="0" hidden><strong>Historia zmian i operacji</strong><p>Historia działań i operacji w aplikacji.</p><div class="neko-tabs-detail"><span>Rejestrowanie</span><b>Włączone</b></div></div>
+            <div class="neko-tabs-panel" id="panel-advanced" role="tabpanel" aria-labelledby="tab-advanced" tabindex="0" hidden><strong>Ustawienia zaawansowane</strong><p>Dodatkowe ustawienia modułu.</p><div class="neko-tabs-detail"><span>Potwierdzenia</span><b>Włączone</b></div></div>
+            <div class="neko-tabs-panel" id="panel-diagnostics" role="tabpanel" aria-labelledby="tab-diagnostics" tabindex="0" hidden><strong>Diagnostyka</strong><p>Narzędzia diagnostyczne i raporty.</p><div class="neko-tabs-detail"><span>Poziom logów</span><b>Podstawowy</b></div></div>
+            <div class="neko-tabs-panel" id="panel-about" role="tabpanel" aria-labelledby="tab-about" tabindex="0" hidden><strong>Informacje</strong><p>Informacje o aplikacji i jej wersji.</p><div class="neko-tabs-detail"><span>Rodzina</span><b>Neko</b></div></div>
           </div>
-          <p class="hint">Tabs to nawigacja między panelami. <strong>Segmented control</strong> służy do przełączania wartości/trybu, a dolny pasek nawigacji do głównych sekcji aplikacji. Ten nowy wariant wymaga zatwierdzenia.</p>
+          <p class="hint">Pasek pokazuje <strong>3 pełne karty</strong>. Przeciągnij go palcem i puść — po przekroczeniu połowy szerokości zakładki następuje płynne wyrównanie. Białe języczki z niebieskimi strzałkami są <strong>przyciskami</strong> przesuwającymi pasek o jedną zakładkę; przy końcach stają się nieaktywne. <strong>Build 011 wymaga zatwierdzenia.</strong></p>
         </div>
       </section>
 
@@ -210,7 +219,7 @@
         <p class="hint">Pliki <code>neko.css</code> i <code>neko.js</code> zawierają działające komponenty katalogu. <strong>Ten zatwierdzony pokaz jest nadrzędnym wzorcem wyglądu i zachowania kontrolek</strong>; <code>NEKO_STYLE.md</code> stanowi dokumentację uzupełniającą. Implementacje w NekoGit i pozostałych aplikacjach nie mają pierwszeństwa przed UI Kit. Dopiero osobno zatwierdzone zmiany stają się częścią kanonu.</p>
       </section>
 
-      <footer class="kit-footer">Neko UI Kit v1.1 · Build 010 · NekoNaBoku</footer>
+      <footer class="kit-footer">Neko UI Kit v1.1 · Build 011 · NekoNaBoku</footer>
     </div>
   </main>
 

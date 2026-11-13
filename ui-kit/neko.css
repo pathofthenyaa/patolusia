@@ -157,18 +157,26 @@ button:disabled,input:disabled{opacity:.42;cursor:not-allowed}
 .stepper-input:focus-visible{outline:none}
 .form-help{color:var(--text-faint);font-size:10px}
 
-/* Build 010 · klasyczne zakladki (tabs), odrebne od segmented i bottom-nav. */
-.neko-tabs{min-width:0}
-.neko-tablist{display:flex;align-items:stretch;gap:2px;max-width:100%;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--line);overscroll-behavior-x:contain}
-.neko-tablist::-webkit-scrollbar{display:none}
-.neko-tab{position:relative;flex:0 0 auto;min-height:43px;padding:9px 13px 11px;border:0;border-radius:11px 11px 0 0;background:transparent;color:var(--text-soft);font:inherit;font-size:12px;font-weight:750;white-space:nowrap;cursor:pointer}
-.neko-tab:hover:not(:disabled){background:var(--surface-soft)}
-.neko-tab:active:not(:disabled){background:var(--surface-pressed)}
-.neko-tab.is-active{color:var(--primary)}
-.neko-tab.is-active::after{content:"";position:absolute;bottom:0;left:12px;right:12px;height:3px;border-radius:3px 3px 0 0;background:var(--primary)}
+/* Build 011 · Tabs/segregator (makieta 027). Trzy pełne karty, swipe i klikalne języczki. */
+.neko-tabs{min-width:0;width:100%}
+.neko-tab-assembly{display:grid;grid-template-columns:24px minmax(0,1fr) 24px;align-items:end}
+.neko-tab-viewport{height:54px;min-width:0;position:relative;overflow:hidden;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.neko-tab-viewport:not(.is-ready) .neko-tab{opacity:0}
+.neko-tab{position:absolute;bottom:0;display:flex;align-items:center;justify-content:center;text-align:center;box-sizing:border-box;min-width:0;height:46px;padding:0 12px;border:1px solid var(--line-strong);border-radius:15px 15px 0 0;background:var(--surface-soft);color:var(--text-soft);font:600 11px/1.24 Inter,ui-rounded,"SF Pro Text","Segoe UI",Roboto,sans-serif;cursor:pointer;will-change:left,opacity}
+.neko-tab.is-active{height:51px;background:var(--surface-solid);color:var(--primary);border-bottom-color:var(--surface-solid);font-weight:750}
+.neko-tab span{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;overflow-wrap:anywhere;max-width:100%;pointer-events:none}
 .neko-tab:focus-visible{outline:2px solid var(--primary);outline-offset:-3px}
-.neko-tab:disabled{opacity:.4;cursor:not-allowed}
-.neko-tabpanel{padding:16px 11px 8px;min-height:104px;color:var(--text);font-size:13px}
-.neko-tabpanel[hidden]{display:none}
-.neko-tabpanel strong{font-size:13px}
-.neko-tabpanel p{margin:8px 0 0;line-height:1.55;color:var(--text-soft);font-size:12px}
+.neko-tab-tongue{position:relative;width:100%;height:54px;display:flex;align-items:flex-end;justify-content:center;padding:0;border:0;background:transparent;color:var(--primary);cursor:pointer;isolation:isolate}
+.neko-tab-tongue::before{content:"";position:absolute;bottom:0;left:0;right:0;height:29px;background:var(--surface-solid);border:1px solid var(--line-strong);border-bottom:0;z-index:-1}
+.neko-tab-tongue.is-left::before{border-radius:14px 0 0 0}
+.neko-tab-tongue.is-right::before{border-radius:0 14px 0 0}
+.neko-tab-tongue svg{width:15px;height:18px;margin-bottom:6px;stroke-width:2.4}
+.neko-tab-tongue:active:not(:disabled)::before{background:var(--primary-soft)}
+.neko-tab-tongue:disabled{opacity:0;pointer-events:none}
+.neko-tab-tongue:focus-visible{outline:2px solid var(--primary);outline-offset:-2px;border-radius:13px 13px 0 0}
+.neko-tabs-panel{position:relative;margin-top:-1px;min-height:160px;padding:20px 17px 16px;background:var(--surface-solid);border:1px solid var(--line-strong);border-radius:0 0 19px 19px;color:var(--text);font-size:13px;box-shadow:var(--shadow-sm)}
+.neko-tabs-panel[hidden]{display:none}
+.neko-tabs-panel strong{font-size:14px}
+.neko-tabs-panel p{margin:9px 0 14px;color:var(--text-soft);font-size:12px;line-height:1.65}
+.neko-tabs-detail{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 0;border-top:1px solid var(--line);font-size:12px}
+.neko-tabs-detail b{color:var(--primary);background:var(--primary-soft);padding:6px 9px;border-radius:9px;font-weight:700;white-space:nowrap}

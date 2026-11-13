@@ -287,43 +287,173 @@ function configureStepper(stepper) {
 }
 document.querySelectorAll('[data-stepper]').forEach(configureStepper);
 
-// Build 010 · Tabs: jeden panel aktywny, obsluga dotyku i klawiatury.
+// Build 011 · Tabs: trzy widoczne karty, lekkie nachodzenie, fade, snap 50%, języczki jako przyciski.
 for (const widget of document.querySelectorAll('[data-tabs]')) {
-  const list = widget.querySelector('[role="tablist"]');
-  if (!list) continue;
-  const tabs = [...list.querySelectorAll('[role="tab"]')];
-  const enabledTabs = () => tabs.filter(tab => !tab.disabled);
-  function activate(tab, focus = false) {
-    if (!tab || tab.disabled) return;
-    tabs.forEach(item => {
-      const active = item === tab;
-      item.classList.toggle('is-active', active);
-      item.setAttribute('aria-selected', String(active));
-      item.tabIndex = active ? 0 : -1;
-      const panelId = item.getAttribute('aria-controls');
-      if (panelId) {
-        const panel = document.getElementById(panelId);
-        if (panel && widget.contains(panel)) panel.hidden = !active;
-      }
+  const viewport = widget.querySelector('.neko-tab-viewport');
+  const tabs = [...viewport.querySelectorAll('[role="tab"]')];
+  const prev = widget.querySelector('[data-tab-prev]');
+  const next = widget.querySelector('[data-tab-next]');
+  if (!tabs.length || !prev || !next) continue;
+
+  const visible = Math.min(3, tabs.length);
+  const maxPosition = Math.max(0, tabs.length - visible);
+  const overlap = 9;
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let position = 0;
+  let targetPosition = 0;
+  let activeIndex = 0;
+  let width = 100;
+  let pointer = null;
+  let animation = 0;
+  let ignoreClick = false;
+
+  const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
+
+  function render() {
+    tabs.forEach((tab, i) => {
+      const p = i - position;
+      const shift = overlap * clamp(p, 0, 1);
+      tab.style.left = `${p * width - shift}px`;
+      tab.style.width = `${width + shift}px`;
+      // Fade only the cards that enter/leave the three-tab viewport.
+      const alpha = clamp(Math.min(1 + p, visible - p), 0, 1);
+      tab.style.opacity = String(alpha);
+      tab.style.visibility = alpha < .001 ? 'hidden' : 'visible';
+      tab.style.pointerEvents = alpha < .55 ? 'none' : 'auto';
+      tab.style.zIndex = String(i === activeIndex ? 40 : 20 - i);
     });
-    if (focus) tab.focus();
+    prev.disabled = position < .01;
+    next.disabled = position > maxPosition - .01;
   }
-  list.addEventListener('click', event => {
-    const tab = event.target.closest('[role="tab"]');
-    if (tab && list.contains(tab)) activate(tab);
+
+  function setActive(index, focus = false) {
+    if (index < 0 || index >= tabs.length || tabs[index].disabled) return;
+    activeIndex = index;
+    tabs.forEach((tab, i) => {
+      const selected = i === activeIndex;
+      tab.classList.toggle('is-active', selected);
+      tab.setAttribute('aria-selected', String(selected));
+      tab.tabIndex = selected ? 0 : -1;
+      const panel = document.getElementById(tab.getAttribute('aria-controls'));
+      if (panel && widget.contains(panel)) panel.hidden = !selected;
+    });
+    if (focus) tabs[activeIndex].focus({preventScroll:true});
+    render();
+  }
+
+  function stopAnimation() {
+    if (animation) cancelAnimationFrame(animation);
+    animation = 0;
+  }
+
+  function animateTo(target) {
+    stopAnimation();
+    target = clamp(target, 0, maxPosition);
+    targetPosition = target;
+    const from = position;
+    const change = target - from;
+    if (Math.abs(change) < .0001 || reducedMotion.matches) {
+      position = target;
+      render();
+      return;
+    }
+    const started = performance.now();
+    function frame(now) {
+      const progress = clamp((now - started) / 270, 0, 1);
+      position = from + change * (1 - Math.pow(1 - progress, 3));
+      render();
+      if (progress < 1) animation = requestAnimationFrame(frame);
+      else { animation = 0; position = target; render(); }
+    }
+    animation = requestAnimationFrame(frame);
+  }
+
+  function ensureSelectedInView(target) {
+    // There must always be an active tab within the visible trio after scrolling.
+    const lo = target, hi = target + visible - 1;
+    if (activeIndex < lo) setActive(lo);
+    if (activeIndex > hi) setActive(hi);
+  }
+
+  function goTo(target) {
+    target = clamp(target, 0, maxPosition);
+    ensureSelectedInView(target);
+    animateTo(target);
+  }
+
+  tabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => {
+      if (ignoreClick) return;
+      setActive(i);
+      const dest = clamp(i < position ? i : i > position + visible - 1 ? i - visible + 1 : Math.round(position), 0, maxPosition);
+      animateTo(dest);
+    });
   });
-  list.addEventListener('keydown', event => {
+
+  // Języczki mają mały wygląd, ale cały przycisk o wysokości 54px przyjmuje dotyk.
+  prev.addEventListener('click', () => goTo(targetPosition - 1));
+  next.addEventListener('click', () => goTo(targetPosition + 1));
+
+  viewport.addEventListener('keydown', event => {
     if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
-    const active = event.target.closest('[role="tab"]');
-    if (!active || active.disabled) return;
-    const available = enabledTabs();
-    if (!available.length) return;
-    let index = available.indexOf(active);
-    if (index < 0) return;
+    const current = event.target.closest('[role="tab"]');
+    if (!current) return;
     event.preventDefault();
+    let index = tabs.indexOf(current);
     if (event.key === 'Home') index = 0;
-    else if (event.key === 'End') index = available.length - 1;
-    else index = (index + (event.key === 'ArrowRight' ? 1 : available.length - 1)) % available.length;
-    activate(available[index], true);
+    else if (event.key === 'End') index = tabs.length - 1;
+    else index = clamp(index + (event.key === 'ArrowRight' ? 1 : -1), 0, tabs.length - 1);
+    setActive(index, true);
+    const dest = clamp(index < position ? index : index > position + visible - 1 ? index - visible + 1 : Math.round(position), 0, maxPosition);
+    animateTo(dest);
   });
+
+  viewport.addEventListener('pointerdown', event => {
+    if (event.button !== 0 || event.isPrimary === false) return;
+    stopAnimation();
+    pointer = {id:event.pointerId, x:event.clientX, y:event.clientY, original:position, moving:false, vertical:false};
+  });
+  viewport.addEventListener('pointermove', event => {
+    if (!pointer || pointer.id !== event.pointerId) return;
+    const dx = event.clientX - pointer.x;
+    const dy = event.clientY - pointer.y;
+    if (!pointer.moving && !pointer.vertical) {
+      if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 7) { pointer.vertical = true; return; }
+      if (Math.abs(dx) > 6) {
+        pointer.moving = true;
+        try { viewport.setPointerCapture(event.pointerId); } catch { /* no capture available */ }
+      }
+    }
+    if (!pointer.moving || pointer.vertical) return;
+    position = clamp(pointer.original - dx / width, 0, maxPosition);
+    render();
+  });
+  function endPointer(event) {
+    if (!pointer || pointer.id !== event.pointerId) return;
+    const wasDragged = pointer.moving && !pointer.vertical;
+    pointer = null;
+    if (wasDragged) {
+      ignoreClick = true;
+      setTimeout(() => { ignoreClick = false; }, 150);
+    }
+    // Round is the half-card threshold: >50% completes, <50% snaps back.
+    const target = clamp(Math.round(position), 0, maxPosition);
+    ensureSelectedInView(target);
+    animateTo(target);
+  }
+  viewport.addEventListener('pointerup', endPointer);
+  viewport.addEventListener('pointercancel', endPointer);
+  viewport.addEventListener('click', event => {
+    if (ignoreClick) { event.preventDefault(); event.stopPropagation(); }
+  }, true);
+
+  const observer = new ResizeObserver(() => {
+    width = Math.max(1, viewport.clientWidth / visible);
+    render();
+  });
+  observer.observe(viewport);
+  width = Math.max(1, viewport.clientWidth / visible);
+  setActive(0);
+  render();
+  viewport.classList.add('is-ready');
 }
