@@ -60,8 +60,9 @@ function dismissMenus() {
   document.querySelectorAll(".context-menu.is-overlay").forEach(restoreOverlay);
   document.querySelectorAll(".context-menu:not([hidden])").forEach(menu => { menu.hidden = true; });
   document.querySelectorAll('.choice-trigger[aria-expanded="true"]').forEach(trigger => trigger.setAttribute("aria-expanded", "false"));
+  document.querySelectorAll('.neko-app-menu__item[aria-expanded="true"]').forEach(trigger => trigger.setAttribute("aria-expanded", "false"));
 }
-function positionOverlay(menu, trigger, {choice = false} = {}) {
+function positionOverlay(menu, trigger, {choice = false, appBar = false} = {}) {
   const anchor = menu.parentElement;
   menu.__nekoAnchor = anchor;
   document.body.append(menu);
@@ -70,10 +71,12 @@ function positionOverlay(menu, trigger, {choice = false} = {}) {
   const rect = trigger.getBoundingClientRect();
   const margin = 8, gap = 6;
   const viewportWidth = window.innerWidth;
-  const width = choice
-    ? Math.min(Math.max(rect.width, 188), 280, viewportWidth - margin * 2)
+  const width = appBar ? Math.min(244, viewportWidth - margin * 2)
+    : choice ? Math.min(Math.max(rect.width, 188), 280, viewportWidth - margin * 2)
     : Math.min(280, viewportWidth - margin * 2);
-  const left = Math.max(margin, Math.min(rect.right - width, viewportWidth - width - margin));
+  const left = appBar && trigger.closest('.neko-app-menu__group--main')
+    ? Math.max(margin, Math.min(rect.left, viewportWidth - width - margin))
+    : Math.max(margin, Math.min(rect.right - width, viewportWidth - width - margin));
   menu.style.width = `${width}px`;
   menu.style.left = `${left}px`;
   const height = menu.scrollHeight;
@@ -137,6 +140,84 @@ function setPreviewWidth(value) {
   syncChoice("width", String(numeric));
 }
 
+// Build 012 · Compact application menu demo. Actions are examples; existing source commands stay unchanged.
+const appMenuDemo = document.querySelector('[data-app-menu-demo]');
+let appMenuDocuments = [
+  {id:1, name:'config.js', modified:false},
+  {id:2, name:'notes.md', modified:true},
+  {id:3, name:'index.html', modified:false}
+];
+let appMenuSelected = 2, appMenuNextId = 4;
+
+function syncAppMenuDocuments() {
+  if (!appMenuDemo) return;
+  appMenuDemo.querySelector('[data-app-count]').textContent = `Kart (${appMenuDocuments.length})`;
+  appMenuDemo.querySelector('[data-app-current]').textContent = appMenuDocuments.find(d => d.id === appMenuSelected)?.name ?? 'Brak dokumentu';
+  const list = document.getElementById('app-menu-tabs');
+  list.replaceChildren();
+  for (const doc of appMenuDocuments) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.setAttribute('role', 'menuitemradio');
+    button.setAttribute('aria-checked', String(doc.id === appMenuSelected));
+    button.dataset.appSwitch = String(doc.id);
+    const dot = document.createElement('span');
+    dot.className = doc.modified ? 'neko-app-dropdown__modified' : 'neko-app-dropdown__clean';
+    dot.setAttribute('aria-hidden', 'true');
+    const title = document.createElement('span');
+    title.textContent = doc.name;
+    const check = document.createElementNS('http://www.w3.org/2000/svg','svg');
+    check.classList.add('neko-app-dropdown__check');
+    check.innerHTML = '<use href="#i-check"/>';
+    button.append(dot, title, check);
+    list.append(button);
+  }
+}
+function handleAppMenuClick(button) {
+  if (!appMenuDemo) return false;
+  if (button.matches('[data-app-menu]')) {
+    const dropdown = document.getElementById(button.getAttribute('aria-controls'));
+    const wasOpen = !dropdown.hidden;
+    dismissMenus();
+    if (!wasOpen) {
+      positionOverlay(dropdown, button, {appBar:true});
+    }
+    return true;
+  }
+  if (button.matches('[data-app-new]')) {
+    dismissMenus();
+    if (appMenuDocuments.length >= 12) {
+      showToast('Osiągnięto limit 12 kart (demo)', 'error');
+      return true;
+    }
+    const id = appMenuNextId++;
+    appMenuDocuments.push({id, name:`Nowa karta ${id}`, modified:false});
+    appMenuSelected = id;
+    syncAppMenuDocuments();
+    showToast(`Utworzono: Nowa karta ${id} (demo)`);
+    return true;
+  }
+  if (button.matches('[data-app-switch]')) {
+    appMenuSelected = Number(button.dataset.appSwitch);
+    syncAppMenuDocuments();
+    dismissMenus();
+    return true;
+  }
+  if (button.matches('[data-app-toggle]')) {
+    button.setAttribute('aria-checked', String(button.getAttribute('aria-checked') !== 'true'));
+    dismissMenus();
+    showToast(`${button.querySelector('span').textContent}: ${button.getAttribute('aria-checked') === 'true' ? 'włączono' : 'wyłączono'} (demo)`);
+    return true;
+  }
+  if (button.matches('[data-app-action]')) {
+    dismissMenus();
+    showToast(`${button.dataset.appAction} — przykład działania`);
+    return true;
+  }
+  return false;
+}
+syncAppMenuDocuments();
+
 themeButton.addEventListener("click", () => applyTheme(root.dataset.theme === "light" ? "dark" : "light"));
 accentInput.addEventListener("input", event => applyAccent(event.target.value));
 document.querySelector("#reset-accent").addEventListener("click", () => applyAccent(DEFAULT_ACCENT));
@@ -147,6 +228,7 @@ document.addEventListener("click", event => {
     if (!event.target.closest(".context-menu")) dismissMenus();
     return;
   }
+  if (handleAppMenuClick(btn)) return;
   const choice = btn.closest(".choice");
   if (choice && btn.matches(".choice-trigger")) { toggleChoice(choice); return; }
   if (btn.matches(".choice-menu [data-value]")) {
@@ -204,13 +286,14 @@ window.addEventListener("scroll", event => {
   if (!event.target.closest?.(".choice-menu")) dismissMenus();
 }, true);
 document.addEventListener("pointerdown", event => {
-  if (!event.target.closest("[data-open-menu]") && !event.target.closest(".context-menu") && !event.target.closest(".choice-trigger")) dismissMenus();
+  if (!event.target.closest("[data-open-menu]") && !event.target.closest("[data-app-menu]") && !event.target.closest(".context-menu") && !event.target.closest(".choice-trigger")) dismissMenus();
 });
 document.addEventListener("keydown", event => {
   if (event.key === "Escape") { dismissMenus(); return; }
-  const menu = event.target.closest(".choice-menu");
+  const menu = event.target.closest(".choice-menu, .neko-app-dropdown");
   if (!menu) return;
-  const items = [...menu.querySelectorAll("[data-value]")];
+  const items = [...menu.querySelectorAll(menu.classList.contains('neko-app-dropdown') ? 'button:not([disabled])' : '[data-value]')];
+  if (!items.length) return;
   const index = items.indexOf(document.activeElement);
   if (event.key === "ArrowDown" || event.key === "ArrowUp") {
     event.preventDefault();
