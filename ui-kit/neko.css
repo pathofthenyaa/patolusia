@@ -131,3 +131,8 @@ button:disabled,input:disabled{opacity:.42;cursor:not-allowed}
 .toast[data-type="info"]{background:color-mix(in srgb,var(--primary-soft) 55%,var(--surface-solid))}
 .toast[data-type="success"]{background:color-mix(in srgb,var(--green-soft) 62%,var(--surface-solid))}
 .toast[data-type="error"]{background:color-mix(in srgb,var(--danger-soft) 62%,var(--surface-solid))}
+
+/* Build 004: kazde menu kontekstowe jest nakladka (nie zajmuje miejsca w ukladzie). */
+.context-menu.is-overlay{position:fixed!important;z-index:1000;min-width:0;max-width:calc(100vw - 16px);margin:0!important}
+/* Dropdown korzysta z tego samego menu, ale nie ma wewnetrznego scrolla. */
+.choice-menu,.choice-menu.is-overlay{max-height:none!important;overflow:visible!important;overscroll-behavior:auto}

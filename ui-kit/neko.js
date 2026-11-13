@@ -45,26 +45,56 @@ function showToast(message, type = "info") {
   toast.hidden = false;
   toastTimer = setTimeout(() => { toast.hidden = true; }, 2300);
 }
-function dismissMenus() {
-  document.querySelectorAll(".choice-menu.is-overlay").forEach(menu => {
-    const choice = document.querySelector(`.choice [aria-controls="${menu.id}"]`)?.closest(".choice");
-    menu.hidden = true;
-    menu.classList.remove("is-overlay");
-    menu.style.removeProperty("top");
-    menu.style.removeProperty("left");
-    menu.style.removeProperty("width");
-    menu.style.removeProperty("max-height");
-    if (choice) choice.append(menu);
-  });
-  document.querySelectorAll(".context-menu:not([hidden])").forEach(menu => { menu.hidden = true; });
-  document.querySelectorAll(".choice-trigger[aria-expanded=\"true\"]").forEach(trigger => trigger.setAttribute("aria-expanded", "false"));
+// Menu sa portalami w body: zawsze ponad zawartoscia i bez zmiany ukladu.
+function restoreOverlay(menu) {
+  const anchor = menu.__nekoAnchor;
+  menu.hidden = true;
+  menu.classList.remove("is-overlay");
+  for (const name of ["top", "left", "width", "max-height"]) menu.style.removeProperty(name);
+  if (anchor) anchor.append(menu);
+  menu.__nekoAnchor = null;
+  const trigger = document.querySelector(`[aria-controls="${menu.id}"]`);
+  if (trigger) trigger.setAttribute("aria-expanded", "false");
 }
-function toggleMenu(id) {
+function dismissMenus() {
+  document.querySelectorAll(".context-menu.is-overlay").forEach(restoreOverlay);
+  document.querySelectorAll(".context-menu:not([hidden])").forEach(menu => { menu.hidden = true; });
+  document.querySelectorAll('.choice-trigger[aria-expanded="true"]').forEach(trigger => trigger.setAttribute("aria-expanded", "false"));
+}
+function positionOverlay(menu, trigger, {choice = false} = {}) {
+  const anchor = menu.parentElement;
+  menu.__nekoAnchor = anchor;
+  document.body.append(menu);
+  menu.classList.add("is-overlay");
+  menu.hidden = false;
+  const rect = trigger.getBoundingClientRect();
+  const margin = 8, gap = 6;
+  const viewportWidth = window.innerWidth;
+  const width = choice
+    ? Math.min(Math.max(rect.width, 188), 280, viewportWidth - margin * 2)
+    : Math.min(280, viewportWidth - margin * 2);
+  const left = Math.max(margin, Math.min(rect.right - width, viewportWidth - width - margin));
+  menu.style.width = `${width}px`;
+  menu.style.left = `${left}px`;
+  const height = menu.scrollHeight;
+  const below = window.innerHeight - rect.bottom - margin - gap;
+  const above = rect.top - margin - gap;
+  const openAbove = height > below && above > below;
+  const desiredTop = openAbove ? rect.top - gap - height : rect.bottom + gap;
+  menu.style.top = `${Math.max(margin, Math.min(desiredTop, window.innerHeight - margin - height))}px`;
+  // Lista wyboru bez przewijania; menu akcji zachowuje awaryjny scroll dla dlugich list.
+  if (!choice && height > window.innerHeight - margin * 2) {
+    menu.style.maxHeight = `${window.innerHeight - margin * 2}px`;
+    menu.style.top = `${margin}px`;
+  }
+  trigger.setAttribute("aria-expanded", "true");
+}
+function toggleMenu(id, trigger) {
   const menu = document.getElementById(id);
   if (!menu) return;
   const wasOpen = !menu.hidden;
   dismissMenus();
-  menu.hidden = wasOpen;
+  if (!wasOpen) positionOverlay(menu, trigger);
 }
 function syncChoice(key, value) {
   const choice = document.querySelector(`[data-choice="${key}"]`);
@@ -81,29 +111,8 @@ function toggleChoice(choice) {
   const opening = menu.hidden;
   dismissMenus();
   if (!opening) return;
-
-  // Portal: menu jest nakładką nad stroną, a nie częścią układu formularza.
-  document.body.append(menu);
-  menu.classList.add("is-overlay");
-  menu.hidden = false;
-  trigger.setAttribute("aria-expanded", "true");
-
-  const rect = trigger.getBoundingClientRect();
-  const margin = 8;
-  const gap = 6;
-  const availableWidth = Math.max(160, window.innerWidth - margin * 2);
-  const width = Math.min(Math.max(rect.width, 188), 280, availableWidth);
-  const left = Math.max(margin, Math.min(rect.right - width, window.innerWidth - width - margin));
-  menu.style.width = `${width}px`;
-  menu.style.left = `${left}px`;
-  const roomBelow = window.innerHeight - rect.bottom - gap - margin;
-  const roomAbove = rect.top - gap - margin;
-  const above = roomBelow < Math.min(170, menu.scrollHeight) && roomAbove > roomBelow;
-  const room = Math.max(80, above ? roomAbove : roomBelow);
-  const height = Math.min(menu.scrollHeight, room, 320);
-  menu.style.maxHeight = `${height}px`;
-  menu.style.top = `${above ? Math.max(margin, rect.top - gap - height) : rect.bottom + gap}px`;
-  menu.querySelector('[aria-checked="true"]')?.focus({ preventScroll: true });
+  positionOverlay(menu, trigger, {choice: true});
+  menu.querySelector('[aria-checked="true"]')?.focus({preventScroll:true});
 }
 function selectChoice(choice, option) {
   const key = choice.dataset.choice;
@@ -146,7 +155,7 @@ document.addEventListener("click", event => {
     return;
   }
   if (btn.matches("[data-open-menu]")) {
-    toggleMenu(btn.dataset.openMenu);
+    toggleMenu(btn.dataset.openMenu, btn);
     return;
   }
   if (btn.matches("[data-open-dialog]")) {
