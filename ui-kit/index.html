@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#f7f9ff">
-  <title>Neko UI Kit — Neko Style v1.1 · Build 004</title>
-  <link rel="stylesheet" href="./neko.css?v=004">
-  <script type="module" src="./neko.js?v=004"></script>
+  <title>Neko UI Kit — Neko Style v1.1 · Build 005</title>
+  <link rel="stylesheet" href="./neko.css?v=005">
+  <script type="module" src="./neko.js?v=005"></script>
 </head>
 <body>
   <svg class="icon-library" aria-hidden="true">
@@ -31,6 +31,7 @@
     <symbol id="i-edit" viewBox="0 0 24 24"><path d="m4 20 4.5-1 10-10-3.5-3.5-10 10zM14 6.5 17.5 10"/></symbol>
     <symbol id="i-open" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 13v7H4V6h7"/></symbol>
     <symbol id="i-play" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7z"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24"><path d="M4 12h16"/></symbol>
     <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 4v16M4 12h16"/></symbol>
     <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
     <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.2v.3"/></symbol>
@@ -38,7 +39,7 @@
   </svg>
 
   <header class="kit-header">
-    <div class="kit-brand"><span class="brand-mark" aria-hidden="true">⌒ᴗ⌒</span><div><strong>Neko <span>UI Kit</span></strong><small>NekoGit · Style v1.1 · Build 004</small></div></div>
+    <div class="kit-brand"><span class="brand-mark" aria-hidden="true">⌒ᴗ⌒</span><div><strong>Neko <span>UI Kit</span></strong><small>NekoGit · Style v1.1 · Build 005</small></div></div>
     <div class="header-actions">
       <button class="icon-button" id="theme-btn" type="button" aria-label="Przełącz motyw" title="Jasny / ciemny"><svg><use href="#i-palette"/></svg></button>
       <a class="icon-button" href="https://github.com/margoth-gh/NekoNaBoku/blob/main/NEKO_STYLE.md" aria-label="Otwórz Neko Style" title="Neko Style"><svg><use href="#i-info"/></svg></a>
@@ -54,15 +55,15 @@
       <a href="#listy" class="side-link">Karty i listy</a>
       <a href="#warstwy" class="side-link">Menu i dialogi</a>
       <a href="#tokeny" class="side-link">Tokeny i kod</a>
-      <div class="sidebar-note">Stan katalogu: <strong>roboczy</strong><br>Wymaga odbioru na S24 Ultra.</div>
+      <div class="sidebar-note">Stan katalogu: <strong>v1.1 zatwierdzony</strong><br>Nowe komponenty wymagają odbioru.</div>
     </aside>
 
     <div class="kit-content">
       <section class="intro">
         <div class="eyebrow">WSPÓLNY WZORZEC UI</div>
         <h1>Komponenty rodziny Neko</h1>
-        <p>Interaktywny katalog zbudowany na rzeczywistych tokenach i rodzinach elementów <strong>NekoGit</strong>. Sprawdź motywy, szerokości i interakcje. Nie jest to zatwierdzenie nowego wyglądu.</p>
-        <div class="kit-status"><span class="status-dot"></span> Wersja demonstracyjna · do testów i zatwierdzenia</div>
+        <p>Interaktywny katalog zbudowany na rzeczywistych tokenach i rodzinach elementów <strong>NekoGit</strong>. Sprawdź motywy, szerokości i interakcje. Nowe komponenty są prezentowane do osobnego odbioru.</p>
+        <div class="kit-status"><span class="status-dot"></span> UI Kit zatwierdzony · nowe komponenty do odbioru</div>
       </section>
 
       <section id="podglad" class="kit-section">
@@ -143,6 +144,8 @@
           <label class="form-label">Wyszukiwanie <span class="search-field"><svg><use href="#i-search"/></svg><input type="search" placeholder="Szukaj…" id="sample-search"></span></label>
           <label class="form-label">Nazwa pliku <input class="text-field" type="text" value="NekoEdytor.md"></label>
           <div class="form-label">Wariant<div class="choice" data-choice="variant"><button type="button" class="choice-trigger" aria-haspopup="menu" aria-expanded="false" aria-controls="variant-options"><span class="choice-value">Domyślny</span><svg><use href="#i-chevron"/></svg></button><div class="context-menu choice-menu" id="variant-options" role="menu" hidden><button type="button" role="menuitemradio" aria-checked="true" data-value="default"><span>Domyślny</span><svg class="choice-check"><use href="#i-check"/></svg></button><button type="button" role="menuitemradio" aria-checked="false" data-value="compact"><span>Kompaktowy</span><svg class="choice-check"><use href="#i-check"/></svg></button></div></div></div>
+          <fieldset class="radio-group"><legend>Tryb synchronizacji · Radio Button</legend><label class="radio-option"><input type="radio" name="sync-mode" value="auto" checked><span>Automatyczny</span></label><label class="radio-option"><input type="radio" name="sync-mode" value="manual"><span>Ręczny</span></label><label class="radio-option"><input type="radio" name="sync-mode" value="off" disabled><span>Wyłączony (niedostępny)</span></label></fieldset>
+          <div class="form-label"><label for="stepper-quantity">Liczba kopii · SpinEdit</label><div class="number-stepper" data-stepper><button type="button" class="stepper-button" data-step="down" aria-label="Zmniejsz liczbę kopii"><svg><use href="#i-minus"/></svg></button><input class="stepper-input" id="stepper-quantity" type="number" inputmode="numeric" min="1" max="20" step="1" value="3"><button type="button" class="stepper-button" data-step="up" aria-label="Zwiększ liczbę kopii"><svg><use href="#i-plus"/></svg></button></div><small class="form-help">Zakres 1–20 · wpisywanie lub przyciski − / +</small></div>
           <label class="form-label">Błąd walidacji <input class="text-field is-invalid" type="text" value="Niepoprawna wartość" aria-invalid="true"><small class="error-text">Przykładowy komunikat błędu</small></label>
           <label class="form-label">Pole wyłączone <input class="text-field" type="text" value="Niedostępne" disabled></label>
           <label class="toggle-row"><span><strong>Automatyczne zapisywanie</strong><small>Przełącznik działa lokalnie w podglądzie</small></span><input class="switch" type="checkbox" checked aria-label="Automatyczne zapisywanie"></label>
@@ -187,7 +190,7 @@
         <p class="hint">Pliki <code>neko.css</code> i <code>neko.js</code> zawierają działające komponenty katalogu. Kanonem pozostaje aktualny kod NekoGit i <code>NEKO_STYLE.md</code>; każdą zmianę wzorca zatwierdza właściciel.</p>
       </section>
 
-      <footer class="kit-footer">Neko UI Kit v1.1 · Build 004 · NekoNaBoku</footer>
+      <footer class="kit-footer">Neko UI Kit v1.1 · Build 005 · NekoNaBoku</footer>
     </div>
   </main>
 

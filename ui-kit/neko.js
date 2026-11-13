@@ -246,3 +246,43 @@ document.querySelectorAll(".side-link").forEach(link => {
 applyTheme("light");
 applyAccent(DEFAULT_ACCENT);
 setPreviewWidth("412");
+
+
+// Build 005: native number input supports the keyboard; Neko buttons provide visible stepping.
+function configureStepper(stepper) {
+  const input = stepper.querySelector('input[type="number"]');
+  const down = stepper.querySelector('[data-step="down"]');
+  const up = stepper.querySelector('[data-step="up"]');
+  if (!input || !down || !up) return;
+  const bounds = () => ({min:input.min === '' ? -Infinity : Number(input.min),max:input.max === '' ? Infinity : Number(input.max)});
+  const clamp = (number) => { const {min,max}=bounds();return Math.min(max,Math.max(min,number)); };
+  const refresh = () => {
+    const n = input.value === '' ? NaN : Number(input.value);
+    const {min,max}=bounds();
+    down.disabled = input.disabled || (Number.isFinite(n) && n <= min);
+    up.disabled = input.disabled || (Number.isFinite(n) && n >= max);
+  };
+  const change = direction => {
+    if (input.disabled) return;
+    const {min,max}=bounds();
+    const step = Number(input.step) > 0 ? Number(input.step) : 1;
+    const current = input.value === '' || !Number.isFinite(Number(input.value)) ? (Number.isFinite(min) ? min : 0) : Number(input.value);
+    const decimals = Math.min(10,(String(step).split('.')[1]||'').length);
+    const next = clamp(Number((current + direction * step).toFixed(decimals)));
+    if (next !== current || input.value === '') {
+      input.value = String(next);
+      input.dispatchEvent(new Event('input',{bubbles:true}));
+      input.dispatchEvent(new Event('change',{bubbles:true}));
+    }
+    refresh();
+  };
+  down.addEventListener('click',()=>change(-1));
+  up.addEventListener('click',()=>change(1));
+  input.addEventListener('input',refresh);
+  input.addEventListener('change',()=>{
+    if(input.value !== '' && Number.isFinite(Number(input.value))) input.value = String(clamp(Number(input.value)));
+    refresh();
+  });
+  refresh();
+}
+document.querySelectorAll('[data-stepper]').forEach(configureStepper);

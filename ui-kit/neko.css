@@ -136,3 +136,23 @@ button:disabled,input:disabled{opacity:.42;cursor:not-allowed}
 .context-menu.is-overlay{position:fixed!important;z-index:1000;min-width:0;max-width:calc(100vw - 16px);margin:0!important}
 /* Dropdown korzysta z tego samego menu, ale nie ma wewnetrznego scrolla. */
 .choice-menu,.choice-menu.is-overlay{max-height:none!important;overflow:visible!important;overscroll-behavior:auto}
+
+/* Build 005 · Radio Button and SpinEdit. Shared neutral borders and accent highlights. */
+.radio-group{min-width:0;display:flex;flex-direction:column;gap:4px;margin:0;padding:8px 0 0;border:0}
+.radio-group legend{padding:0;margin-bottom:5px;color:var(--text-soft);font-size:12px;font-weight:700}
+.radio-option{min-height:42px;display:flex;align-items:center;gap:10px;padding:6px 9px;border-radius:11px;color:var(--text);font-size:13px;cursor:pointer}
+.radio-option:active{background:var(--surface-pressed)}
+.radio-option input[type="radio"]{appearance:none;-webkit-appearance:none;position:relative;flex:0 0 auto;width:21px;height:21px;margin:0;border:1.5px solid var(--line-strong);border-radius:50%;background:var(--surface-solid);cursor:pointer;transition:border-color .15s ease,background .15s ease}
+.radio-option input[type="radio"]:checked{border:2px solid var(--primary);background:var(--surface-solid)}
+.radio-option input[type="radio"]:checked::after{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--primary)}
+.radio-option:has(input:disabled){opacity:.42;cursor:not-allowed}
+.radio-option input:disabled{cursor:not-allowed;opacity:1}
+.number-stepper{min-height:48px;width:100%;max-width:280px;display:grid;grid-template-columns:46px minmax(0,1fr) 46px;align-items:stretch;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface-solid);box-shadow:var(--shadow-sm)}
+.stepper-button{display:grid;place-items:center;padding:0;border:0;background:transparent;color:var(--primary)}
+.stepper-button:active:not(:disabled){background:var(--primary-soft)}
+.stepper-button svg{width:18px;height:18px}
+.stepper-input{width:100%;min-width:0;padding:0 8px;border:0;border-left:1px solid var(--line);border-right:1px solid var(--line);border-radius:0;outline:0;background:transparent;color:var(--text);text-align:center;font-size:14px;font-weight:700;font-variant-numeric:tabular-nums;appearance:textfield;-moz-appearance:textfield}
+.stepper-input::-webkit-outer-spin-button,.stepper-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.number-stepper:focus-within{outline:2px solid var(--primary-border);outline-offset:1px}
+.stepper-input:focus-visible{outline:none}
+.form-help{color:var(--text-faint);font-size:10px}
