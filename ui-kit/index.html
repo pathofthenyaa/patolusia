@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#f7f9ff">
-  <title>Neko UI Kit — Neko Style v1.1 · Build 007</title>
-  <link rel="stylesheet" href="./neko.css?v=007">
-  <script type="module" src="./neko.js?v=007"></script>
+  <title>Neko UI Kit — Neko Style v1.1 · Build 008</title>
+  <link rel="stylesheet" href="./neko.css?v=008">
+  <script type="module" src="./neko.js?v=008"></script>
 </head>
 <body>
   <svg class="icon-library" aria-hidden="true">
@@ -39,7 +39,7 @@
   </svg>
 
   <header class="kit-header">
-    <div class="kit-brand"><span class="brand-mark" aria-hidden="true">⌒ᴗ⌒</span><div><strong>Neko <span>UI Kit</span></strong><small>NekoGit · Style v1.1 · Build 007</small></div></div>
+    <div class="kit-brand"><span class="brand-mark" aria-hidden="true">⌒ᴗ⌒</span><div><strong>Neko <span>UI Kit</span></strong><small>NekoGit · Style v1.1 · Build 008</small></div></div>
     <div class="header-actions">
       <button class="icon-button" id="theme-btn" type="button" aria-label="Przełącz motyw" title="Jasny / ciemny"><svg><use href="#i-palette"/></svg></button>
       <a class="icon-button" href="https://github.com/margoth-gh/NekoNaBoku/blob/main/NEKO_STYLE.md" aria-label="Otwórz Neko Style" title="Neko Style"><svg><use href="#i-info"/></svg></a>
@@ -145,7 +145,7 @@
           <label class="form-label">Nazwa pliku <input class="text-field" type="text" value="NekoEdytor.md"></label>
           <div class="form-label">Wariant<div class="choice" data-choice="variant"><button type="button" class="choice-trigger" aria-haspopup="menu" aria-expanded="false" aria-controls="variant-options"><span class="choice-value">Domyślny</span><svg><use href="#i-chevron"/></svg></button><div class="context-menu choice-menu" id="variant-options" role="menu" hidden><button type="button" role="menuitemradio" aria-checked="true" data-value="default"><span>Domyślny</span><svg class="choice-check"><use href="#i-check"/></svg></button><button type="button" role="menuitemradio" aria-checked="false" data-value="compact"><span>Kompaktowy</span><svg class="choice-check"><use href="#i-check"/></svg></button></div></div></div>
           <fieldset class="radio-group"><legend>Tryb synchronizacji · Radio Button</legend><label class="radio-option"><input type="radio" name="sync-mode" value="auto" checked><span>Automatyczny</span></label><label class="radio-option"><input type="radio" name="sync-mode" value="manual"><span>Ręczny</span></label><label class="radio-option"><input type="radio" name="sync-mode" value="off" disabled><span>Wyłączony (niedostępny)</span></label></fieldset>
-          <div class="form-label"><label for="stepper-quantity">Liczba kopii · SpinEdit</label><div class="number-stepper" data-stepper><button type="button" class="stepper-button" data-step="down" aria-label="Zmniejsz liczbę kopii"><svg><use href="#i-minus"/></svg></button><input class="stepper-input" id="stepper-quantity" type="number" inputmode="numeric" min="1" max="4" step="1" value="3"><button type="button" class="stepper-button" data-step="up" aria-label="Zwiększ liczbę kopii"><svg><use href="#i-plus"/></svg></button></div><small class="form-help">Zakres 1–4 · wpisywanie lub przyciski − / +</small></div>
+          <div class="form-label"><label for="stepper-quantity">Liczba kopii · SpinEdit</label><div class="number-stepper" data-stepper><button type="button" class="stepper-button" data-step="down" aria-label="Zmniejsz liczbę kopii"><svg><use href="#i-minus"/></svg></button><input class="stepper-input" id="stepper-quantity" type="number" inputmode="numeric" min="0" step="1" value="1234"><button type="button" class="stepper-button" data-step="up" aria-label="Zwiększ liczbę kopii"><svg><use href="#i-plus"/></svg></button></div><small class="form-help">Pole na 4 cyfry · zakres konfigurowalny · przyciski − / +</small></div>
           <label class="form-label">Błąd walidacji <input class="text-field is-invalid" type="text" value="Niepoprawna wartość" aria-invalid="true"><small class="error-text">Przykładowy komunikat błędu</small></label>
           <label class="form-label">Pole wyłączone <input class="text-field" type="text" value="Niedostępne" disabled></label>
           <label class="toggle-row"><span><strong>Automatyczne zapisywanie</strong><small>Przełącznik działa lokalnie w podglądzie</small></span><input class="switch" type="checkbox" checked aria-label="Automatyczne zapisywanie"></label>
@@ -190,7 +190,7 @@
         <p class="hint">Pliki <code>neko.css</code> i <code>neko.js</code> zawierają działające komponenty katalogu. Kanonem pozostaje aktualny kod NekoGit i <code>NEKO_STYLE.md</code>; każdą zmianę wzorca zatwierdza właściciel.</p>
       </section>
 
-      <footer class="kit-footer">Neko UI Kit v1.1 · Build 007 · NekoNaBoku</footer>
+      <footer class="kit-footer">Neko UI Kit v1.1 · Build 008 · NekoNaBoku</footer>
     </div>
   </main>
 
