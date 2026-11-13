@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="pl" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f7f9ff">
+  <title>Neko UI Kit — Neko Style v1.1</title>
+  <link rel="stylesheet" href="./neko.css">
+  <script type="module" src="./neko.js"></script>
+</head>
+<body>
+  <svg class="icon-library" aria-hidden="true">
+    <symbol id="i-repo" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19a1 1 0 0 1 1 1v15.5a1.5 1.5 0 0 1-1.5 1.5H7a3 3 0 0 1-3-3zM7 17h13M8 7h8M8 11h6"/></symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7.5A2.5 2.5 0 0 1 5.5 5H10l2 2h6.5A2.5 2.5 0 0 1 21 9.5v7A2.5 2.5 0 0 1 18.5 19h-13A2.5 2.5 0 0 1 3 16.5z"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6zM14 3v5h4M9 12h6M9 16h6"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zm8 4 2-1-2-4-2 .5-2-1L15.5 4h-7L8 6.5l-2 1L4 7l-2 4 2 1v2l-2 1 2 4 2-.5 2 1 .5 2.5h7l.5-2.5 2-1 2 .5 2-4-2-1z"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M9.5 21h5"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 4.5 6v5.5c0 4.7 3 7.9 7.5 9.5 4.5-1.6 7.5-4.8 7.5-9.5V6z"/><path d="m9 12 2 2 4-5"/></symbol>
+    <symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0 0 18h1.2a2 2 0 0 0 1.7-3c-.6-1 .1-2.2 1.3-2.2H18a3 3 0 0 0 3-3A9 9 0 0 0 12 3z"/><circle cx="7.5" cy="10" r="1"/><circle cx="10" cy="6.5" r="1"/><circle cx="15" cy="7" r="1"/><circle cx="17" cy="11" r="1"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M7 7l1 14h8l1-14M10 11v6M14 11v6"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M6.1 8.2A7.5 7.5 0 0 1 19.5 12M4.5 12A7.5 7.5 0 0 0 17.9 15.8"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></symbol>
+    <symbol id="i-branch" viewBox="0 0 24 24"><circle cx="6" cy="5" r="2"/><circle cx="18" cy="7" r="2"/><circle cx="6" cy="19" r="2"/><path d="M6 7v10M8 11h4a6 6 0 0 0 6-2"/></symbol>
+    <symbol id="i-more" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24"><path d="m4 20 4.5-1 10-10-3.5-3.5-10 10zM14 6.5 17.5 10"/></symbol>
+    <symbol id="i-open" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 13v7H4V6h7"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7z"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 4v16M4 12h16"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.2v.3"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"/><circle cx="12" cy="12" r="2.5"/></symbol>
+  </svg>
+
+  <header class="kit-header">
+    <div class="kit-brand"><span class="brand-mark" aria-hidden="true">⌒ᴗ⌒</span><div><strong>Neko <span>UI Kit</span></strong><small>NekoGit · Style v1.1</small></div></div>
+    <div class="header-actions">
+      <button class="icon-button" id="theme-btn" type="button" aria-label="Przełącz motyw" title="Jasny / ciemny"><svg><use href="#i-palette"/></svg></button>
+      <a class="icon-button" href="https://github.com/margoth-gh/NekoNaBoku/blob/main/NEKO_STYLE.md" aria-label="Otwórz Neko Style" title="Neko Style"><svg><use href="#i-info"/></svg></a>
+    </div>
+  </header>
+
+  <main class="kit-layout">
+    <aside class="kit-sidebar" aria-label="Sekcje katalogu">
+      <div class="sidebar-label">KATALOG</div>
+      <a href="#podglad" class="side-link is-current">Podgląd mobilny</a>
+      <a href="#akcje" class="side-link">Przyciski i akcje</a>
+      <a href="#formularze" class="side-link">Formularze i stany</a>
+      <a href="#listy" class="side-link">Karty i listy</a>
+      <a href="#warstwy" class="side-link">Menu i dialogi</a>
+      <a href="#tokeny" class="side-link">Tokeny i kod</a>
+      <div class="sidebar-note">Stan katalogu: <strong>roboczy</strong><br>Wymaga odbioru na S24 Ultra.</div>
+    </aside>
+
+    <div class="kit-content">
+      <section class="intro">
+        <div class="eyebrow">WSPÓLNY WZORZEC UI</div>
+        <h1>Komponenty rodziny Neko</h1>
+        <p>Interaktywny katalog zbudowany na rzeczywistych tokenach i rodzinach elementów <strong>NekoGit</strong>. Sprawdź motywy, szerokości i interakcje. Nie jest to zatwierdzenie nowego wyglądu.</p>
+        <div class="kit-status"><span class="status-dot"></span> Wersja demonstracyjna · do testów i zatwierdzenia</div>
+      </section>
+
+      <section id="podglad" class="kit-section">
+        <div class="section-line"><h2>Podgląd mobilny</h2><span class="section-caption">S24 Ultra / szerokość CSS</span></div>
+        <div class="preview-toolbar">
+          <label>Motyw <select id="theme-select"><option value="light">Jasny</option><option value="dark">Ciemny</option></select></label>
+          <label>Szerokość <select id="preview-width"><option value="412">412 px · S24 Ultra</option><option value="393">393 px</option><option value="360">360 px</option><option value="320">320 px</option><option value="560">560 px</option></select></label>
+          <label>Akcent <input id="accent" type="color" value="#1687f8" aria-label="Kolor akcentu"></label>
+          <button class="text-action" id="reset-accent" type="button">Reset</button>
+        </div>
+        <div class="preview-stage">
+          <div class="phone-preview" id="phone-preview" style="--preview-width:412px">
+            <div class="phone-topbar"><div class="kit-brand small"><span class="brand-mark">⌒ᴗ⌒</span><strong>Neko<span>Git</span></strong></div><div class="header-actions"><button class="icon-button" type="button" data-toast="Powiadomienia" aria-label="Powiadomienia"><svg><use href="#i-bell"/></svg></button><button class="icon-button" type="button" data-open-menu="phone-menu" aria-label="Menu"><svg><use href="#i-more"/></svg></button></div></div>
+            <div class="phone-main">
+              <div class="phone-title"><h3>Repozytoria</h3><button class="round-action" type="button" data-toast="Odświeżono widok" aria-label="Odśwież"><svg><use href="#i-refresh"/></svg></button></div>
+              <label class="search-field"><svg><use href="#i-search"/></svg><input type="search" placeholder="Szukaj repozytoriów…" aria-label="Szukaj w podglądzie"></label>
+              <div class="repo-list">
+                <button class="repo-card" type="button" data-toast="Otwórz: NekoEdytor"><span class="repo-icon"><svg><use href="#i-repo"/></svg></span><span class="repo-card__body"><strong>NekoEdytor</strong><small>Aktualizacja UI</small></span><svg class="tiny-chevron"><use href="#i-chevron"/></svg></button>
+                <button class="repo-card" type="button" data-toast="Otwórz: NekoNaBoku"><span class="repo-icon"><svg><use href="#i-repo"/></svg></span><span class="repo-card__body"><strong>NekoNaBoku</strong><small>Specyfikacje projektów</small></span><svg class="tiny-chevron"><use href="#i-chevron"/></svg></button>
+              </div>
+              <div class="section-line compact"><h2>Operacje</h2></div>
+              <div class="file-actions">
+                <button type="button" data-toast="Nowy"><span class="action-orb"><svg><use href="#i-plus"/></svg></span>Nowy</button>
+                <button type="button" data-toast="Edytuj"><span class="action-orb"><svg><use href="#i-edit"/></svg></span>Edytuj</button>
+                <button type="button" data-toast="Git"><span class="action-orb"><svg><use href="#i-branch"/></svg></span>Git</button>
+                <button type="button" data-toast="Szukaj"><span class="action-orb"><svg><use href="#i-search"/></svg></span>Szukaj</button>
+                <button type="button" data-open-dialog><span class="action-orb"><svg><use href="#i-info"/></svg></span>Więcej</button>
+              </div>
+              <div class="phone-hint">Układ demonstracyjny oparty na języku NekoGit, nie pełna replika aplikacji.</div>
+            </div>
+            <nav class="bottom-nav" aria-label="Podgląd nawigacji">
+              <button type="button" class="is-active" data-nav="Repozytoria"><svg><use href="#i-repo"/></svg>Repozytoria</button>
+              <button type="button" data-nav="Pliki"><svg><use href="#i-folder"/></svg>Pliki</button>
+              <button type="button" data-nav="Historia"><svg><use href="#i-clock"/></svg>Historia</button>
+              <button type="button" data-nav="Ustawienia"><svg><use href="#i-settings"/></svg>Ustawienia</button>
+            </nav>
+            <div class="phone-context context-menu" id="phone-menu" hidden>
+              <button type="button" data-toast="Otwórz ustawienia"><svg><use href="#i-settings"/></svg><span>Ustawienia</span></button>
+              <button type="button" data-open-dialog><svg><use href="#i-info"/></svg><span>Informacje</span></button>
+            </div>
+          </div>
+        </div>
+        <p class="hint">Szerokość jest ustawiana w CSS px. Wybranie 412 px odpowiada orientacyjnej szerokości logicznej S24 Ultra; odbiór wymaga sprawdzenia na urządzeniu.</p>
+      </section>
+
+      <section id="akcje" class="kit-section">
+        <div class="section-line"><h2>Przyciski i akcje</h2><span class="section-caption">Role z NekoGit</span></div>
+        <div class="sample-surface">
+          <div class="sample-label">Nagłówek — ghost 42 × 42</div>
+          <div class="sample-row">
+            <button class="icon-button" type="button" data-toast="Menu" aria-label="Menu"><svg><use href="#i-menu"/></svg></button>
+            <button class="icon-button" type="button" data-toast="Szukaj" aria-label="Szukaj"><svg><use href="#i-search"/></svg></button>
+            <button class="icon-button" type="button" disabled aria-label="Wyłączone"><svg><use href="#i-lock"/></svg></button>
+            <button class="round-action" type="button" data-toast="Odśwież" aria-label="Odśwież"><svg><use href="#i-refresh"/></svg></button>
+            <button class="dialog-close" type="button" data-open-dialog aria-label="Przykład dialogu"><svg><use href="#i-open"/></svg></button>
+          </div>
+          <div class="sample-label">Akcje plikowe — 44 × 44, wspólny akcent</div>
+          <div class="file-actions sample-actions">
+            <button type="button" data-toast="Nowy"><span class="action-orb"><svg><use href="#i-plus"/></svg></span>Nowy</button>
+            <button type="button" data-toast="Edytuj"><span class="action-orb"><svg><use href="#i-edit"/></svg></span>Edytuj</button>
+            <button type="button" data-toast="Git"><span class="action-orb"><svg><use href="#i-branch"/></svg></span>Git</button>
+            <button type="button" data-toast="Szukaj"><span class="action-orb"><svg><use href="#i-search"/></svg></span>Szukaj</button>
+            <button type="button" data-toast="Otwórz"><span class="action-orb"><svg><use href="#i-open"/></svg></span>Otwórz</button>
+          </div>
+          <div class="sample-label">Akcje tekstowe i przyciski potwierdzenia</div>
+          <div class="sample-row wrap">
+            <button class="primary-button" type="button" data-toast="Zapisano (demo)">Zapisz</button>
+            <button class="outline-button" type="button" data-toast="Anulowano (demo)">Anuluj</button>
+            <button class="text-action" type="button" data-toast="Akcja tekstowa">Więcej opcji</button>
+            <button class="outline-button" type="button" disabled>Wyłączony</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="formularze" class="kit-section">
+        <div class="section-line"><h2>Formularze i stany</h2><span class="section-caption">Aktywne, wyłączone, błędne</span></div>
+        <div class="sample-surface form-grid">
+          <label class="form-label">Wyszukiwanie <span class="search-field"><svg><use href="#i-search"/></svg><input type="search" placeholder="Szukaj…" id="sample-search"></span></label>
+          <label class="form-label">Nazwa pliku <input class="text-field" type="text" value="NekoEdytor.md"></label>
+          <label class="form-label">Wariant <select class="text-field"><option>Domyślny</option><option>Kompaktowy</option></select></label>
+          <label class="form-label">Błąd walidacji <input class="text-field is-invalid" type="text" value="Niepoprawna wartość" aria-invalid="true"><small class="error-text">Przykładowy komunikat błędu</small></label>
+          <label class="form-label">Pole wyłączone <input class="text-field" type="text" value="Niedostępne" disabled></label>
+          <label class="toggle-row"><span><strong>Automatyczne zapisywanie</strong><small>Przełącznik działa lokalnie w podglądzie</small></span><input class="switch" type="checkbox" checked aria-label="Automatyczne zapisywanie"></label>
+          <div class="segmented" role="group" aria-label="Tryb widoku"><button type="button" class="is-active" aria-pressed="true">Lista</button><button type="button" aria-pressed="false">Siatka</button></div>
+          <div class="sample-row"><span class="state-chip">Normalny</span><span class="state-chip active">Aktywny</span><span class="state-chip error">Błąd</span><span class="state-chip disabled">Wyłączony</span></div>
+        </div>
+      </section>
+
+      <section id="listy" class="kit-section">
+        <div class="section-line"><h2>Karty i listy</h2><span class="section-caption">Jedna powierzchnia, nie ramka na ramce</span></div>
+        <div class="sample-surface">
+          <div class="sample-label">Karta repozytorium</div>
+          <div class="repo-list"><button class="repo-card" type="button" data-toast="Wybrano kartę"><span class="repo-icon"><svg><use href="#i-repo"/></svg></span><span class="repo-card__body"><strong>NekoNaBoku</strong><small>Dokumentacja rodziny Neko</small></span><svg class="tiny-chevron"><use href="#i-chevron"/></svg></button></div>
+          <div class="sample-label">Lista plików ze stanem zaznaczenia</div>
+          <div class="file-list">
+            <div class="file-row"><button class="file-row__main" type="button" data-toggle-row><svg><use href="#i-folder"/></svg><span><strong>Dokumenty</strong><small>Folder</small></span></button><button class="icon-button" type="button" data-toast="Opcje folderu" aria-label="Opcje"><svg><use href="#i-more"/></svg></button></div>
+            <div class="file-row"><button class="file-row__main" type="button" data-toggle-row><svg><use href="#i-file"/></svg><span><strong>NEKO_STYLE.md</strong><small>Markdown · demonstracja</small></span></button><button class="icon-button" type="button" data-toast="Opcje pliku" aria-label="Opcje"><svg><use href="#i-more"/></svg></button></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="warstwy" class="kit-section">
+        <div class="section-line"><h2>Menu i dialogi</h2><span class="section-caption">Działające warstwy</span></div>
+        <div class="sample-surface"><div class="sample-row wrap">
+          <button class="outline-button" type="button" data-open-menu="sample-menu"><svg><use href="#i-more"/></svg> Menu kontekstowe</button>
+          <button class="primary-button" type="button" data-open-dialog>Otwórz dialog</button>
+          <button class="outline-button" type="button" data-toast="To jest przykładowy toast">Pokaż toast</button>
+        </div><div class="context-menu static-menu" id="sample-menu" hidden><button type="button" data-toast="Otwórz"><svg><use href="#i-open"/></svg><span>Otwórz</span></button><button type="button" data-toast="Edytuj"><svg><use href="#i-edit"/></svg><span>Edytuj</span></button><hr><button type="button" class="danger" data-toast="Usuń (demo)"><svg><use href="#i-trash"/></svg><span>Usuń</span></button></div></div>
+      </section>
+
+      <section id="tokeny" class="kit-section">
+        <div class="section-line"><h2>Tokeny i kod</h2><span class="section-caption">Do bezpośredniego wykorzystania</span></div>
+        <div class="token-grid">
+          <div class="token-tile"><span class="token-swatch" style="background:var(--bg)"></span><strong>--bg</strong><code>#f7f9ff / #111827</code></div>
+          <div class="token-tile"><span class="token-swatch" style="background:var(--surface-solid)"></span><strong>--surface-solid</strong><code>#fff / #1b273b</code></div>
+          <div class="token-tile"><span class="token-swatch" style="background:var(--primary)"></span><strong>--primary</strong><code>Akcent dynamiczny</code></div>
+          <div class="token-tile"><span class="token-swatch" style="background:var(--line)"></span><strong>--line</strong><code>Obramowanie</code></div>
+        </div>
+        <div class="code-wrap"><div class="code-header"><strong>Przykład: przycisk ikonowy</strong><button class="text-action" id="copy-code" type="button">Kopiuj kod</button></div><pre><code id="code-sample">&lt;button class="icon-button" type="button" aria-label="Szukaj"&gt;
+  &lt;svg&gt;&lt;use href="#i-search"/&gt;&lt;/svg&gt;
+&lt;/button&gt;</code></pre></div>
+        <p class="hint">Pliki <code>neko.css</code> i <code>neko.js</code> zawierają działające komponenty katalogu. Kanonem pozostaje aktualny kod NekoGit i <code>NEKO_STYLE.md</code>; każdą zmianę wzorca zatwierdza właściciel.</p>
+      </section>
+
+      <footer class="kit-footer">Neko UI Kit · NekoNaBoku · Wersja robocza — odbiór wizualny na telefonie wymagany</footer>
+    </div>
+  </main>
+
+  <dialog class="modal" id="sample-dialog" aria-labelledby="dialog-title">
+    <div class="modal-card"><header><span class="dialog-icon"><svg><use href="#i-info"/></svg></span><div><h2 id="dialog-title">Przykładowy dialog</h2><p>Komponent Neko Style</p></div><button class="dialog-close" type="button" data-close-dialog aria-label="Zamknij"><svg><use href="#i-close"/></svg></button></header><p>To interaktywna demonstracja okna. Zamknij przyciskiem, klawiszem Escape lub dotknięciem tła.</p><div class="dialog-actions"><button class="outline-button" type="button" data-close-dialog>Anuluj</button><button class="primary-button" type="button" data-confirm-dialog>Zatwierdź</button></div></div>
+  </dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden><span class="toast-icon"><svg><use href="#i-check"/></svg></span><span id="toast-text"></span></div>
+</body>
+</html>
