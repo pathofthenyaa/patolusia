@@ -156,3 +156,19 @@ button:disabled,input:disabled{opacity:.42;cursor:not-allowed}
 .number-stepper:focus-within{outline:2px solid var(--primary-border);outline-offset:1px}
 .stepper-input:focus-visible{outline:none}
 .form-help{color:var(--text-faint);font-size:10px}
+
+/* Build 010 · klasyczne zakladki (tabs), odrebne od segmented i bottom-nav. */
+.neko-tabs{min-width:0}
+.neko-tablist{display:flex;align-items:stretch;gap:2px;max-width:100%;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--line);overscroll-behavior-x:contain}
+.neko-tablist::-webkit-scrollbar{display:none}
+.neko-tab{position:relative;flex:0 0 auto;min-height:43px;padding:9px 13px 11px;border:0;border-radius:11px 11px 0 0;background:transparent;color:var(--text-soft);font:inherit;font-size:12px;font-weight:750;white-space:nowrap;cursor:pointer}
+.neko-tab:hover:not(:disabled){background:var(--surface-soft)}
+.neko-tab:active:not(:disabled){background:var(--surface-pressed)}
+.neko-tab.is-active{color:var(--primary)}
+.neko-tab.is-active::after{content:"";position:absolute;bottom:0;left:12px;right:12px;height:3px;border-radius:3px 3px 0 0;background:var(--primary)}
+.neko-tab:focus-visible{outline:2px solid var(--primary);outline-offset:-3px}
+.neko-tab:disabled{opacity:.4;cursor:not-allowed}
+.neko-tabpanel{padding:16px 11px 8px;min-height:104px;color:var(--text);font-size:13px}
+.neko-tabpanel[hidden]{display:none}
+.neko-tabpanel strong{font-size:13px}
+.neko-tabpanel p{margin:8px 0 0;line-height:1.55;color:var(--text-soft);font-size:12px}

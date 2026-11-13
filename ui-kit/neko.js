@@ -286,3 +286,44 @@ function configureStepper(stepper) {
   refresh();
 }
 document.querySelectorAll('[data-stepper]').forEach(configureStepper);
+
+// Build 010 · Tabs: jeden panel aktywny, obsluga dotyku i klawiatury.
+for (const widget of document.querySelectorAll('[data-tabs]')) {
+  const list = widget.querySelector('[role="tablist"]');
+  if (!list) continue;
+  const tabs = [...list.querySelectorAll('[role="tab"]')];
+  const enabledTabs = () => tabs.filter(tab => !tab.disabled);
+  function activate(tab, focus = false) {
+    if (!tab || tab.disabled) return;
+    tabs.forEach(item => {
+      const active = item === tab;
+      item.classList.toggle('is-active', active);
+      item.setAttribute('aria-selected', String(active));
+      item.tabIndex = active ? 0 : -1;
+      const panelId = item.getAttribute('aria-controls');
+      if (panelId) {
+        const panel = document.getElementById(panelId);
+        if (panel && widget.contains(panel)) panel.hidden = !active;
+      }
+    });
+    if (focus) tab.focus();
+  }
+  list.addEventListener('click', event => {
+    const tab = event.target.closest('[role="tab"]');
+    if (tab && list.contains(tab)) activate(tab);
+  });
+  list.addEventListener('keydown', event => {
+    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+    const active = event.target.closest('[role="tab"]');
+    if (!active || active.disabled) return;
+    const available = enabledTabs();
+    if (!available.length) return;
+    let index = available.indexOf(active);
+    if (index < 0) return;
+    event.preventDefault();
+    if (event.key === 'Home') index = 0;
+    else if (event.key === 'End') index = available.length - 1;
+    else index = (index + (event.key === 'ArrowRight' ? 1 : available.length - 1)) % available.length;
+    activate(available[index], true);
+  });
+}
