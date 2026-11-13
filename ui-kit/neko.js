@@ -1,9 +1,7 @@
 import { buildAccentPalette, DEFAULT_ACCENT } from "./accent-palette.js";
 
 const root = document.documentElement;
-const themeSelect = document.querySelector("#theme-select");
 const themeButton = document.querySelector("#theme-btn");
-const widthSelect = document.querySelector("#preview-width");
 const phone = document.querySelector("#phone-preview");
 const accentInput = document.querySelector("#accent");
 const dialog = document.querySelector("#sample-dialog");
@@ -14,7 +12,7 @@ let toastTimer;
 function applyTheme(theme) {
   const selected = theme === "dark" ? "dark" : "light";
   root.dataset.theme = selected;
-  themeSelect.value = selected;
+  syncChoice("theme", selected);
   themeButton.setAttribute("aria-label", selected === "dark" ? "Włącz jasny motyw" : "Włącz ciemny motyw");
   themeButton.setAttribute("aria-pressed", String(selected === "dark"));
 }
@@ -37,14 +35,19 @@ function applyAccent(input) {
   root.style.setProperty("--primary", palette.tokens["--accent-base"]);
   root.style.setProperty("--primary-dark", palette.tokens["--accent-strong"]);
 }
-function showToast(message) {
+function showToast(message, type = "info") {
   clearTimeout(toastTimer);
+  const kind = ["info", "success", "error"].includes(type) ? type : "info";
+  toast.dataset.type = kind;
+  toast.setAttribute("role", kind === "error" ? "alert" : "status");
+  document.querySelector("#toast-symbol").setAttribute("href", kind === "success" ? "#i-check" : kind === "error" ? "#i-info" : "#i-info");
   toastText.textContent = message;
   toast.hidden = false;
   toastTimer = setTimeout(() => { toast.hidden = true; }, 2300);
 }
 function dismissMenus() {
   document.querySelectorAll(".context-menu:not([hidden])").forEach(menu => { menu.hidden = true; });
+  document.querySelectorAll(".choice-trigger[aria-expanded=\"true\"]").forEach(trigger => trigger.setAttribute("aria-expanded", "false"));
 }
 function toggleMenu(id) {
   const menu = document.getElementById(id);
@@ -52,6 +55,32 @@ function toggleMenu(id) {
   const wasOpen = !menu.hidden;
   dismissMenus();
   menu.hidden = wasOpen;
+}
+function syncChoice(key, value) {
+  const choice = document.querySelector(`[data-choice="${key}"]`);
+  if (!choice) return;
+  const option = [...choice.querySelectorAll("[data-value]")].find(item => item.dataset.value === String(value));
+  if (!option) return;
+  choice.querySelector(".choice-value").textContent = option.querySelector("span").textContent;
+  choice.querySelectorAll("[data-value]").forEach(item => item.setAttribute("aria-checked", String(item === option)));
+}
+function toggleChoice(choice) {
+  const trigger = choice.querySelector(".choice-trigger");
+  const menu = choice.querySelector(".choice-menu");
+  const opening = menu.hidden;
+  dismissMenus();
+  menu.hidden = !opening;
+  trigger.setAttribute("aria-expanded", String(opening));
+  if (opening) menu.querySelector('[aria-checked="true"]')?.focus({ preventScroll: true });
+}
+function selectChoice(choice, option) {
+  const key = choice.dataset.choice;
+  const value = option.dataset.value;
+  if (key === "theme") applyTheme(value);
+  else if (key === "width") setPreviewWidth(value);
+  else syncChoice(key, value);
+  dismissMenus();
+  choice.querySelector(".choice-trigger").focus({ preventScroll: true });
 }
 function openDialog() {
   dismissMenus();
@@ -64,11 +93,10 @@ function setPreviewWidth(value) {
   const numeric = Number(value);
   if (![320, 360, 393, 412, 560].includes(numeric)) return;
   phone.style.setProperty("--preview-width", numeric + "px");
+  syncChoice("width", String(numeric));
 }
 
-themeSelect.addEventListener("change", event => applyTheme(event.target.value));
 themeButton.addEventListener("click", () => applyTheme(root.dataset.theme === "light" ? "dark" : "light"));
-widthSelect.addEventListener("change", event => setPreviewWidth(event.target.value));
 accentInput.addEventListener("input", event => applyAccent(event.target.value));
 document.querySelector("#reset-accent").addEventListener("click", () => applyAccent(DEFAULT_ACCENT));
 
@@ -78,6 +106,9 @@ document.addEventListener("click", event => {
     if (!event.target.closest(".context-menu")) dismissMenus();
     return;
   }
+  const choice = btn.closest(".choice");
+  if (choice && btn.matches(".choice-trigger")) { toggleChoice(choice); return; }
+  if (choice && btn.matches("[data-value]")) { selectChoice(choice, btn); return; }
   if (btn.matches("[data-open-menu]")) {
     toggleMenu(btn.dataset.openMenu);
     return;
@@ -92,12 +123,12 @@ document.addEventListener("click", event => {
   }
   if (btn.matches("[data-confirm-dialog]")) {
     closeDialog();
-    showToast("Zatwierdzono (demonstracja)");
+    showToast("Zatwierdzono (demonstracja)", "success");
     return;
   }
   if (btn.matches("[data-toast]")) {
     dismissMenus();
-    showToast(btn.dataset.toast);
+    showToast(btn.dataset.toast, btn.dataset.toastType || "info");
     return;
   }
   if (btn.matches("[data-nav]")) {
@@ -123,10 +154,21 @@ document.addEventListener("click", event => {
 });
 
 document.addEventListener("pointerdown", event => {
-  if (!event.target.closest("[data-open-menu]") && !event.target.closest(".context-menu")) dismissMenus();
+  if (!event.target.closest("[data-open-menu]") && !event.target.closest(".context-menu") && !event.target.closest(".choice-trigger")) dismissMenus();
 });
 document.addEventListener("keydown", event => {
-  if (event.key === "Escape") dismissMenus();
+  if (event.key === "Escape") { dismissMenus(); return; }
+  const menu = event.target.closest(".choice-menu");
+  if (!menu) return;
+  const items = [...menu.querySelectorAll("[data-value]")];
+  const index = items.indexOf(document.activeElement);
+  if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+    event.preventDefault();
+    items[(index + (event.key === "ArrowDown" ? 1 : items.length - 1)) % items.length].focus();
+  } else if (event.key === "Home" || event.key === "End") {
+    event.preventDefault();
+    items[event.key === "Home" ? 0 : items.length - 1].focus();
+  }
 });
 dialog.addEventListener("click", event => {
   if (event.target === dialog) closeDialog();

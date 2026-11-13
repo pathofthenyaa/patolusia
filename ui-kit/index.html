@@ -68,8 +68,8 @@
       <section id="podglad" class="kit-section">
         <div class="section-line"><h2>Podgląd mobilny</h2><span class="section-caption">S24 Ultra / szerokość CSS</span></div>
         <div class="preview-toolbar">
-          <label>Motyw <select id="theme-select"><option value="light">Jasny</option><option value="dark">Ciemny</option></select></label>
-          <label>Szerokość <select id="preview-width"><option value="412">412 px · S24 Ultra</option><option value="393">393 px</option><option value="360">360 px</option><option value="320">320 px</option><option value="560">560 px</option></select></label>
+          <div class="preview-control"><span>Motyw</span><div class="choice" data-choice="theme"><button type="button" class="choice-trigger" aria-haspopup="menu" aria-expanded="false" aria-controls="theme-options"><span class="choice-value">Jasny</span><svg><use href="#i-chevron"/></svg></button><div class="context-menu choice-menu" id="theme-options" role="menu" hidden><button type="button" role="menuitemradio" aria-checked="true" data-value="light"><span>Jasny</span><svg class="choice-check"><use href="#i-check"/></svg></button><button type="button" role="menuitemradio" aria-checked="false" data-value="dark"><span>Ciemny</span><svg class="choice-check"><use href="#i-check"/></svg></button></div></div></div>
+          <div class="preview-control"><span>Szerokość</span><div class="choice" data-choice="width"><button type="button" class="choice-trigger" aria-haspopup="menu" aria-expanded="false" aria-controls="width-options"><span class="choice-value">412 px · S24 Ultra</span><svg><use href="#i-chevron"/></svg></button><div class="context-menu choice-menu" id="width-options" role="menu" hidden><button type="button" role="menuitemradio" aria-checked="true" data-value="412"><span>412 px · S24 Ultra</span><svg class="choice-check"><use href="#i-check"/></svg></button><button type="button" role="menuitemradio" aria-checked="false" data-value="393"><span>393 px</span><svg class="choice-check"><use href="#i-check"/></svg></button><button type="button" role="menuitemradio" aria-checked="false" data-value="360"><span>360 px</span><svg class="choice-check"><use href="#i-check"/></svg></button><button type="button" role="menuitemradio" aria-checked="false" data-value="320"><span>320 px</span><svg class="choice-check"><use href="#i-check"/></svg></button><button type="button" role="menuitemradio" aria-checked="false" data-value="560"><span>560 px</span><svg class="choice-check"><use href="#i-check"/></svg></button></div></div></div>
           <label>Akcent <input id="accent" type="color" value="#1687f8" aria-label="Kolor akcentu"></label>
           <button class="text-action" id="reset-accent" type="button">Reset</button>
         </div>
@@ -142,7 +142,7 @@
         <div class="sample-surface form-grid">
           <label class="form-label">Wyszukiwanie <span class="search-field"><svg><use href="#i-search"/></svg><input type="search" placeholder="Szukaj…" id="sample-search"></span></label>
           <label class="form-label">Nazwa pliku <input class="text-field" type="text" value="NekoEdytor.md"></label>
-          <label class="form-label">Wariant <select class="text-field"><option>Domyślny</option><option>Kompaktowy</option></select></label>
+          <div class="form-label">Wariant<div class="choice" data-choice="variant"><button type="button" class="choice-trigger" aria-haspopup="menu" aria-expanded="false" aria-controls="variant-options"><span class="choice-value">Domyślny</span><svg><use href="#i-chevron"/></svg></button><div class="context-menu choice-menu" id="variant-options" role="menu" hidden><button type="button" role="menuitemradio" aria-checked="true" data-value="default"><span>Domyślny</span><svg class="choice-check"><use href="#i-check"/></svg></button><button type="button" role="menuitemradio" aria-checked="false" data-value="compact"><span>Kompaktowy</span><svg class="choice-check"><use href="#i-check"/></svg></button></div></div></div>
           <label class="form-label">Błąd walidacji <input class="text-field is-invalid" type="text" value="Niepoprawna wartość" aria-invalid="true"><small class="error-text">Przykładowy komunikat błędu</small></label>
           <label class="form-label">Pole wyłączone <input class="text-field" type="text" value="Niedostępne" disabled></label>
           <label class="toggle-row"><span><strong>Automatyczne zapisywanie</strong><small>Przełącznik działa lokalnie w podglądzie</small></span><input class="switch" type="checkbox" checked aria-label="Automatyczne zapisywanie"></label>
@@ -169,7 +169,7 @@
         <div class="sample-surface"><div class="sample-row wrap">
           <button class="outline-button" type="button" data-open-menu="sample-menu"><svg><use href="#i-more"/></svg> Menu kontekstowe</button>
           <button class="primary-button" type="button" data-open-dialog>Otwórz dialog</button>
-          <button class="outline-button" type="button" data-toast="To jest przykładowy toast">Pokaż toast</button>
+          <button class="outline-button" type="button" data-toast="Informacja o działaniu" data-toast-type="info">Informacyjny</button><button class="outline-button" type="button" data-toast="Operacja zakończona pomyślnie" data-toast-type="success">Wynik działania</button><button class="outline-button" type="button" data-toast="Nie można ukończyć operacji" data-toast-type="error">Błąd / ostrzeżenie</button>
         </div><div class="context-menu static-menu" id="sample-menu" hidden><button type="button" data-toast="Otwórz"><svg><use href="#i-open"/></svg><span>Otwórz</span></button><button type="button" data-toast="Edytuj"><svg><use href="#i-edit"/></svg><span>Edytuj</span></button><hr><button type="button" class="danger" data-toast="Usuń (demo)"><svg><use href="#i-trash"/></svg><span>Usuń</span></button></div></div>
       </section>
 
@@ -194,6 +194,6 @@
   <dialog class="modal" id="sample-dialog" aria-labelledby="dialog-title">
     <div class="modal-card"><header><span class="dialog-icon"><svg><use href="#i-info"/></svg></span><div><h2 id="dialog-title">Przykładowy dialog</h2><p>Komponent Neko Style</p></div><button class="dialog-close" type="button" data-close-dialog aria-label="Zamknij"><svg><use href="#i-close"/></svg></button></header><p>To interaktywna demonstracja okna. Zamknij przyciskiem, klawiszem Escape lub dotknięciem tła.</p><div class="dialog-actions"><button class="outline-button" type="button" data-close-dialog>Anuluj</button><button class="primary-button" type="button" data-confirm-dialog>Zatwierdź</button></div></div>
   </dialog>
-  <div class="toast" id="toast" role="status" aria-live="polite" hidden><span class="toast-icon"><svg><use href="#i-check"/></svg></span><span id="toast-text"></span></div>
+  <div class="toast" id="toast" data-type="info" role="status" aria-live="polite" hidden><span class="toast-icon"><svg><use id="toast-symbol" href="#i-info"/></svg></span><span id="toast-text"></span></div>
 </body>
 </html>
