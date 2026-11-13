@@ -46,6 +46,16 @@ function showToast(message, type = "info") {
   toastTimer = setTimeout(() => { toast.hidden = true; }, 2300);
 }
 function dismissMenus() {
+  document.querySelectorAll(".choice-menu.is-overlay").forEach(menu => {
+    const choice = document.querySelector(`.choice [aria-controls="${menu.id}"]`)?.closest(".choice");
+    menu.hidden = true;
+    menu.classList.remove("is-overlay");
+    menu.style.removeProperty("top");
+    menu.style.removeProperty("left");
+    menu.style.removeProperty("width");
+    menu.style.removeProperty("max-height");
+    if (choice) choice.append(menu);
+  });
   document.querySelectorAll(".context-menu:not([hidden])").forEach(menu => { menu.hidden = true; });
   document.querySelectorAll(".choice-trigger[aria-expanded=\"true\"]").forEach(trigger => trigger.setAttribute("aria-expanded", "false"));
 }
@@ -59,19 +69,41 @@ function toggleMenu(id) {
 function syncChoice(key, value) {
   const choice = document.querySelector(`[data-choice="${key}"]`);
   if (!choice) return;
-  const option = [...choice.querySelectorAll("[data-value]")].find(item => item.dataset.value === String(value));
+  const menu = document.getElementById(choice.querySelector(".choice-trigger").getAttribute("aria-controls"));
+  const option = [...menu.querySelectorAll("[data-value]")].find(item => item.dataset.value === String(value));
   if (!option) return;
   choice.querySelector(".choice-value").textContent = option.querySelector("span").textContent;
-  choice.querySelectorAll("[data-value]").forEach(item => item.setAttribute("aria-checked", String(item === option)));
+  menu.querySelectorAll("[data-value]").forEach(item => item.setAttribute("aria-checked", String(item === option)));
 }
 function toggleChoice(choice) {
   const trigger = choice.querySelector(".choice-trigger");
-  const menu = choice.querySelector(".choice-menu");
+  const menu = document.getElementById(trigger.getAttribute("aria-controls"));
   const opening = menu.hidden;
   dismissMenus();
-  menu.hidden = !opening;
-  trigger.setAttribute("aria-expanded", String(opening));
-  if (opening) menu.querySelector('[aria-checked="true"]')?.focus({ preventScroll: true });
+  if (!opening) return;
+
+  // Portal: menu jest nakładką nad stroną, a nie częścią układu formularza.
+  document.body.append(menu);
+  menu.classList.add("is-overlay");
+  menu.hidden = false;
+  trigger.setAttribute("aria-expanded", "true");
+
+  const rect = trigger.getBoundingClientRect();
+  const margin = 8;
+  const gap = 6;
+  const availableWidth = Math.max(160, window.innerWidth - margin * 2);
+  const width = Math.min(Math.max(rect.width, 188), 280, availableWidth);
+  const left = Math.max(margin, Math.min(rect.right - width, window.innerWidth - width - margin));
+  menu.style.width = `${width}px`;
+  menu.style.left = `${left}px`;
+  const roomBelow = window.innerHeight - rect.bottom - gap - margin;
+  const roomAbove = rect.top - gap - margin;
+  const above = roomBelow < Math.min(170, menu.scrollHeight) && roomAbove > roomBelow;
+  const room = Math.max(80, above ? roomAbove : roomBelow);
+  const height = Math.min(menu.scrollHeight, room, 320);
+  menu.style.maxHeight = `${height}px`;
+  menu.style.top = `${above ? Math.max(margin, rect.top - gap - height) : rect.bottom + gap}px`;
+  menu.querySelector('[aria-checked="true"]')?.focus({ preventScroll: true });
 }
 function selectChoice(choice, option) {
   const key = choice.dataset.choice;
@@ -108,7 +140,11 @@ document.addEventListener("click", event => {
   }
   const choice = btn.closest(".choice");
   if (choice && btn.matches(".choice-trigger")) { toggleChoice(choice); return; }
-  if (choice && btn.matches("[data-value]")) { selectChoice(choice, btn); return; }
+  if (btn.matches(".choice-menu [data-value]")) {
+    const owner = document.querySelector(`.choice [aria-controls="${btn.closest(".choice-menu").id}"]`)?.closest(".choice");
+    if (owner) selectChoice(owner, btn);
+    return;
+  }
   if (btn.matches("[data-open-menu]")) {
     toggleMenu(btn.dataset.openMenu);
     return;
@@ -153,6 +189,11 @@ document.addEventListener("click", event => {
   if (!btn.closest(".context-menu")) dismissMenus();
 });
 
+// Przy zmianie układu chowamy nakładkę, zamiast zostawiać ją w starej pozycji.
+window.addEventListener("resize", dismissMenus);
+window.addEventListener("scroll", event => {
+  if (!event.target.closest?.(".choice-menu")) dismissMenus();
+}, true);
 document.addEventListener("pointerdown", event => {
   if (!event.target.closest("[data-open-menu]") && !event.target.closest(".context-menu") && !event.target.closest(".choice-trigger")) dismissMenus();
 });
