@@ -254,7 +254,7 @@ button:disabled,input:disabled{opacity:.42;cursor:not-allowed}
 .nke-lab-widths button{min-width:53px;padding:6px 9px;border:0;border-radius:7px;background:transparent;color:var(--text-soft);font-size:12px}
 .nke-lab-widths button[aria-pressed="true"]{background:var(--surface-solid);color:var(--primary);font-weight:700;box-shadow:var(--shadow-sm)}
 .nke-workbench{display:flex;align-items:flex-start;justify-content:center;min-width:0;padding:17px 10px 22px;border:1px solid var(--line);border-radius:18px;background:var(--surface-soft)}
-.nke-screen{--nke-font-size:14px;position:relative;display:flex;flex-direction:column;flex:0 1 var(--nke-width);width:min(100%,var(--nke-width));height:clamp(680px,calc(var(--nke-width) * 2.05),865px);min-width:0;background:var(--surface-solid);color:var(--text);box-shadow:0 10px 35px rgba(20,35,60,.14);border:1px solid var(--line-strong);border-radius:0 0 16px 16px;isolation:isolate}
+.nke-screen{--nke-font-size:14px;position:relative;display:flex;flex-direction:column;flex:0 1 var(--nke-width);width:min(100%,var(--nke-width));height:var(--nke-height,850px);min-width:0;background:var(--surface-solid);color:var(--text);box-shadow:0 10px 35px rgba(20,35,60,.14);border:1px solid var(--line-strong);border-radius:0 0 16px 16px;isolation:isolate}
 .nke-screen *{box-sizing:border-box}
 .nke-screen button{font-family:inherit;cursor:pointer}
 .nke-screen button:focus-visible,.nke-screen textarea:focus-visible,.nke-screen input:focus-visible{outline:2px solid var(--primary);outline-offset:-2px}
@@ -334,3 +334,8 @@ button:disabled,input:disabled{opacity:.42;cursor:not-allowed}
 .nke-dialog-actions .nke-dialog-primary{color:white;background:var(--primary);border-color:var(--primary)}
 .nke-notice{position:absolute;bottom:45px;left:50%;transform:translateX(-50%);z-index:70;padding:9px 12px;max-width:92%;width:max-content;border:1px solid var(--line-strong);border-radius:10px;background:var(--surface-solid);box-shadow:var(--shadow-md);color:var(--primary);font-size:11px;text-align:center}
 @media(max-width:400px){.nke-workbench{padding:12px 2px 15px}.nke-menubar{padding:0 2px}.nke-menubar__left,.nke-menubar__right{gap:1px}.nke-menubar button{gap:3px;padding:0 3px;font-size:11px}.nke-menubar button svg{width:13px;height:13px}.nke-tab{padding:0 4px}.nke-tab__close{flex-basis:17px;width:17px}.nke-toolrow button{min-width:25px;padding:0 3px}}
+
+/* Unified right-hand slot for submenu value + arrow (never a fourth grid column). */
+.nke-poprow__tail{display:flex;align-items:center;justify-content:flex-end;gap:5px;max-width:115px;min-width:0}
+.nke-poprow__tail .nke-poprow__hint{min-width:0;max-width:91px}
+.nke-poprow__tail svg{flex-shrink:0;width:13px;height:13px}
