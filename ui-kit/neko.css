@@ -267,19 +267,19 @@ button:disabled,input:disabled{opacity:.42;cursor:not-allowed}
 .nke-menubar button{height:32px;min-height:32px;display:flex;align-items:center;justify-content:center;gap:5px;padding:0 5px;border:0;border-radius:5px;background:transparent;color:var(--text);white-space:nowrap;font-size:12px;font-weight:500}
 .nke-menubar button svg{flex-shrink:0;color:var(--primary)}
 .nke-menubar button:hover,.nke-menubar button[aria-expanded="true"],.nke-menubar button:active{background:var(--primary-soft);color:var(--primary)}
-.nke-tabs-strip{height:54px;min-height:54px;position:relative;z-index:2;background:var(--surface-soft)}
-.nke-tabs-viewport{height:54px;position:relative;min-width:0;overflow:hidden;touch-action:pan-y;user-select:none;-webkit-user-select:none}
-.nke-tab{position:absolute;bottom:0;height:46px;display:flex;align-items:center;gap:3px;min-width:0;padding:0 7px;border:1px solid var(--line-strong);border-radius:14px 14px 0 0;background:var(--surface-soft);color:var(--text-soft);transition:height .13s ease,background .13s ease;box-shadow:0 -2px 5px rgba(20,30,50,.02)}
-.nke-tab.is-active{height:51px;background:var(--surface-solid);color:var(--primary);border-bottom-color:var(--surface-solid)}
-.nke-tab__dirty{flex:0 0 7px;width:7px;height:7px;border-radius:50%;background:var(--primary)}
-.nke-tab__select{flex:1 1 auto;min-width:0;min-height:35px;display:flex;align-items:center;justify-content:center;padding:0 1px;border:0;background:transparent;color:inherit;font-size:11px;font-weight:600;line-height:1.22;text-align:center;overflow-wrap:anywhere;word-break:break-word}
-.nke-tab__select span{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;max-height:2.44em}
+.nke-tabs-strip{height:28px;min-height:28px;position:relative;z-index:2;background:var(--surface-soft)}
+.nke-tabs-viewport{height:28px;position:relative;min-width:0;overflow:hidden;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.nke-tab{position:absolute;bottom:0;height:24px;display:flex;align-items:center;gap:3px;min-width:0;padding:0 7px;border:1px solid var(--line-strong);border-radius:9px 9px 0 0;background:var(--surface-soft);color:var(--text-soft);transition:height .13s ease,background .13s ease;box-shadow:0 -2px 5px rgba(20,30,50,.02)}
+.nke-tab.is-active{height:27px;background:var(--surface-solid);color:var(--primary);border-bottom-color:var(--surface-solid)}
+.nke-tab__dirty{flex:0 0 6px;width:6px;height:6px;border-radius:50%;background:var(--primary)}
+.nke-tab__select{flex:1 1 auto;min-width:0;min-height:22px;display:flex;align-items:center;justify-content:center;padding:0 1px;border:0;background:transparent;color:inherit;font-size:11px;font-weight:600;line-height:1.2;text-align:center;white-space:nowrap;overflow:hidden}
+.nke-tab__select span{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .nke-tab.is-active .nke-tab__select{font-weight:700}
-.nke-tab__close{flex:0 0 19px;width:19px;height:28px;display:grid;place-items:center;padding:0;border:0;border-radius:6px;color:var(--text-faint);background:transparent;font-size:17px;line-height:1}
+.nke-tab__close{flex:0 0 19px;width:19px;height:21px;display:grid;place-items:center;padding:0;border:0;border-radius:6px;color:var(--text-faint);background:transparent;font-size:17px;line-height:1}
 .nke-tab__close:hover,.nke-tab__close:active{color:var(--primary);background:var(--primary-soft)}
-.nke-tongue{position:absolute;bottom:0;z-index:7;width:18px;height:28px;display:grid;place-items:center;padding:0;border:1px solid var(--line-strong);background:var(--surface-solid);color:var(--primary);box-shadow:0 -1px 3px rgba(35,62,90,.05)}
-.nke-tongue--left{left:0;border-radius:10px 0 0 0;border-right:0}
-.nke-tongue--right{right:0;border-radius:0 10px 0 0;border-left:0}
+.nke-tongue{position:absolute;bottom:0;z-index:7;width:18px;height:21px;display:grid;place-items:center;padding:0;border:1px solid var(--line-strong);background:var(--surface-solid);color:var(--primary);box-shadow:0 -1px 3px rgba(35,62,90,.05)}
+.nke-tongue--left{left:0;border-radius:7px 0 0 0;border-right:0}
+.nke-tongue--right{right:0;border-radius:0 7px 0 0;border-left:0}
 .nke-tongue svg{width:12px;height:12px}
 .nke-tongue:disabled{opacity:0;pointer-events:none}
 .nke-paper{position:relative;z-index:1;margin-top:-1px;flex:1 1 auto;min-height:0;display:flex;flex-direction:column;border-top:1px solid var(--line-strong);background:var(--surface-solid);border-radius:0 0 15px 15px}
