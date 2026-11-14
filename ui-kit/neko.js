@@ -140,7 +140,7 @@ function setPreviewWidth(value) {
   syncChoice("width", String(numeric));
 }
 
-// Build 014 · Application menu with in-place submenu pages (syntax example).
+// Build 016 · Application menu with in-place syntax and font subpages.
 const appMenuDemo = document.querySelector('[data-app-menu-demo]');
 let appMenuDocuments = [
   {id:1, name:'config.js', modified:false},
@@ -149,6 +149,30 @@ let appMenuDocuments = [
 ];
 let appMenuSelected = 2, appMenuNextId = 4;
 let appMenuSyntax = 'markdown';
+let appMenuFontSize = 14;
+let appMenuPreviousPage = 'syntax';
+const appMenuFontInput = document.getElementById('app-font-size');
+function syncAppMenuFont() {
+  if (!appMenuDemo) return;
+  appMenuDemo.querySelector('[data-app-font-summary]').textContent = appMenuFontSize + ' px';
+  appMenuDemo.querySelector('[data-app-font-preview]').style.fontSize = appMenuFontSize + 'px';
+}
+if (appMenuFontInput) {
+  appMenuFontInput.addEventListener('input', () => {
+    const n = Number(appMenuFontInput.value);
+    if (appMenuFontInput.value !== '' && Number.isInteger(n) && n >= 8 && n <= 20) {
+      appMenuFontSize = n;
+      syncAppMenuFont();
+    }
+  });
+  appMenuFontInput.addEventListener('change', () => {
+    const n = Number(appMenuFontInput.value);
+    appMenuFontSize = Math.max(8, Math.min(20, Number.isFinite(n) && appMenuFontInput.value !== '' ? Math.round(n) : appMenuFontSize));
+    appMenuFontInput.value = String(appMenuFontSize);
+    syncAppMenuFont();
+  });
+}
+syncAppMenuFont();
 
 // One dropdown hosts both pages; no second popup is created.
 function setAppMenuPage(page, focus = true) {
@@ -157,8 +181,10 @@ function setAppMenuPage(page, focus = true) {
   menu.querySelectorAll('[data-app-page]').forEach(panel => {
     panel.hidden = panel.dataset.appPage !== page;
   });
-  const entry = menu.querySelector('[data-app-submenu="syntax"]');
-  entry?.setAttribute('aria-expanded', String(page === 'syntax'));
+  if (page !== 'root') appMenuPreviousPage = page;
+  menu.querySelectorAll('[data-app-submenu]').forEach(entry => {
+    entry.setAttribute('aria-expanded', String(entry.dataset.appSubmenu === page));
+  });
   menu.scrollTop = 0;
   if (!menu.hidden && menu.classList.contains('is-overlay')) {
     const trigger = appMenuDemo.querySelector('[data-app-menu="view"]');
@@ -171,13 +197,15 @@ function setAppMenuPage(page, focus = true) {
     menu.style.top = String(Math.max(margin, Math.min(desired, window.innerHeight - margin - height))) + 'px';
   }
   if (focus && !menu.hidden) {
-    const target = page === 'root' ? entry : menu.querySelector('[data-app-back]');
+    const target = page === 'root'
+      ? menu.querySelector('[data-app-submenu="' + appMenuPreviousPage + '"]')
+      : menu.querySelector('[data-app-page="' + page + '"] [data-app-back]');
     target?.focus({preventScroll:true});
   }
 }
 function backFromAppSubmenu() {
   const menu = document.getElementById('app-menu-view');
-  if (!menu || menu.hidden || menu.querySelector('[data-app-page="syntax"]')?.hidden !== false) return false;
+  if (!menu || menu.hidden || ![...menu.querySelectorAll('[data-app-page]')].some(panel => !panel.hidden && panel.dataset.appPage !== 'root')) return false;
   setAppMenuPage('root');
   return true;
 }
@@ -337,7 +365,7 @@ document.addEventListener("click", event => {
 // Przy zmianie układu chowamy nakładkę, zamiast zostawiać ją w starej pozycji.
 window.addEventListener("resize", dismissMenus);
 window.addEventListener("scroll", event => {
-  if (!event.target.closest?.(".choice-menu")) dismissMenus();
+  if (!event.target.closest?.(".choice-menu, .neko-app-dropdown")) dismissMenus();
 }, true);
 document.addEventListener("pointerdown", event => {
   if (!event.target.closest("[data-open-menu]") && !event.target.closest("[data-app-menu]") && !event.target.closest(".context-menu") && !event.target.closest(".choice-trigger")) dismissMenus();
