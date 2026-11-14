@@ -212,3 +212,14 @@ button:disabled,input:disabled{opacity:.42;cursor:not-allowed}
 .neko-app-demo-canvas__line span{min-width:12px;text-align:right;color:var(--text-faint)}
 .neko-app-demo-canvas__line code{white-space:pre-wrap;overflow-wrap:anywhere;color:var(--text)}
 @media(max-width:390px){.neko-app-menu{gap:0;padding:0 2px}.neko-app-menu__group{gap:0}.neko-app-menu__item{font-size:10px;gap:3px;padding:0 3px}.neko-app-menu__item svg{width:12px;height:12px}}
+
+/* Build 014 · Submenu as an internal page, not a nested flyout. */
+.neko-app-dropdown__page[hidden]{display:none!important}
+.neko-app-dropdown .neko-app-dropdown__submenu-trigger{grid-template-columns:19px minmax(0,1fr) max-content 14px;gap:6px}
+.neko-app-dropdown__submenu-trigger .neko-app-dropdown__value{min-width:0;max-width:88px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:right;color:var(--text-faint);font-size:11px;font-weight:500}
+.neko-app-dropdown .neko-app-dropdown__chevron{width:14px;height:14px;color:var(--text-faint)}
+.neko-app-dropdown .neko-app-dropdown__back{position:sticky;top:-5px;z-index:1;grid-template-columns:19px minmax(0,1fr) auto;background:var(--surface-solid);color:var(--text);font-weight:700}
+.neko-app-dropdown__back .neko-app-dropdown__page-name{color:var(--text-faint);font-size:11px;font-weight:500}
+.neko-app-dropdown__indent{width:16px;height:1px}
+.neko-app-dropdown [data-app-page="syntax"] [role="menuitemradio"][aria-checked="true"]{background:transparent;color:var(--text)}
+.neko-app-dropdown [data-app-page="syntax"] [role="menuitemradio"][aria-checked="true"]:is(:hover,:focus-visible,:active){background:var(--primary-soft);color:var(--primary)}
