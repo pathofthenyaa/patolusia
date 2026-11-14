@@ -344,3 +344,14 @@ button:disabled,input:disabled{opacity:.42;cursor:not-allowed}
 .nke-poprow--syntax{grid-template-columns:minmax(0,1fr) 16px;gap:8px;padding-left:14px;padding-right:10px}
 .nke-poprow--syntax .nke-poprow__selection{width:16px;height:16px;display:grid;place-items:center}
 .nke-poprow--syntax .nke-poprow__selection svg{width:16px;height:16px;color:var(--primary)}
+
+/* Build 020 · Menu składni bez powtarzających się ikon. Zaznaczenie tylko po prawej. */
+.nke-popup .nke-poprow--plain{grid-template-columns:minmax(0,1fr) auto;gap:9px;padding-left:14px;padding-right:10px}
+.nke-popup .nke-poprow--plain .nke-poprow__tail{min-width:16px}
+/* Pasek symboli przewijany niezależnie; wyszukiwanie i podgląd przypięte do prawej. */
+.nke-toolrow>button{flex:0 0 28px}
+.nke-symbols{display:flex;align-items:center;gap:2px;flex:1 1 0;min-width:0;overflow-x:auto;overflow-y:hidden;overscroll-behavior-inline:contain;scrollbar-width:none;-ms-overflow-style:none;touch-action:pan-x}
+.nke-symbols::-webkit-scrollbar{display:none;width:0;height:0}
+.nke-symbols>button{flex:0 0 28px;min-width:28px;height:31px;padding:0 3px}
+.nke-toolrow__right{margin-left:auto;padding-left:4px;display:flex;align-items:center;gap:2px;flex:0 0 auto;border-left:1px solid var(--line)}
+.nke-toolrow__right>button{flex:0 0 28px;min-width:28px;height:31px;padding:0 4px}
