@@ -812,8 +812,9 @@ for (const widget of document.querySelectorAll('[data-tabs]')) {
     const menuRow=(label,action,iconName,right='',more='')=>
       '<button type="button" class="nke-poprow" '+action+'>'+icon(iconName)+
       '<span class="nke-poprow__label">'+clean(label)+'</span>'+
-      (right?'<span class="nke-poprow__hint">'+clean(right)+'</span>':'')+
-      (more||'')+'</button>';
+      ((right||more)?'<span class="nke-poprow__tail">'+
+        (right?'<span class="nke-poprow__hint">'+clean(right)+'</span>':'')+
+        (more||'')+'</span>':'')+'</button>';
     function drawMenu(){
       if(!menuName)return;
       let body='';
@@ -1003,6 +1004,7 @@ for (const widget of document.querySelectorAll('[data-tabs]')) {
       button.addEventListener('click',()=>{
         const width=Number(button.dataset.nkeWidth);
         studio.style.setProperty('--nke-width',width+'px');
+        studio.style.setProperty('--nke-height',({320:700,360:770,412:850}[width]||850)+'px');
         document.querySelectorAll('[data-nke-width]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
         requestAnimationFrame(measureTabs);
       });
