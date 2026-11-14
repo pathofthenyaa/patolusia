@@ -140,7 +140,7 @@ function setPreviewWidth(value) {
   syncChoice("width", String(numeric));
 }
 
-// Build 016 · Application menu with in-place syntax and font subpages.
+// Build 017 · Fix live font preview in the portaled application menu.
 const appMenuDemo = document.querySelector('[data-app-menu-demo]');
 let appMenuDocuments = [
   {id:1, name:'config.js', modified:false},
@@ -153,9 +153,15 @@ let appMenuFontSize = 14;
 let appMenuPreviousPage = 'syntax';
 const appMenuFontInput = document.getElementById('app-font-size');
 function syncAppMenuFont() {
-  if (!appMenuDemo) return;
-  appMenuDemo.querySelector('[data-app-font-summary]').textContent = appMenuFontSize + ' px';
-  appMenuDemo.querySelector('[data-app-font-preview]').style.fontSize = appMenuFontSize + 'px';
+  // The menu is portaled to document.body when open, so it is no longer
+  // a descendant of appMenuDemo. Always address its stable menu element.
+  const menu = document.getElementById('app-menu-view');
+  if (!menu) return;
+  const summary = menu.querySelector('[data-app-font-summary]');
+  const preview = menu.querySelector('[data-app-font-preview]');
+  if (!summary || !preview) return;
+  summary.textContent = appMenuFontSize + ' px';
+  preview.style.fontSize = appMenuFontSize + 'px';
 }
 if (appMenuFontInput) {
   appMenuFontInput.addEventListener('input', () => {
