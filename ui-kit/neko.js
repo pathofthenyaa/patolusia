@@ -140,7 +140,7 @@ function setPreviewWidth(value) {
   syncChoice("width", String(numeric));
 }
 
-// Build 012 · Compact application menu demo. Actions are examples; existing source commands stay unchanged.
+// Build 014 · Application menu with in-place submenu pages (syntax example).
 const appMenuDemo = document.querySelector('[data-app-menu-demo]');
 let appMenuDocuments = [
   {id:1, name:'config.js', modified:false},
@@ -148,10 +148,43 @@ let appMenuDocuments = [
   {id:3, name:'index.html', modified:false}
 ];
 let appMenuSelected = 2, appMenuNextId = 4;
+let appMenuSyntax = 'markdown';
+
+// One dropdown hosts both pages; no second popup is created.
+function setAppMenuPage(page, focus = true) {
+  const menu = document.getElementById('app-menu-view');
+  if (!menu) return;
+  menu.querySelectorAll('[data-app-page]').forEach(panel => {
+    panel.hidden = panel.dataset.appPage !== page;
+  });
+  const entry = menu.querySelector('[data-app-submenu="syntax"]');
+  entry?.setAttribute('aria-expanded', String(page === 'syntax'));
+  menu.scrollTop = 0;
+  if (!menu.hidden && menu.classList.contains('is-overlay')) {
+    const trigger = appMenuDemo.querySelector('[data-app-menu="view"]');
+    const rect = trigger.getBoundingClientRect();
+    const height = menu.getBoundingClientRect().height;
+    const margin = 8, gap = 6;
+    const below = window.innerHeight - rect.bottom - margin - gap;
+    const above = rect.top - margin - gap;
+    const desired = height > below && above > below ? rect.top - gap - height : rect.bottom + gap;
+    menu.style.top = String(Math.max(margin, Math.min(desired, window.innerHeight - margin - height))) + 'px';
+  }
+  if (focus && !menu.hidden) {
+    const target = page === 'root' ? entry : menu.querySelector('[data-app-back]');
+    target?.focus({preventScroll:true});
+  }
+}
+function backFromAppSubmenu() {
+  const menu = document.getElementById('app-menu-view');
+  if (!menu || menu.hidden || menu.querySelector('[data-app-page="syntax"]')?.hidden !== false) return false;
+  setAppMenuPage('root');
+  return true;
+}
 
 function syncAppMenuDocuments() {
   if (!appMenuDemo) return;
-  appMenuDemo.querySelector('[data-app-count]').textContent = `Kart (${appMenuDocuments.length})`;
+  appMenuDemo.querySelector('[data-app-count]').textContent = `Karty (${appMenuDocuments.length})`;
   appMenuDemo.querySelector('[data-app-current]').textContent = appMenuDocuments.find(d => d.id === appMenuSelected)?.name ?? 'Brak dokumentu';
   const list = document.getElementById('app-menu-tabs');
   list.replaceChildren();
@@ -178,10 +211,31 @@ function handleAppMenuClick(button) {
   if (button.matches('[data-app-menu]')) {
     const dropdown = document.getElementById(button.getAttribute('aria-controls'));
     const wasOpen = !dropdown.hidden;
+    if (button.dataset.appMenu === 'view') setAppMenuPage('root', false);
     dismissMenus();
     if (!wasOpen) {
       positionOverlay(dropdown, button, {appBar:true});
     }
+    return true;
+  }
+  if (button.matches('[data-app-submenu]')) {
+    setAppMenuPage(button.dataset.appSubmenu);
+    return true;
+  }
+  if (button.matches('[data-app-back]')) {
+    setAppMenuPage('root');
+    return true;
+  }
+  if (button.matches('[data-app-syntax]')) {
+    appMenuSyntax = button.dataset.appSyntax;
+    const menu = document.getElementById('app-menu-view');
+    menu.querySelectorAll('[data-app-syntax]').forEach(option => {
+      option.setAttribute('aria-checked', String(option.dataset.appSyntax === appMenuSyntax));
+    });
+    const label = button.children[1].textContent;
+    menu.querySelector('[data-app-syntax-summary]').textContent = label;
+    dismissMenus();
+    showToast('Składnia: ' + label + ' (demonstracja)');
     return true;
   }
   if (button.matches('[data-app-new]')) {
@@ -289,10 +343,15 @@ document.addEventListener("pointerdown", event => {
   if (!event.target.closest("[data-open-menu]") && !event.target.closest("[data-app-menu]") && !event.target.closest(".context-menu") && !event.target.closest(".choice-trigger")) dismissMenus();
 });
 document.addEventListener("keydown", event => {
-  if (event.key === "Escape") { dismissMenus(); return; }
+  if (event.key === "Escape") {
+    if (backFromAppSubmenu()) { event.preventDefault(); return; }
+    dismissMenus();
+    return;
+  }
   const menu = event.target.closest(".choice-menu, .neko-app-dropdown");
   if (!menu) return;
-  const items = [...menu.querySelectorAll(menu.classList.contains('neko-app-dropdown') ? 'button:not([disabled])' : '[data-value]')];
+  const items = [...menu.querySelectorAll(menu.classList.contains('neko-app-dropdown') ? 'button:not([disabled])' : '[data-value]')]
+    .filter(item => !item.closest('[data-app-page][hidden]'));
   if (!items.length) return;
   const index = items.indexOf(document.activeElement);
   if (event.key === "ArrowDown" || event.key === "ArrowUp") {
