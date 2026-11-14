@@ -232,3 +232,17 @@ button:disabled,input:disabled{opacity:.42;cursor:not-allowed}
 .neko-app-dropdown--pages button{font-family:Inter,ui-rounded,"SF Pro Text","Segoe UI",Roboto,sans-serif;font-size:12px;font-weight:400;line-height:1.35}
 .neko-app-dropdown--pages .neko-app-dropdown__back{font-weight:400}
 .neko-app-dropdown--pages .neko-app-dropdown__page-name,.neko-app-dropdown--pages .neko-app-dropdown__value{font-size:12px;font-weight:400}
+
+/* Build 016 · Font subpage reuses the canonical SpinEdit with an inline sample. */
+.neko-app-font-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:6px;padding:10px 6px 9px}
+.neko-app-font-row label{font-size:12px;font-weight:400;color:var(--text)}
+.neko-app-font-control{display:flex;align-items:center;gap:5px;min-width:0}
+.neko-app-dropdown .neko-app-font-control .number-stepper{width:106px;height:34px;grid-template-columns:31px minmax(0,1fr) 31px;border-radius:9px;box-shadow:none}
+.neko-app-dropdown .neko-app-font-control .stepper-button{height:32px;min-height:0;width:31px;display:grid;place-items:center;grid-template-columns:1fr;gap:0;padding:0;border:0;border-radius:0;background:transparent;color:var(--primary)}
+.neko-app-dropdown .neko-app-font-control .stepper-button:hover:not(:disabled){background:var(--primary-soft)}
+.neko-app-dropdown .neko-app-font-control .stepper-button:disabled{opacity:.35;cursor:default}
+.neko-app-dropdown .neko-app-font-control .stepper-button svg{width:15px;height:15px}
+.neko-app-font-control .stepper-input{font-size:12px;font-weight:600}
+.neko-app-font-unit{font-size:11px;color:var(--text-faint)}
+.neko-app-font-preview{min-height:42px;margin:0 7px 7px;padding:9px 10px;border-radius:8px;background:var(--surface-soft);color:var(--text)}
+.neko-app-font-preview [data-app-font-preview]{display:block;overflow-wrap:anywhere;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;line-height:1.45}
