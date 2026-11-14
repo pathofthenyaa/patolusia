@@ -355,3 +355,29 @@ button:disabled,input:disabled{opacity:.42;cursor:not-allowed}
 .nke-symbols>button{flex:0 0 28px;min-width:28px;height:31px;padding:0 3px}
 .nke-toolrow__right{margin-left:auto;padding-left:4px;display:flex;align-items:center;gap:2px;flex:0 0 auto;border-left:1px solid var(--line)}
 .nke-toolrow__right>button{flex:0 0 28px;min-width:28px;height:31px;padding:0 4px}
+
+
+/* Editor mock only: compact icon-only configurable shortcut bar. */
+.nke-shortcutbar{gap:0;padding:0 4px}
+.nke-shortcut-actions{display:flex;align-items:center;gap:3px;min-width:0;flex:1 1 0;height:100%;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;overscroll-behavior-inline:contain;touch-action:pan-x}
+.nke-shortcut-actions::-webkit-scrollbar{display:none}
+.nke-shortcut-item{display:flex;align-items:center;flex:0 0 32px;width:32px;height:35px;position:relative}
+.nke-shortcut-item>button:first-child{display:grid;place-items:center;flex:0 0 32px;width:32px;height:32px;min-width:32px;padding:0;border:0;border-radius:7px;background:transparent;color:var(--text-soft)}
+.nke-shortcut-item>button:first-child svg{width:17px;height:17px;color:var(--primary)}
+.nke-shortcut-item>button:first-child:active,.nke-shortcut-item>button:first-child:hover{background:var(--primary-soft)}
+.nke-shortcutbar .nke-toolrow__right{padding-left:5px}
+.nke-shortcutbar .nke-toolrow__right>button{width:31px;height:32px;flex:0 0 31px;min-width:31px}
+.nke-shortcutbar .nke-toolrow__right>button[hidden]{display:none}
+.nke-shortcutbar.is-editing .nke-shortcut-item{background:var(--surface-soft);border-radius:7px}
+.nke-shortcutbar.is-editing .nke-shortcut-item>button:first-child{opacity:.75}
+.nke-shortcut-remove{position:absolute;right:-2px;top:-4px;z-index:2;display:grid;place-items:center;width:15px!important;height:15px!important;min-width:15px!important;padding:0!important;border:1px solid var(--surface-solid)!important;border-radius:50%!important;background:var(--danger)!important;color:#fff!important;font-size:12px!important;line-height:1!important}
+.nke-popup[data-nke-anchor="bottom"]{top:auto;bottom:75px;max-height:min(52%,400px)}
+.nke-popup .nke-popup-heading{padding:9px 10px 6px;font-size:11px;color:var(--text-faint);font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.nke-popup .nke-symbol-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;padding:9px 6px 7px}
+.nke-popup .nke-symbol-grid button{height:39px;min-height:39px;display:grid;place-items:center;padding:0 2px;border:1px solid var(--line);border-radius:8px;background:var(--surface-soft);color:var(--text);font:600 14px/1.1 ui-monospace,monospace}
+.nke-popup .nke-symbol-grid button:active,.nke-popup .nke-symbol-grid button:hover{background:var(--primary-soft);border-color:var(--primary-border);color:var(--primary)}
+.nke-popup .nke-shortcut-choice{min-height:38px}
+.nke-popup .nke-shortcut-choice[aria-checked="true"]{background:transparent;color:var(--text)}
+.nke-popup .nke-shortcut-choice[aria-checked="true"] .nke-poprow__tail{color:var(--primary)}
+.nke-popup .nke-shortcut-choice[aria-checked="true"]:hover{background:var(--primary-soft)}
+.nke-popup .nke-shortcut-choice .nke-poprow__tail svg{width:15px;height:15px}

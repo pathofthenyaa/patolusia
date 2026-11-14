@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#f7f9ff">
   <title>Neko UI Kit — Neko Style v1.1 · Build 020</title>
-  <link rel="stylesheet" href="./neko.css?v=020">
-  <script type="module" src="./neko.js?v=020"></script>
+  <link rel="stylesheet" href="./neko.css?v=020-editor-shortcuts">
+  <script type="module" src="./neko.js?v=020-editor-shortcuts"></script>
 </head>
 <body>
   <svg class="icon-library" aria-hidden="true">
@@ -41,6 +41,16 @@
     <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
     <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.2v.3"/></symbol>
     <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"/><circle cx="12" cy="12" r="2.5"/></symbol>
+    <symbol id="i-symbols" viewBox="0 0 24 24"><path d="M8 4H6a2 2 0 0 0-2 2v4l-2 2 2 2v4a2 2 0 0 0 2 2h2M16 4h2a2 2 0 0 1 2 2v4l2 2-2 2v4a2 2 0 0 1-2 2h-2M10 9h4M10 15h4"/></symbol>
+    <symbol id="i-indent" viewBox="0 0 24 24"><path d="M10 5h11M10 11h11M10 17h11M3 8l4 4-4 4M7 12H2"/></symbol>
+    <symbol id="i-outdent" viewBox="0 0 24 24"><path d="M10 5h11M10 11h11M10 17h11M7 8l-4 4 4-4M3 12h5"/></symbol>
+    <symbol id="i-goto" viewBox="0 0 24 24"><path d="M9 4 6 20M17 4l-3 16M3 9h17M2 15h17"/></symbol>
+    <symbol id="i-wrap" viewBox="0 0 24 24"><path d="M3 6h14a4 4 0 0 1 0 8H8m0-3-3 3 3 3M3 20h12"/></symbol>
+    <symbol id="i-fold" viewBox="0 0 24 24"><path d="M4 5h16M4 10h11M4 19h16m-6-7 4 3-4 3"/></symbol>
+    <symbol id="i-duplicate" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="1"/><path d="M16 8V4H4v12h4"/></symbol>
+    <symbol id="i-trim" viewBox="0 0 24 24"><path d="M3 6h17M3 11h13M3 16h9m3-1 5 5m0-5-5 5"/></symbol>
+    <symbol id="i-line-up" viewBox="0 0 24 24"><path d="M4 10h16M4 16h16m-8-8V2m-4 4 4-4 4 4"/></symbol>
+    <symbol id="i-line-down" viewBox="0 0 24 24"><path d="M4 8h16M4 14h16m-8 2v6m-4-4 4 4 4-4"/></symbol>
   </svg>
 
   <header class="kit-header">
@@ -310,22 +320,11 @@
 4</pre>
                 <textarea data-nke-editor spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-label="Zawartość dokumentu" wrap="off"></textarea>
               </div>
-              <div class="nke-toolrow" role="toolbar" aria-label="Narzędzia edytora">
-                <button type="button" data-nke-action="undo" title="Cofnij" aria-label="Cofnij"><svg><use href="#i-undo"/></svg></button>
-                <button type="button" data-nke-action="redo" title="Ponów" aria-label="Ponów"><svg class="nke-flip"><use href="#i-undo"/></svg></button>
-                <span class="nke-tool-sep" aria-hidden="true"></span>
-                <div class="nke-symbols" role="group" aria-label="Pasek symboli — przewijaj w poziomie">
-                  <button type="button" data-nke-insert="  " title="Wstaw dwa odstępy">⇥</button>
-                  <button type="button" data-nke-insert="{}" title="Wstaw nawiasy klamrowe">{ }</button>
-                  <button type="button" data-nke-insert="()" title="Wstaw nawiasy okrągłe">( )</button>
-                  <button type="button" data-nke-insert="[]" title="Wstaw nawiasy kwadratowe">[ ]</button>
-                  <button type="button" data-nke-insert="&lt;&gt;" title="Wstaw nawiasy ostre">&lt; &gt;</button>
-                  <button type="button" data-nke-insert="&quot;&quot;" title="Wstaw podwójny cudzysłów">&quot;&quot;</button>
-                  <button type="button" data-nke-insert="&#39;&#39;" title="Wstaw pojedynczy cudzysłów">&#39;&#39;</button>
-                </div>
+              <div class="nke-toolrow nke-shortcutbar" role="toolbar" aria-label="Pasek skrótów">
+                <div class="nke-shortcut-actions" data-nke-shortcuts role="group" aria-label="Skróty"></div>
                 <div class="nke-toolrow__right">
-                  <button type="button" data-nke-action="search" title="Znajdź i zamień" aria-label="Znajdź i zamień"><svg><use href="#i-search"/></svg></button>
-                  <button type="button" data-nke-action="preview" title="Podgląd Markdown" aria-label="Podgląd Markdown"><svg><use href="#i-eye"/></svg></button>
+                  <button type="button" data-nke-shortcut-add hidden title="Dodaj skrót" aria-label="Dodaj skrót"><svg><use href="#i-plus"/></svg></button>
+                  <button type="button" data-nke-shortcut-edit title="Edytuj pasek skrótów" aria-label="Edytuj pasek skrótów" aria-pressed="false"><svg><use href="#i-edit"/></svg></button>
                 </div>
               </div>
               <div class="nke-statusline" role="status">
@@ -349,7 +348,7 @@
             <div class="nke-notice" data-nke-notice role="status" aria-live="polite" hidden></div>
           </div>
         </div>
-        <p class="hint"><strong>Makieta całego ekranu — jeszcze nie zatwierdzony kanon. Zakładki robocze są spłaszczone do 28 px, a dłuższe nazwy wyświetlane w jednej linii z wielokropkiem. Tapnięcie zmienia dokument, a gest przesuwa zakładki. Pasek symboli przewija się niezależnie, wyszukiwanie i podgląd Markdown pozostają po prawej.</strong> Możesz edytować dokument, tworzyć i zamykać karty, przewijać zakładki gestem, sprawdzać listę „Karty (X)” oraz menu Plik / Edycja / Widok z podmenu Składnia i Czcionka (8–20 px). Działanie plików, SAF i CodeMirror pozostaje demonstracyjne. Układ, treści i proporcje będziemy korygować tutaj, zanim Iria przeniesie je do Androida.</p>
+        <p class="hint"><strong>Pełna makieta NekoEdytora — wersja robocza.</strong> Wszystkie polecenia są w górnym menu; dolny pasek to konfigurowalne skróty wyłącznie w postaci ikon. Ołówek włącza edycję, plus pokazuje katalog poleceń, krzyżyk usuwa skrót, a haczyk kończy edycję. Symbole otwierają podręczną listę znaków, Podgląd Markdown wrócił do menu Widok. Zmiany dotyczą wyłącznie makiety, nie wspólnego UI-kit ani kodu APK.</p>
       </section>
 
       <section id="listy" class="kit-section">
