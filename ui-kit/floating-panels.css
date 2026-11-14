@@ -18,7 +18,7 @@
 #nfp-demo .nfp-gutter{height:100%;overflow:hidden;margin:0;padding:9px 6px 0 0;border-right:1px solid var(--nfp-edge);font:10px/21px ui-monospace,monospace;color:var(--text-faint);text-align:right;white-space:pre}
 #nfp-demo .nfp-editor{width:100%;min-width:0;height:100%;resize:none;border:0;outline:0;padding:9px 8px;background:var(--nfp-card);color:var(--nfp-ink);font:14px/21px ui-monospace,monospace;white-space:pre;tab-size:2;user-select:text}
 #nfp-demo .nfp-shortcuts{position:absolute;left:0;right:0;bottom:31px;height:43px;display:flex;align-items:center;gap:3px;padding:0 5px;border-top:1px solid var(--nfp-edge);background:var(--nfp-card)}
-#nfp-demo .nfp-shortcuts__track{display:flex;flex:1 1 0;min-width:0;height:39px;align-items:center;gap:3px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;touch-action:pan-x}
+#nfp-demo .nfp-shortcuts__track{display:flex;flex:1 1 0;min-width:0;height:39px;align-items:center;gap:3px;padding-right:7px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;touch-action:pan-x}
 #nfp-demo .nfp-shortcuts__track::-webkit-scrollbar,#nfp-demo .nfp-format-track::-webkit-scrollbar{display:none}
 #nfp-demo .nfp-shortcuts__controls{display:flex;align-items:center;gap:2px;flex:0 0 auto;margin-left:auto;padding-left:4px;border-left:1px solid var(--nfp-edge)}
 #nfp-demo .nfp-status{position:absolute;left:0;right:0;bottom:0;height:31px;display:flex;align-items:center;padding:0 9px;border-top:1px solid var(--nfp-edge);background:var(--nfp-soft);color:var(--nfp-muted);font-size:10px}
