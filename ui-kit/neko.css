@@ -223,3 +223,7 @@ button:disabled,input:disabled{opacity:.42;cursor:not-allowed}
 .neko-app-dropdown__indent{width:16px;height:1px}
 .neko-app-dropdown [data-app-page="syntax"] [role="menuitemradio"][aria-checked="true"]{background:transparent;color:var(--text)}
 .neko-app-dropdown [data-app-page="syntax"] [role="menuitemradio"][aria-checked="true"]:is(:hover,:focus-visible,:active){background:var(--primary-soft);color:var(--primary)}
+
+/* Build 015 · In-page submenus: scroll by touch/wheel without a right-side scrollbar. */
+.neko-app-dropdown--pages{scrollbar-width:none;-ms-overflow-style:none}
+.neko-app-dropdown--pages::-webkit-scrollbar{display:none;width:0;height:0}
