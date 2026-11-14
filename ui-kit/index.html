@@ -7,6 +7,8 @@
   <title>Neko UI Kit — Neko Style v1.1 · Build 020</title>
   <link rel="stylesheet" href="./neko.css?v=020-editor-shortcuts">
   <script type="module" src="./neko.js?v=020-editor-shortcuts"></script>
+  <link rel="stylesheet" href="./floating-panels.css?v=021">
+  <script type="module" src="./floating-panels.js?v=021"></script>
 </head>
 <body>
   <svg class="icon-library" aria-hidden="true">
@@ -70,6 +72,7 @@
       <a href="#zakladki" class="side-link">Zakładki / Tabs</a>
       <a href="#menu-aplikacji" class="side-link">Górne menu aplikacji</a>
       <a href="#nekoeditor-screen" class="side-link">NekoEdytor · pełny ekran</a>
+      <a href="#floating-panels" class="side-link">Pływające panele</a>
       <a href="#listy" class="side-link">Karty i listy</a>
       <a href="#warstwy" class="side-link">Menu i dialogi</a>
       <a href="#tokeny" class="side-link">Tokeny i kod</a>
@@ -349,6 +352,130 @@
           </div>
         </div>
         <p class="hint"><strong>Pełna makieta NekoEdytora — wersja robocza.</strong> Wszystkie polecenia są w górnym menu; dolny pasek to konfigurowalne skróty wyłącznie w postaci ikon. Ołówek włącza edycję, plus pokazuje katalog poleceń, krzyżyk usuwa skrót, a haczyk kończy edycję. Symbole otwierają podręczną listę znaków, Podgląd Markdown wrócił do menu Widok. Zmiany dotyczą wyłącznie makiety, nie wspólnego UI-kit ani kodu APK.</p>
+      </section>
+
+
+      <section id="floating-panels" class="kit-section">
+        <div class="section-line"><h2>Pływające panele Neko</h2><span class="section-caption">Build 021 · prototyp do zatwierdzenia</span></div>
+        <p class="hint">Wspólny wzorzec <strong>FloatingToolPanel</strong> dla NekoEdytora: małe ruchome paski zamiast dużych modalnych okien. Dotknięcie edytora przygasza wszystkie paski, ale ich nie zamyka. Nie ma pełnoekranowej zasłony przechwytującej dotyk.</p>
+        <div id="nfp-demo">
+          <div class="nfp-settings">
+            <strong>Podgląd mobilny</strong>
+            <div class="nfp-sizes" role="group" aria-label="Szerokość podglądu">
+              <button type="button" data-nfp-width="320" aria-pressed="false">320</button>
+              <button type="button" data-nfp-width="360" aria-pressed="false">360</button>
+              <button type="button" data-nfp-width="412" aria-pressed="true">412 px</button>
+            </div>
+            <span>Dotyk, przesuwanie, wyszukiwanie i edycja działają demonstracyjnie.</span>
+          </div>
+          <div class="nfp-frame">
+            <div id="nfp-stage" class="nfp-stage" aria-label="Interaktywny podgląd pływających paneli">
+              <nav class="nfp-header" aria-label="Przykładowe menu NekoEdytora">
+                <div>
+                  <button type="button">Plik</button>
+                  <button type="button" id="nfp-edit-menu" aria-haspopup="menu" aria-expanded="false">Edycja</button>
+                  <button type="button">Widok</button>
+                </div>
+                <span style="color:var(--text-soft);font-size:10px">＋ Karty (1)</span>
+              </nav>
+              <div class="nfp-tabs"><span>Przykład.js</span></div>
+              <div class="nfp-editor-area">
+                <pre class="nfp-gutter" id="nfp-gutter" aria-hidden="true"></pre>
+                <textarea class="nfp-editor" id="nfp-editor" spellcheck="false" autocapitalize="off" aria-label="Przykładowy tekst edytora" wrap="off">// NekoEdytor
+function helloNeko() {
+  const name = "Neko";
+  console.log(name);
+  return name;
+}
+
+const options = {
+  fontSize: 14,
+  theme: "dark"
+};
+
+helloNeko();</textarea>
+              </div>
+              <div class="nfp-shortcuts" role="toolbar" aria-label="Konfigurowalny pasek skrótów">
+                <div class="nfp-shortcuts__track" data-nfp-track="shortcuts"></div>
+                <div class="nfp-shortcuts__controls">
+                  <button type="button" class="nfp-ctrl" data-nfp-shortcut-add data-nfp-catalog-open aria-label="Dodaj skrót" hidden>+</button>
+                  <button type="button" class="nfp-ctrl" data-nfp-shortcut-edit aria-pressed="false" aria-label="Edytuj skróty">✎</button>
+                </div>
+              </div>
+              <div class="nfp-status" id="nfp-status">Wiersz 1, kol. 1 · UTF-8 · LF</div>
+
+              <div class="nfp-palette" data-nfp-panel="search" style="left:8px;top:150px" aria-label="Znajdź i zamień">
+                <button type="button" class="nfp-palette__close" data-nfp-close="search" aria-label="Zamknij wyszukiwanie" title="Zamknij"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+                <div class="nfp-row">
+                  <button type="button" class="nfp-handle" data-nfp-handle aria-label="Przenieś wyszukiwanie" title="Przeciągnij pasek"><svg aria-hidden="true" viewBox="0 0 12 20"><circle cx="3" cy="4" r="1.3"/><circle cx="9" cy="4" r="1.3"/><circle cx="3" cy="10" r="1.3"/><circle cx="9" cy="10" r="1.3"/><circle cx="3" cy="16" r="1.3"/><circle cx="9" cy="16" r="1.3"/></svg></button>
+                  <input id="nfp-query" class="nfp-field" type="text" placeholder="Szukaj..." aria-label="Szukany tekst" spellcheck="false" autocomplete="off">
+                  <span class="nfp-count" id="nfp-count">0 z 0</span>
+                  <button type="button" class="nfp-icon" data-nfp-nav="-1" aria-label="Poprzednie trafienie" title="Poprzednie"><svg viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></svg></button>
+                  <button type="button" class="nfp-icon" data-nfp-nav="1" aria-label="Następne trafienie" title="Następne"><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg></button>
+                </div>
+                <div class="nfp-row nfp-replace-row" id="nfp-replace-row">
+                  <button type="button" class="nfp-handle" data-nfp-handle aria-label="Przenieś zamianę tekstu" title="Przeciągnij pasek"><svg aria-hidden="true" viewBox="0 0 12 20"><circle cx="3" cy="4" r="1.3"/><circle cx="9" cy="4" r="1.3"/><circle cx="3" cy="10" r="1.3"/><circle cx="9" cy="10" r="1.3"/><circle cx="3" cy="16" r="1.3"/><circle cx="9" cy="16" r="1.3"/></svg></button>
+                  <input id="nfp-replacement" class="nfp-field" type="text" placeholder="Zamień na..." aria-label="Tekst zamiany" spellcheck="false" autocomplete="off">
+                  <button type="button" class="nfp-action" data-nfp-replace-one>Zamień</button>
+                  <button type="button" class="nfp-action nfp-action--primary" data-nfp-replace-all>Wszystko</button>
+                </div>
+              </div>
+
+              <div class="nfp-palette is-dim" data-nfp-panel="goto" style="left:18px;top:255px" aria-label="Idź do wiersza">
+                <button type="button" class="nfp-palette__close" data-nfp-close="goto" aria-label="Zamknij panel Idź do wiersza" title="Zamknij"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+                <div class="nfp-row">
+                  <button type="button" class="nfp-handle" data-nfp-handle aria-label="Przenieś Idź do wiersza" title="Przeciągnij pasek"><svg aria-hidden="true" viewBox="0 0 12 20"><circle cx="3" cy="4" r="1.3"/><circle cx="9" cy="4" r="1.3"/><circle cx="3" cy="10" r="1.3"/><circle cx="9" cy="10" r="1.3"/><circle cx="3" cy="16" r="1.3"/><circle cx="9" cy="16" r="1.3"/></svg></button>
+                  <span class="nfp-title">Idź do wiersza</span>
+                  <div class="nfp-spin"><button type="button" data-nfp-step="line:-1" aria-label="Zmniejsz">−</button><input id="nfp-line" type="number" inputmode="numeric" value="4" min="1" step="1" aria-label="Numer wiersza"><button type="button" data-nfp-step="line:1" aria-label="Zwiększ">+</button></div>
+                  <button type="button" class="nfp-icon nfp-primary" data-nfp-goto aria-label="Przejdź do wybranego wiersza" title="Przejdź">→</button>
+                </div>
+              </div>
+
+              <div class="nfp-palette is-dim" data-nfp-panel="font" style="left:23px;top:341px" aria-label="Wielkość czcionki">
+                <button type="button" class="nfp-palette__close" data-nfp-close="font" aria-label="Zamknij wielkość czcionki" title="Zamknij"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+                <div class="nfp-row">
+                  <button type="button" class="nfp-handle" data-nfp-handle aria-label="Przenieś Wielkość czcionki" title="Przeciągnij pasek"><svg aria-hidden="true" viewBox="0 0 12 20"><circle cx="3" cy="4" r="1.3"/><circle cx="9" cy="4" r="1.3"/><circle cx="3" cy="10" r="1.3"/><circle cx="9" cy="10" r="1.3"/><circle cx="3" cy="16" r="1.3"/><circle cx="9" cy="16" r="1.3"/></svg></button>
+                  <span class="nfp-title">Wielkość czcionki</span>
+                  <div class="nfp-spin"><button type="button" data-nfp-step="font:-1" aria-label="Zmniejsz">−</button><input id="nfp-font" type="number" inputmode="numeric" value="14" min="8" max="20" step="1" aria-label="Rozmiar czcionki"><button type="button" data-nfp-step="font:1" aria-label="Zwiększ">+</button></div>
+                  <small>px</small>
+                </div>
+              </div>
+
+              <div class="nfp-palette nfp-format is-dim" data-nfp-panel="format" style="left:8px;top:434px" aria-label="Szybkie formatowanie">
+                <button type="button" class="nfp-palette__close" data-nfp-close="format" aria-label="Zamknij szybkie formatowanie" title="Zamknij"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+                <div class="nfp-row">
+                  <button type="button" class="nfp-handle" data-nfp-handle aria-label="Przenieś Szybkie formatowanie" title="Przeciągnij pasek"><svg aria-hidden="true" viewBox="0 0 12 20"><circle cx="3" cy="4" r="1.3"/><circle cx="9" cy="4" r="1.3"/><circle cx="3" cy="10" r="1.3"/><circle cx="9" cy="10" r="1.3"/><circle cx="3" cy="16" r="1.3"/><circle cx="9" cy="16" r="1.3"/></svg></button>
+                  <span class="nfp-title">Formatowanie</span>
+                  <div class="nfp-format-track" data-nfp-track="format" role="toolbar" aria-label="Narzędzia formatowania"></div>
+                  <div class="nfp-format-toolbar">
+                    <button type="button" class="nfp-icon" data-nfp-format-add data-nfp-catalog-open aria-label="Dodaj narzędzie" hidden>+</button>
+                    <button type="button" class="nfp-icon" data-nfp-format-done aria-label="Zakończ edycję" hidden>✓</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="nfp-menu" id="nfp-menu" role="menu" aria-label="Edycja" hidden>
+                <div data-nfp-menu-page="root">
+                  <button type="button" data-nfp-menu-next>Szybkie formatowanie <span>›</span></button>
+                </div>
+                <div data-nfp-menu-page="format" hidden>
+                  <button type="button" data-nfp-menu-back>‹ Powrót</button>
+                  <button type="button" data-nfp-open="format">Pokaż panel</button>
+                  <button type="button" data-nfp-menu-edit>Edytuj <span>✎</span></button>
+                </div>
+              </div>
+              <div class="nfp-catalog" id="nfp-catalog" hidden>
+                <header id="nfp-catalog-heading">Dodaj narzędzie</header>
+                <div id="nfp-catalog-list"></div>
+                <button type="button" data-nfp-catalog-close>Zamknij listę</button>
+              </div>
+              <span class="nfp-measure" id="nfp-measure" aria-hidden="true">WWWWWWWWWW</span>
+            </div>
+          </div>
+          <p class="nfp-note" id="nfp-note" role="status" aria-live="polite">Każdy pasek można przeciągnąć za uchwyt; edytor pozostaje aktywny pod spodem.</p>
+        </div>
+        <p class="hint"><strong>Wspólne zachowanie:</strong> przesuwanie tylko za uchwyt; zamykanie wyłącznie przez osobną, subtelnie czerwoną zakładkę nad prawym narożnikiem (obszar dotykowy 35 × 30 px); utrata fokusu powoduje przygaszenie, nie zamknięcie. Panel Znajdź ma jeden wiersz, Zamień dodaje drugi; pola mają tę samą szerokość odpowiadającą 10 szerokim literom W plus marginesy. Czcionka stosuje zmiany natychmiast w zakresie 8–20 px. Szybkie formatowanie i dolne skróty mają niezależne listy, przewijanie poziome oraz zmianę kolejności w trybie edycji przez ⠿ (także klawiszami strzałek). Formatowanie: Edycja → Szybkie formatowanie → Edytuj. Wszystkie panele mogą pozostać otwarte jednocześnie.</p>
+        <p class="hint"><strong>Status:</strong> wariant roboczy do przeglądu na telefonie. Przykładowy edytor w tej sekcji symuluje polecenia; nie jest implementacją CodeMirror ani aktualizacją APK.</p>
       </section>
 
       <section id="listy" class="kit-section">

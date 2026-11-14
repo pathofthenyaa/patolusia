@@ -37,3 +37,19 @@ Pochodzenie komponentów: \`.icon-button\` 42px ghost, \`.round-action\` 44px, \
 Nie jest to pełna transplantacja NekoGit, nie zawiera natywnego mostka Android ani systemu produkcyjnych danych. Nie wprowadza zmian w UI innych aplikacji. Żaden komponent nie uzyskuje statusu **zatwierdzony** przed oceną właściciela na docelowym telefonie.
 
 **Wymagana weryfikacja:** S24 Ultra (portrait), motywy Light/Dark, szerokość, klawiatura, dotyk, otwieranie i zamykanie warstw, kontrast i scroll. Rzeczywisty test urządzenia: **PENDING**.
+
+## FloatingToolPanel — Build 021 (prototyp)
+
+Nowy interaktywny pokaz pod `/ui-kit/#floating-panels` stanowi niezależną propozycję pływających palet dla NekoEdytora. **Nie zmienia zatwierdzonych komponentów i nie jest jeszcze kanonem produkcyjnym.**
+
+- `floating-panels.css` — styl oparty na istniejących tokenach Light/Dark Neko Style.
+- `floating-panels.js` — interakcje tylko dla przykładowego edytora, bez Androida/CodeMirror.
+- Panel Idź do wiersza: uchwyt, nazwa, SpinEdit, wykonanie, niezależne zamknięcie.
+- Panel Wielkość czcionki: uchwyt, nazwa, SpinEdit 8–20 px, automatyczne zastosowanie.
+- Panel Znajdź/Zamień: jeden lub dwa wiersze; uchwyt w obu, pola identycznej szerokości obliczonej na podstawie 10 liter W; licznik, nawigacja strzałkami SVG, pojedyncza i zbiorcza zamiana, zwykły tekst bez Regex.
+- Panel Szybkie formatowanie: przewijana lista poleceń, konfiguracja z Edycja → Szybkie formatowanie → Edytuj.
+- Dolny pasek skrótów: osobny tryb edycji, dodawanie/usuwanie i zmiana kolejności.
+- Obie konfiguracje są odrębne, z demonstracyjnym zapisem w localStorage.
+- Wspólna zasada: niezależne okna, bez blokującego tła, przesuwanie za uchwyt, przygaszenie po utracie aktywności i zamknięcie wyłącznie przez górny czerwony występ.
+
+Uwaga: na ekranie dotykowym trzeba jeszcze potwierdzić ergonomię przeciągania, zachowanie przy klawiaturze i minimalne obszary dotykowe. To demonstrator projektu, nie wdrożenie do Androida.
