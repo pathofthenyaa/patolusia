@@ -633,3 +633,381 @@ for (const widget of document.querySelectorAll('[data-tabs]')) {
   render();
   viewport.classList.add('is-ready');
 }
+
+
+// Build 018 — Full NekoEdytor screen. Self-contained UI prototype, not CodeMirror/SAF.
+{
+  const studio = document.getElementById('nke-studio');
+  if (studio) {
+    const viewport = studio.querySelector('[data-nke-tabs]');
+    const editor = studio.querySelector('[data-nke-editor]');
+    const gutter = studio.querySelector('[data-nke-lines]');
+    const popup = studio.querySelector('[data-nke-popup]');
+    const dialogLayer = studio.querySelector('[data-nke-dialog]');
+    const notice = studio.querySelector('[data-nke-notice]');
+    const previous = studio.querySelector('[data-nke-prev]');
+    const following = studio.querySelector('[data-nke-next]');
+    const count = studio.querySelector('[data-nke-count]');
+    const caret = studio.querySelector('[data-nke-caret]');
+    const state = studio.querySelector('[data-nke-state]');
+    const syntaxLabel = studio.querySelector('[data-nke-syntax-label]');
+    const MAX = 12, VISIBLE = 3, OVERLAP = 8;
+    const icon = (name) => '<svg aria-hidden="true"><use href="#i-' + name + '"/></svg>';
+    const clean = (value) => String(value).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
+    let documents = [
+      {id:1,name:'notes.md',syntax:'Markdown',dirty:false,text:'# NekoEdytor\n\n## Nowy interfejs\n\n- Górne menu aplikacji\n- Zakładki połączone z edytorem\n- Podmenu Składnia i Czcionka\n\nTo jest interaktywna makieta.\nMożesz edytować ten tekst.'},
+      {id:2,name:'config.json',syntax:'JSON',dirty:true,text:'{\n  "application": "NekoEdytor",\n  "version": "0.4.0",\n  "theme": "Neko Style",\n  "tabs": 12,\n  "fontSize": 14\n}\n'},
+      {id:3,name:'index.html',syntax:'HTML',dirty:false,text:'<!doctype html>\n<html lang="pl">\n<head>\n  <title>Neko</title>\n</head>\n<body>\n  <main>NekoEdytor</main>\n</body>\n</html>'},
+      {id:4,name:'README.md',syntax:'Markdown',dirty:true,text:'# Projekt Neko\n\nPrzykładowy czwarty dokument.\nDłuższe nazwy i większa liczba\nkart służą do testowania układu.'}
+    ];
+    let active = 1, nextId = 5, menuName = null, subPage = null, fontSize = 14;
+    let position = 0, tabWidth = 100, drag = null, anim = 0, suppressClick = false;
+    let pendingClose = null, noticeTimer = 0, docTabs = [];
+    const clamp = (v,min,max) => Math.max(min,Math.min(max,v));
+    const current = () => documents.find(d=>d.id===active);
+    const maxPosition = () => Math.max(0,documents.length-VISIBLE);
+    const displayName = (name) => name.length > 55 ? name.slice(0,52)+'…' : name;
+
+    function showNotice(message) {
+      clearTimeout(noticeTimer);
+      notice.textContent=message;
+      notice.hidden=false;
+      noticeTimer=setTimeout(()=>{notice.hidden=true;},2200);
+    }
+    function updateStatus() {
+      const doc = current();
+      if(!doc)return;
+      count.textContent='Karty ('+documents.length+')';
+      syntaxLabel.textContent=doc.syntax;
+      state.textContent=doc.dirty?'Zmodyfikowano':'Zapisano';
+      const prefix = editor.value.slice(0,editor.selectionStart);
+      const segments=prefix.split('\n');
+      caret.textContent='Wiersz '+segments.length+' · Kol. '+(segments[segments.length-1].length+1);
+      const lines=Math.max(1,editor.value.split('\n').length);
+      gutter.textContent=Array.from({length:lines},(_,i)=>String(i+1)).join('\n');
+      gutter.scrollTop=editor.scrollTop;
+    }
+    function paintTabs(){
+      const max=maxPosition();
+      position=clamp(position,0,max);
+      docTabs.forEach((tab,i)=>{
+        const p=i-position;
+        const shift=OVERLAP*clamp(p,0,1);
+        const alpha=clamp(Math.min(1,1+p,VISIBLE-p),0,1);
+        tab.style.left=(p*tabWidth-shift)+'px';
+        tab.style.width=(tabWidth+shift)+'px';
+        tab.style.opacity=String(alpha);
+        tab.style.visibility=alpha<.001?'hidden':'visible';
+        tab.style.pointerEvents=alpha<.55?'none':'auto';
+        const selected=documents[i]?.id===active;
+        tab.classList.toggle('is-active',selected);
+        tab.setAttribute('aria-selected',String(selected));
+        tab.style.zIndex=String(selected?30:20-i);
+      });
+      previous.disabled=position<=.01;
+      following.disabled=position>=max-.01;
+    }
+    function measureTabs(){tabWidth=Math.max(1,viewport.clientWidth/VISIBLE);paintTabs();}
+    function animateTo(target){
+      target=clamp(target,0,maxPosition());
+      cancelAnimationFrame(anim);
+      const start=performance.now(),from=position,difference=target-from;
+      if(Math.abs(difference)<.001){position=target;paintTabs();return;}
+      const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+      if(reduced){position=target;paintTabs();return;}
+      const frame=now=>{
+        const t=clamp((now-start)/230,0,1);
+        position=from+difference*(1-(1-t)**3);
+        paintTabs();
+        if(t<1)anim=requestAnimationFrame(frame);
+        else{anim=0;position=target;paintTabs();}
+      };
+      anim=requestAnimationFrame(frame);
+    }
+    function mountTabs(){
+      viewport.replaceChildren();
+      docTabs=documents.map(doc=>{
+        const tab=document.createElement('div');
+        tab.className='nke-tab';
+        tab.setAttribute('role','tab');
+        tab.dataset.nkeTabId=String(doc.id);
+        tab.setAttribute('aria-label',doc.name+(doc.dirty?', niezapisane zmiany':''));
+        tab.innerHTML=(doc.dirty?'<span class="nke-tab__dirty" aria-hidden="true"></span>':'')+
+          '<button type="button" class="nke-tab__select" data-nke-activate="'+doc.id+'" title="'+clean(doc.name)+'"><span>'+clean(displayName(doc.name))+'</span></button>'+
+          '<button type="button" class="nke-tab__close" data-nke-close="'+doc.id+'" aria-label="Zamknij '+clean(doc.name)+'" title="Zamknij">×</button>';
+        viewport.append(tab);return tab;
+      });
+      position=clamp(position,0,maxPosition());
+      measureTabs();
+    }
+    function refreshTabs(){mountTabs();if(menuName==='cards')drawMenu();}
+    function selectDocument(id){
+      if(!documents.some(doc=>doc.id===id))return;
+      active=id;
+      const doc=current();
+      editor.value=doc.text;
+      editor.scrollTop=0;
+      studio.style.setProperty('--nke-font-size',fontSize+'px');
+      const i=documents.findIndex(d=>d.id===id);
+      if(i<Math.round(position))animateTo(i);
+      else if(i>=Math.round(position)+VISIBLE)animateTo(i-VISIBLE+1);
+      paintTabs();
+      updateStatus();
+    }
+    function newDocument(){
+      if(documents.length>=MAX){showNotice('Limit 12 kart');return;}
+      const id=nextId++;
+      documents.push({id,name:'Bez nazwy '+(id-4),syntax:'Zwykły tekst',dirty:false,text:''});
+      mountTabs();
+      selectDocument(id);
+      closeMenu();
+      showNotice('Utworzono nową kartę');
+    }
+    function saveDocument(doc){
+      if(!doc)return;
+      doc.dirty=false;
+      refreshTabs();
+      updateStatus();
+      showNotice('Zapisano (makieta)');
+    }
+    function closeDocument(id){
+      const index=documents.findIndex(d=>d.id===id);
+      if(index<0)return;
+      documents.splice(index,1);
+      if(!documents.length){
+        const n=nextId++;
+        documents.push({id:n,name:'Bez nazwy '+(n-4),syntax:'Zwykły tekst',dirty:false,text:''});
+      }
+      if(active===id) active=documents[Math.min(index,documents.length-1)].id;
+      position=clamp(position,0,maxPosition());
+      mountTabs();
+      selectDocument(active);
+      closeMenu();
+    }
+    function requestClose(id){
+      const doc=documents.find(d=>d.id===id);
+      if(!doc)return;
+      if(!doc.dirty){closeDocument(id);return;}
+      pendingClose=id;
+      studio.querySelector('[data-nke-dialog-label]').textContent=
+        'Zamknąć „'+doc.name+'”? Dokument zawiera niezapisane zmiany.';
+      closeMenu();
+      dialogLayer.hidden=false;
+      studio.querySelector('[data-nke-confirm="cancel"]').focus();
+    }
+    function setFontSize(value){
+      const n=Number(value);
+      if(!Number.isFinite(n))return;
+      fontSize=clamp(Math.round(n),8,20);
+      studio.style.setProperty('--nke-font-size',fontSize+'px');
+      if(menuName==='view' && subPage==='font'){
+        const input=popup.querySelector('[data-nke-font-input]');
+        const sample=popup.querySelector('[data-nke-font-sample]');
+        if(input)input.value=String(fontSize);
+        if(sample)sample.style.fontSize=fontSize+'px';
+        for(const b of popup.querySelectorAll('[data-nke-step]')) b.disabled=Number(b.dataset.nkeStep)<0?fontSize<=8:fontSize>=20;
+      }
+      updateStatus();
+    }
+    const menuRow=(label,action,iconName,right='',more='')=>
+      '<button type="button" class="nke-poprow" '+action+'>'+icon(iconName)+
+      '<span class="nke-poprow__label">'+clean(label)+'</span>'+
+      (right?'<span class="nke-poprow__hint">'+clean(right)+'</span>':'')+
+      (more||'')+'</button>';
+    function drawMenu(){
+      if(!menuName)return;
+      let body='';
+      if(menuName==='cards'){
+        body=documents.map(doc=>
+          '<div class="nke-popcard'+(doc.id===active?' is-current':'')+'">'+
+          '<button type="button" class="nke-popcard__select" data-nke-card="'+doc.id+'" title="'+clean(doc.name)+'">'+
+          '<span class="'+(doc.dirty?'nke-popcard__dot':'nke-popcard__space')+'" aria-hidden="true"></span>'+
+          '<span class="nke-popcard__name">'+clean(doc.name)+'</span></button>'+
+          '<button type="button" class="nke-popcard__close" data-nke-close="'+doc.id+'" aria-label="Zamknij '+clean(doc.name)+'">×</button></div>'
+        ).join('');
+      }else if(menuName==='file'){
+        body=menuRow('Otwórz plik','data-nke-cmd="open"','folder')+
+          menuRow('Zapisz','data-nke-cmd="save"','save')+
+          menuRow('Zapisz jako…','data-nke-cmd="saveas"','file')+
+          '<div class="nke-pop-sep"></div>'+
+          menuRow('Preferencje','data-nke-cmd="preferences"','settings');
+      }else if(menuName==='edit'){
+        body=menuRow('Cofnij','data-nke-cmd="undo"','undo')+
+          menuRow('Ponów','data-nke-cmd="redo"','refresh')+
+          menuRow('Znajdź i zamień','data-nke-cmd="search"','search')+
+          menuRow('Przejdź do wiersza','data-nke-cmd="line"','code')+
+          '<div class="nke-pop-sep"></div>'+
+          menuRow('Formatuj JSON','data-nke-cmd="format"','code');
+      }else if(menuName==='view'){
+        if(!subPage){
+          body=menuRow('Składnia','data-nke-sub="syntax"','code',current().syntax,icon('chevron'))+
+            menuRow('Czcionka','data-nke-sub="font"','type',fontSize+' px',icon('chevron'))+
+            '<div class="nke-pop-sep"></div>'+
+            menuRow('Zawijanie wierszy','data-nke-cmd="wrap"','menu','',editor.wrap==='soft'?icon('check'):'')+
+            menuRow('Podgląd Markdown','data-nke-cmd="preview"','eye')+
+            menuRow('Zwijanie bloków','data-nke-cmd="fold"','code')+
+            menuRow('Wygląd edytora','data-nke-cmd="appearance"','palette');
+        }else if(subPage==='syntax'){
+          const languages=['Zwykły tekst','Markdown','JSON','JavaScript','TypeScript','HTML','CSS','XML','Python','Kotlin','Shell'];
+          body=menuRow('Widok','data-nke-back','back','Składnia')+'<div class="nke-pop-sep"></div>'+
+            languages.map(name=>menuRow(name,'data-nke-lang="'+clean(name)+'"','code','',current().syntax===name?icon('check'):'' )).join('');
+        }else if(subPage==='font'){
+          body=menuRow('Widok','data-nke-back','back','Czcionka')+'<div class="nke-pop-sep"></div>'+
+            '<div class="nke-pop-font-row"><label for="nke-font-size">Rozmiar tekstu</label>'+
+            '<div class="nke-pop-font-control"><div class="number-stepper">'+
+            '<button class="stepper-button" type="button" data-nke-step="-1" aria-label="Zmniejsz czcionkę">'+icon('minus')+'</button>'+
+            '<input id="nke-font-size" class="stepper-input" data-nke-font-input type="number" inputmode="numeric" min="8" max="20" step="1" value="'+fontSize+'">'+
+            '<button class="stepper-button" type="button" data-nke-step="1" aria-label="Zwiększ czcionkę">'+icon('plus')+'</button>'+
+            '</div><span class="nke-pop-font-unit">px</span></div></div>'+
+            '<div class="nke-pop-font-preview" data-nke-font-sample style="font-size:'+fontSize+'px">Przykładowy tekst edytora</div>';
+        }
+      }
+      popup.innerHTML=body;
+      popup.hidden=false;
+      if(subPage==='font')setFontSize(fontSize);
+      if(menuName==='view'&&subPage)popup.querySelector('[data-nke-back]')?.focus({preventScroll:true});
+    }
+    function openMenu(kind,trigger){
+      if(menuName===kind){closeMenu();return;}
+      closeMenu();
+      menuName=kind;
+      subPage=null;
+      for(const b of studio.querySelectorAll('[data-nke-menu]')){
+        b.setAttribute('aria-expanded',String(b===trigger));
+      }
+      drawMenu();
+      const rect=trigger.getBoundingClientRect(),scr=studio.getBoundingClientRect();
+      const width=Math.min(248,studio.clientWidth-8);
+      const ideal=kind==='cards'?studio.clientWidth-width-4:rect.left-scr.left;
+      popup.style.left=clamp(ideal,4,studio.clientWidth-width-4)+'px';
+    }
+    function closeMenu(){
+      menuName=null;subPage=null;popup.hidden=true;popup.replaceChildren();
+      studio.querySelectorAll('[data-nke-menu]').forEach(b=>b.setAttribute('aria-expanded','false'));
+    }
+    function action(name){
+      if(name==='save'){saveDocument(current());closeMenu();return;}
+      if(name==='format'){
+        try{const pretty=JSON.stringify(JSON.parse(editor.value),null,2);editor.value=pretty;editor.dispatchEvent(new Event('input',{bubbles:true}));showNotice('Sformatowano JSON');}
+        catch{showNotice('Niepoprawny JSON — bez zmian');}
+      }else if(name==='wrap'){
+        editor.wrap=editor.wrap==='soft'?'off':'soft';
+        showNotice(editor.wrap==='soft'?'Zawijanie włączone':'Zawijanie wyłączone');
+      }else if(name==='line'){
+        showNotice('Przejdź do wiersza — kolejny element makiety');
+      }else if(name==='preview'){
+        showNotice('Podgląd Markdown — kolejny element makiety');
+      }else{
+        const labels={open:'Otwórz plik',saveas:'Zapisz jako',preferences:'Preferencje',undo:'Cofnij',redo:'Ponów',search:'Znajdź i zamień',fold:'Zwijanie bloków',appearance:'Wygląd edytora'};
+        showNotice((labels[name]||name)+' — demonstracja');
+      }
+      closeMenu();
+    }
+
+    editor.addEventListener('input',()=>{
+      const doc=current();if(!doc)return;
+      const first=!doc.dirty;
+      doc.text=editor.value;doc.dirty=true;
+      if(first)mountTabs();
+      updateStatus();
+    });
+    editor.addEventListener('keyup',updateStatus);
+    editor.addEventListener('click',updateStatus);
+    editor.addEventListener('scroll',()=>{gutter.scrollTop=editor.scrollTop;});
+    viewport.addEventListener('pointerdown',event=>{
+      if(event.button!==0||event.target.closest('[data-nke-close]'))return;
+      cancelAnimationFrame(anim);
+      drag={id:event.pointerId,x:event.clientX,y:event.clientY,from:position,moved:false,vertical:false};
+      try{viewport.setPointerCapture(event.pointerId);}catch{}
+    });
+    viewport.addEventListener('pointermove',event=>{
+      if(!drag||event.pointerId!==drag.id)return;
+      const dx=event.clientX-drag.x,dy=event.clientY-drag.y;
+      if(!drag.moved&&!drag.vertical){
+        if(Math.abs(dy)>Math.abs(dx)&&Math.abs(dy)>7){drag.vertical=true;return;}
+        if(Math.abs(dx)>6)drag.moved=true;
+      }
+      if(!drag.moved||drag.vertical)return;
+      position=clamp(drag.from-dx/tabWidth,0,maxPosition());paintTabs();
+    });
+    const finishSwipe=event=>{
+      if(!drag||event.pointerId!==drag.id)return;
+      const dragged=drag.moved&&!drag.vertical;drag=null;
+      if(dragged){suppressClick=true;setTimeout(()=>{suppressClick=false;},90);}
+      animateTo(Math.round(position));
+    };
+    viewport.addEventListener('pointerup',finishSwipe);
+    viewport.addEventListener('pointercancel',finishSwipe);
+
+    studio.addEventListener('click',event=>{
+      const button=event.target.closest('button');
+      if(!button)return;
+      if(button.matches('[data-nke-menu]')){openMenu(button.dataset.nkeMenu,button);return;}
+      if(button.matches('[data-nke-new]')){newDocument();return;}
+      if(button.matches('[data-nke-prev]')){animateTo(Math.round(position)-1);return;}
+      if(button.matches('[data-nke-next]')){animateTo(Math.round(position)+1);return;}
+      if(button.matches('[data-nke-activate]')){
+        if(!suppressClick)selectDocument(Number(button.dataset.nkeActivate));return;
+      }
+      if(button.matches('[data-nke-close]')){requestClose(Number(button.dataset.nkeClose));return;}
+      if(button.matches('[data-nke-card]')){const id=Number(button.dataset.nkeCard);selectDocument(id);closeMenu();return;}
+      if(button.matches('[data-nke-sub]')){subPage=button.dataset.nkeSub;drawMenu();return;}
+      if(button.matches('[data-nke-back]')){subPage=null;drawMenu();return;}
+      if(button.matches('[data-nke-lang]')){
+        const doc=current();doc.syntax=button.dataset.nkeLang;updateStatus();closeMenu();return;
+      }
+      if(button.matches('[data-nke-step]')){setFontSize(fontSize+Number(button.dataset.nkeStep));return;}
+      if(button.matches('[data-nke-cmd]')){action(button.dataset.nkeCmd);return;}
+      if(button.matches('[data-nke-action]')){action(button.dataset.nkeAction);return;}
+      if(button.matches('[data-nke-insert]')){
+        const value=button.dataset.nkeInsert;
+        editor.focus();
+        editor.setRangeText(value,editor.selectionStart,editor.selectionEnd,'end');
+        editor.dispatchEvent(new Event('input',{bubbles:true}));return;
+      }
+      if(button.matches('[data-nke-confirm]')){
+        const outcome=button.dataset.nkeConfirm, id=pendingClose, doc=documents.find(d=>d.id===id);
+        dialogLayer.hidden=true;pendingClose=null;
+        if(outcome==='save'&&doc){doc.dirty=false;closeDocument(id);}
+        else if(outcome==='discard')closeDocument(id);
+        return;
+      }
+    });
+    popup.addEventListener('input',event=>{
+      if(!event.target.matches('[data-nke-font-input]'))return;
+      const number=Number(event.target.value);
+      if(event.target.value!==''&&Number.isInteger(number)&&number>=8&&number<=20){
+        fontSize=number;studio.style.setProperty('--nke-font-size',number+'px');
+        const sample=popup.querySelector('[data-nke-font-sample]');
+        if(sample)sample.style.fontSize=number+'px';
+        for(const b of popup.querySelectorAll('[data-nke-step]')) b.disabled=Number(b.dataset.nkeStep)<0?number<=8:number>=20;
+      }
+    });
+    popup.addEventListener('change',event=>{
+      if(event.target.matches('[data-nke-font-input]'))setFontSize(event.target.value||fontSize);
+    });
+    document.addEventListener('pointerdown',event=>{
+      if(!studio.contains(event.target)){closeMenu();return;}
+      if(!popup.hidden&&!event.target.closest('[data-nke-popup],[data-nke-menu]'))closeMenu();
+    });
+    document.addEventListener('keydown',event=>{
+      if(event.key!=='Escape')return;
+      if(!dialogLayer.hidden){dialogLayer.hidden=true;pendingClose=null;return;}
+      if(menuName){
+        if(subPage){subPage=null;drawMenu();}
+        else closeMenu();
+        event.stopPropagation();
+      }
+    });
+    document.querySelectorAll('[data-nke-width]').forEach(button=>{
+      button.addEventListener('click',()=>{
+        const width=Number(button.dataset.nkeWidth);
+        studio.style.setProperty('--nke-width',width+'px');
+        document.querySelectorAll('[data-nke-width]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
+        requestAnimationFrame(measureTabs);
+      });
+    });
+    if(typeof ResizeObserver!=='undefined')new ResizeObserver(measureTabs).observe(viewport);
+    mountTabs();selectDocument(active);setFontSize(14);
+  }
+}
