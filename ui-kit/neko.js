@@ -635,7 +635,7 @@ for (const widget of document.querySelectorAll('[data-tabs]')) {
 }
 
 
-// Build 018 — Full NekoEdytor screen. Self-contained UI prototype, not CodeMirror/SAF.
+// Build 020 — Full NekoEdytor screen. Self-contained UI prototype, not CodeMirror/SAF.
 {
   const studio = document.getElementById('nke-studio');
   if (studio) {
@@ -810,7 +810,7 @@ for (const widget of document.querySelectorAll('[data-tabs]')) {
       updateStatus();
     }
     const menuRow=(label,action,iconName,right='',more='')=>
-      '<button type="button" class="nke-poprow" '+action+'>'+icon(iconName)+
+      '<button type="button" class="nke-poprow'+(iconName?'':' nke-poprow--plain')+'" '+action+'>'+(iconName?icon(iconName):'')+
       '<span class="nke-poprow__label">'+clean(label)+'</span>'+
       ((right||more)?'<span class="nke-poprow__tail">'+
         (right?'<span class="nke-poprow__hint">'+clean(right)+'</span>':'')+
@@ -845,13 +845,12 @@ for (const widget of document.querySelectorAll('[data-tabs]')) {
             menuRow('Czcionka','data-nke-sub="font"','type',fontSize+' px',icon('chevron'))+
             '<div class="nke-pop-sep"></div>'+
             menuRow('Zawijanie wierszy','data-nke-cmd="wrap"','menu','',editor.wrap==='soft'?icon('check'):'')+
-            menuRow('Podgląd Markdown','data-nke-cmd="preview"','eye')+
             menuRow('Zwijanie bloków','data-nke-cmd="fold"','code')+
             menuRow('Wygląd edytora','data-nke-cmd="appearance"','palette');
         }else if(subPage==='syntax'){
           const languages=['Zwykły tekst','Markdown','JSON','JavaScript','TypeScript','HTML','CSS','XML','Python','Kotlin','Shell'];
           body=menuRow('Widok','data-nke-back','back','Składnia')+'<div class="nke-pop-sep"></div>'+
-            languages.map(name=>menuRow(name,'data-nke-lang="'+clean(name)+'"','code','',current().syntax===name?icon('check'):'' )).join('');
+            languages.map(name=>menuRow(name,'data-nke-lang="'+clean(name)+'"',null,'',current().syntax===name?icon('check'):'' )).join('');
         }else if(subPage==='font'){
           body=menuRow('Widok','data-nke-back','back','Czcionka')+'<div class="nke-pop-sep"></div>'+
             '<div class="nke-pop-font-row"><label for="nke-font-size">Rozmiar tekstu</label>'+
@@ -918,15 +917,18 @@ for (const widget of document.querySelectorAll('[data-tabs]')) {
     viewport.addEventListener('pointerdown',event=>{
       if(event.button!==0||event.target.closest('[data-nke-close]'))return;
       cancelAnimationFrame(anim);
+      // Keep native button click targeting for taps; capture only once a horizontal swipe begins.
       drag={id:event.pointerId,x:event.clientX,y:event.clientY,from:position,moved:false,vertical:false};
-      try{viewport.setPointerCapture(event.pointerId);}catch{}
     });
     viewport.addEventListener('pointermove',event=>{
       if(!drag||event.pointerId!==drag.id)return;
       const dx=event.clientX-drag.x,dy=event.clientY-drag.y;
       if(!drag.moved&&!drag.vertical){
         if(Math.abs(dy)>Math.abs(dx)&&Math.abs(dy)>7){drag.vertical=true;return;}
-        if(Math.abs(dx)>6)drag.moved=true;
+        if(Math.abs(dx)>6){
+          drag.moved=true;
+          try{viewport.setPointerCapture(event.pointerId);}catch{}
+        }
       }
       if(!drag.moved||drag.vertical)return;
       position=clamp(drag.from-dx/tabWidth,0,maxPosition());paintTabs();
