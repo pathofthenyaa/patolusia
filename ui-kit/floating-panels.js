@@ -289,18 +289,34 @@
     $('[data-nfp-format-done]').hidden = !formatEditing;
   }
   function wireSort(button, item, track, kind) {
+    let pending = null;
     let dragging = null;
     let moved = false;
     button.addEventListener('pointerdown', (event) => {
       if (event.button !== 0) return;
-      dragging = event.pointerId;
+      if (pending) clearTimeout(pending.timer);
       moved = false;
-      try { button.setPointerCapture(event.pointerId); } catch (_) { /* Pointer may already have ended. */ }
-      item.classList.add('nfp-dragging');
-      button.classList.add('is-grabbing');
+      const press = { id: event.pointerId, x: event.clientX, y: event.clientY, started: false, timer: null };
+      pending = press;
+      press.timer = setTimeout(() => {
+        if (pending !== press) return;
+        press.started = true;
+        dragging = press.id;
+        try { button.setPointerCapture(press.id); } catch (_) { /* Pointer may already have ended. */ }
+        item.classList.add('nfp-dragging');
+        button.classList.add('is-grabbing');
+      }, 180);
       event.preventDefault();
     });
     button.addEventListener('pointermove', (event) => {
+      if (!pending || pending.id !== event.pointerId) return;
+      if (!pending.started) {
+        if (Math.hypot(event.clientX - pending.x, event.clientY - pending.y) > 8) {
+          clearTimeout(pending.timer);
+          pending = null;
+        }
+        return;
+      }
       if (dragging !== event.pointerId) return;
       const rect = track.getBoundingClientRect();
       if (event.clientX < rect.left + 20) track.scrollLeft -= 12;
@@ -316,11 +332,14 @@
       moved = moved || previous !== [...track.children].indexOf(item);
     });
     function finish(event) {
-      if (event.pointerId !== dragging) return;
+      if (!pending || pending.id !== event.pointerId) return;
+      clearTimeout(pending.timer);
+      const wasDragging = pending.started;
+      pending = null;
       dragging = null;
       item.classList.remove('nfp-dragging');
       button.classList.remove('is-grabbing');
-      if (moved) saveOrder(kind, track);
+      if (wasDragging && moved) saveOrder(kind, track);
     }
     button.addEventListener('pointerup', finish);
     button.addEventListener('pointercancel', finish);
