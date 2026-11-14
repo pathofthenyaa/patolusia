@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#f7f9ff">
-  <title>Neko UI Kit — Neko Style v1.1 · Build 015</title>
-  <link rel="stylesheet" href="./neko.css?v=015">
-  <script type="module" src="./neko.js?v=015"></script>
+  <title>Neko UI Kit — Neko Style v1.1 · Build 016</title>
+  <link rel="stylesheet" href="./neko.css?v=016">
+  <script type="module" src="./neko.js?v=016"></script>
 </head>
 <body>
   <svg class="icon-library" aria-hidden="true">
@@ -37,13 +37,14 @@
     <symbol id="i-save" viewBox="0 0 24 24"><path d="M4 3h13l3 3v15H4zM8 3v7h8V3M8 21v-8h8v8"/></symbol>
     <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 5 4 10l5 5M4 10h10a6 6 0 0 1 0 12"/></symbol>
     <symbol id="i-code" viewBox="0 0 24 24"><path d="m8 6-6 6 6 6m8-12 6 6-6 6M14 3l-4 18"/></symbol>
+    <symbol id="i-type" viewBox="0 0 24 24"><path d="M4 7V4h16v3M12 4v16m-5 0h10"/></symbol>
     <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
     <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.2v.3"/></symbol>
     <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"/><circle cx="12" cy="12" r="2.5"/></symbol>
   </svg>
 
   <header class="kit-header">
-    <div class="kit-brand"><span class="brand-mark" aria-hidden="true">⌒ᴗ⌒</span><div><strong>Neko <span>UI Kit</span></strong><small>Neko Style v1.1 · Build 015</small></div></div>
+    <div class="kit-brand"><span class="brand-mark" aria-hidden="true">⌒ᴗ⌒</span><div><strong>Neko <span>UI Kit</span></strong><small>Neko Style v1.1 · Build 016</small></div></div>
     <div class="header-actions">
       <button class="icon-button" id="theme-btn" type="button" aria-label="Przełącz motyw" title="Jasny / ciemny"><svg><use href="#i-palette"/></svg></button>
       <a class="icon-button" href="https://github.com/margoth-gh/NekoNaBoku/blob/main/NEKO_STYLE.md" aria-label="Otwórz Neko Style" title="Neko Style"><svg><use href="#i-info"/></svg></a>
@@ -61,7 +62,7 @@
       <a href="#listy" class="side-link">Karty i listy</a>
       <a href="#warstwy" class="side-link">Menu i dialogi</a>
       <a href="#tokeny" class="side-link">Tokeny i kod</a>
-      <div class="sidebar-note">Status: <strong>kanon bazowy i Tabs 011 zatwierdzone</strong><br>Build 015 · menu aplikacji do odbioru.</div>
+      <div class="sidebar-note">Status: <strong>kanon bazowy i Tabs 011 zatwierdzone</strong><br>Build 016 · menu aplikacji do odbioru.</div>
     </aside>
 
     <div class="kit-content">
@@ -69,7 +70,7 @@
         <div class="eyebrow">WSPÓLNY WZORZEC UI</div>
         <h1>Komponenty rodziny Neko</h1>
         <p><strong>Neko UI Kit jest nadrzędnym, zatwierdzonym kanonem</strong> wyglądu i zachowania wspólnych kontrolek rodziny Neko. Sprawdź motywy, szerokości, stany i interakcje. NekoGit był inspiracją, ale jego ewentualne niedoróbki nie definiują standardu.</p>
-        <div class="kit-status"><span class="status-dot"></span> Kanon bazowy i Tabs 011 zatwierdzone · Nowość: menu aplikacji Build 015</div>
+        <div class="kit-status"><span class="status-dot"></span> Kanon bazowy i Tabs 011 zatwierdzone · Nowość: menu aplikacji Build 016</div>
       </section>
 
       <section id="podglad" class="kit-section">
@@ -189,7 +190,7 @@
       </section>
 
       <section id="menu-aplikacji" class="kit-section">
-        <div class="section-line"><h2>Górne menu aplikacji</h2><span class="section-caption">Build 015 · nowy wzorzec do odbioru</span></div>
+        <div class="section-line"><h2>Górne menu aplikacji</h2><span class="section-caption">Build 016 · nowy wzorzec do odbioru</span></div>
         <div class="sample-surface">
           <div class="sample-label">Pasek 34 px · tekst neutralny · ikony w akcencie · menu jako nakładki</div>
           <div class="neko-app-menu-demo" data-app-menu-demo>
@@ -220,6 +221,7 @@
               <div class="neko-app-dropdown__page" data-app-page="root" role="presentation">
                 <button type="button" role="menuitemcheckbox" aria-checked="true" data-app-toggle="wrap"><svg><use href="#i-menu"/></svg><span>Zawijanie wierszy</span><svg class="neko-app-dropdown__check"><use href="#i-check"/></svg></button>
                 <button class="neko-app-dropdown__submenu-trigger" type="button" role="menuitem" data-app-submenu="syntax" aria-haspopup="menu" aria-expanded="false"><svg><use href="#i-code"/></svg><span>Składnia</span><span class="neko-app-dropdown__value" data-app-syntax-summary>Markdown</span><svg class="neko-app-dropdown__chevron" aria-hidden="true"><use href="#i-chevron"/></svg></button>
+                <button class="neko-app-dropdown__submenu-trigger" type="button" role="menuitem" data-app-submenu="font" aria-haspopup="menu" aria-expanded="false"><svg><use href="#i-type"/></svg><span>Czcionka</span><span class="neko-app-dropdown__value" data-app-font-summary>14 px</span><svg class="neko-app-dropdown__chevron" aria-hidden="true"><use href="#i-chevron"/></svg></button>
                 <hr>
                 <button type="button" role="menuitem" data-app-action="Motyw edytora"><svg><use href="#i-palette"/></svg><span>Motyw edytora</span></button>
               </div>
@@ -238,6 +240,22 @@
                 <button type="button" role="menuitemradio" aria-checked="false" data-app-syntax="kotlin"><span class="neko-app-dropdown__indent" aria-hidden="true"></span><span>Kotlin</span><svg class="neko-app-dropdown__check" aria-hidden="true"><use href="#i-check"/></svg></button>
                 <button type="button" role="menuitemradio" aria-checked="false" data-app-syntax="shell"><span class="neko-app-dropdown__indent" aria-hidden="true"></span><span>Shell</span><svg class="neko-app-dropdown__check" aria-hidden="true"><use href="#i-check"/></svg></button>
               </div>
+              <div class="neko-app-dropdown__page" data-app-page="font" role="presentation" hidden>
+                <button class="neko-app-dropdown__back" type="button" role="menuitem" data-app-back><svg aria-hidden="true"><use href="#i-back"/></svg><span>Widok</span><span class="neko-app-dropdown__page-name">Czcionka</span></button>
+                <hr>
+                <div class="neko-app-font-row">
+                  <label for="app-font-size">Rozmiar tekstu</label>
+                  <div class="neko-app-font-control">
+                    <div class="number-stepper" data-stepper>
+                      <button type="button" class="stepper-button" data-step="down" aria-label="Zmniejsz rozmiar czcionki"><svg aria-hidden="true"><use href="#i-minus"/></svg></button>
+                      <input class="stepper-input" id="app-font-size" type="number" inputmode="numeric" min="8" max="20" step="1" value="14" aria-label="Rozmiar czcionki w pikselach">
+                      <button type="button" class="stepper-button" data-step="up" aria-label="Zwiększ rozmiar czcionki"><svg aria-hidden="true"><use href="#i-plus"/></svg></button>
+                    </div>
+                    <span class="neko-app-font-unit">px</span>
+                  </div>
+                </div>
+                <div class="neko-app-font-preview"><span data-app-font-preview style="font-size:14px">Przykładowy tekst edytora</span></div>
+              </div>
             </div>
             <div class="context-menu neko-app-dropdown neko-app-dropdown--documents" id="app-menu-tabs" role="menu" aria-label="Otwarte karty" hidden></div>
             <div class="neko-app-demo-canvas" aria-label="Przykładowa powierzchnia aplikacji">
@@ -247,7 +265,7 @@
               <div class="neko-app-demo-canvas__line"><span>3</span><code>Menu ma tylko 34 px wysokości.</code></div>
             </div>
           </div>
-          <p class="hint">Górny pasek jest <strong>niski i bez osobnych ramek przycisków</strong>; po lewej Plik / Edycja / Widok, po prawej Nowa karta i Karty (X). Wszystkie pozycje mają <strong>ten sam kolor tekstu</strong>, ikony w dynamicznym akcencie i podświetlenie tylko podczas interakcji. Otwieranie menu, wybór karty, licznik, przełączniki, Escape i dotknięcie poza menu działają w demonstracji. Zaznaczone przełączniki mają wyłącznie niebieski haczyk, bez stałego tła; podświetlenie pojawia się podczas interakcji. <strong>Widok → Składnia</strong> otwiera wewnętrzne podmenu z wyborem trybu i przyciskiem powrotu „‹ Widok”, bez drugiego wysuwanego okna. Lista składni zachowuje typografię zwykłych pozycji menu i przewijanie bez widocznego paska z prawej. Pozostałe komendy wyświetlają komunikat demonstracyjny — nie modyfikują dokumentów. <strong>Build 015 do odbioru.</strong></p>
+          <p class="hint">Górny pasek jest <strong>niski i bez osobnych ramek przycisków</strong>; po lewej Plik / Edycja / Widok, po prawej Nowa karta i Karty (X). Wszystkie pozycje mają <strong>ten sam kolor tekstu</strong>, ikony w dynamicznym akcencie i podświetlenie tylko podczas interakcji. Otwieranie menu, wybór karty, licznik, przełączniki, Escape i dotknięcie poza menu działają w demonstracji. Zaznaczone przełączniki mają wyłącznie niebieski haczyk, bez stałego tła; podświetlenie pojawia się podczas interakcji. <strong>Widok → Składnia</strong> otwiera wewnętrzne podmenu z wyborem trybu i przyciskiem powrotu „‹ Widok”, bez drugiego wysuwanego okna. Lista składni zachowuje typografię zwykłych pozycji menu i przewijanie bez widocznego paska z prawej. <strong>Widok → Czcionka</strong> zawiera kanoniczny SpinEdit (8–20 px) i podgląd tekstu; zmiany są pokazywane od razu. Pozostałe komendy wyświetlają komunikat demonstracyjny — nie modyfikują dokumentów. <strong>Build 016 do odbioru.</strong></p>
         </div>
       </section>
 
@@ -287,7 +305,7 @@
         <p class="hint">Pliki <code>neko.css</code> i <code>neko.js</code> zawierają działające komponenty katalogu. <strong>Ten zatwierdzony pokaz jest nadrzędnym wzorcem wyglądu i zachowania kontrolek</strong>; <code>NEKO_STYLE.md</code> stanowi dokumentację uzupełniającą. Implementacje w NekoGit i pozostałych aplikacjach nie mają pierwszeństwa przed UI Kit. Dopiero osobno zatwierdzone zmiany stają się częścią kanonu.</p>
       </section>
 
-      <footer class="kit-footer">Neko UI Kit v1.1 · Build 015 · NekoNaBoku</footer>
+      <footer class="kit-footer">Neko UI Kit v1.1 · Build 016 · NekoNaBoku</footer>
     </div>
   </main>
 
