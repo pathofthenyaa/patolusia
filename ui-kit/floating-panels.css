@@ -79,3 +79,6 @@
 #nfp-demo .nfp-note{margin:10px 3px 0;font-size:11px;line-height:1.6;color:var(--nfp-muted)}
 #nfp-demo button:focus-visible,#nfp-demo input:focus-visible{outline:2px solid var(--nfp-accent);outline-offset:1px}
 @media(max-width:370px){#nfp-demo .nfp-row{gap:3px}#nfp-demo .nfp-action{padding:0 5px;font-size:9px}#nfp-demo .nfp-count{width:36px;flex-basis:36px}#nfp-demo .nfp-icon{width:24px;flex-basis:24px}}
+
+/* Toggle state is communicated by its button background, not by an added badge. */
+#nfp-demo .nfp-shortcut.is-preview>button:first-child{background:var(--primary-soft);color:var(--nfp-accent)}

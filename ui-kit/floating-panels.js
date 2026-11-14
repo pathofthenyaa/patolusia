@@ -250,6 +250,7 @@
       const item = document.createElement('div');
       item.className = kind === 'format' ? 'nfp-format-tool' : 'nfp-shortcut';
       item.dataset.id = id;
+      if (kind === 'shortcuts' && id === 'preview' && preview) item.classList.add('is-preview');
       const action = document.createElement('button');
       action.type = 'button';
       action.textContent = def[1];
@@ -453,6 +454,30 @@
   editor.addEventListener('click', syncEditor);
   editor.addEventListener('keyup', syncEditor);
   for (const panel of panels) attachDrag(panel);
+  // Long-pressing a line number opens the same floating formatting palette.
+  // A short tap does nothing; scrolling/dragging cancels the pending gesture.
+  let gutterPress = null;
+  const cancelGutterPress = () => {
+    if (gutterPress) clearTimeout(gutterPress.timer);
+    gutterPress = null;
+  };
+  gutter.addEventListener('pointerdown', (event) => {
+    if (event.button !== 0) return;
+    cancelGutterPress();
+    const at = { x: event.clientX, y: event.clientY, id: event.pointerId, timer: null };
+    at.timer = setTimeout(() => {
+      if (gutterPress !== at) return;
+      const row = Math.max(1, Math.min(lines().length, Math.floor((at.y - gutter.getBoundingClientRect().top + gutter.scrollTop - 9) / 21) + 1));
+      openPanel('format');
+      say('Długie przytrzymanie numeru wiersza ' + row + ' — otwarto Szybkie formatowanie.');
+      gutterPress = null;
+    }, 520);
+    gutterPress = at;
+  });
+  gutter.addEventListener('pointermove', (event) => {
+    if (gutterPress && gutterPress.id === event.pointerId && Math.hypot(event.clientX - gutterPress.x, event.clientY - gutterPress.y) > 9) cancelGutterPress();
+  });
+  for (const name of ['pointerup', 'pointercancel', 'pointerleave']) gutter.addEventListener(name, cancelGutterPress);
   root.querySelectorAll('[data-nfp-close]').forEach((button) => button.addEventListener('click', () => {
     const panel = root.querySelector('[data-nfp-panel="' + button.dataset.nfpClose + '"]');
     panel.hidden = true; activate(null);
