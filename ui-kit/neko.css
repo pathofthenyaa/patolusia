@@ -269,7 +269,7 @@ button:disabled,input:disabled{opacity:.42;cursor:not-allowed}
 .nke-menubar button:hover,.nke-menubar button[aria-expanded="true"],.nke-menubar button:active{background:var(--primary-soft);color:var(--primary)}
 .nke-tabs-strip{height:28px;min-height:28px;position:relative;z-index:2;background:var(--surface-soft)}
 .nke-tabs-viewport{height:28px;position:relative;min-width:0;overflow:hidden;touch-action:pan-y;user-select:none;-webkit-user-select:none}
-.nke-tab{position:absolute;bottom:0;height:24px;display:flex;align-items:center;gap:3px;min-width:0;padding:0 7px;border:1px solid var(--line-strong);border-radius:9px 9px 0 0;background:var(--surface-soft);color:var(--text-soft);transition:height .13s ease,background .13s ease;box-shadow:0 -2px 5px rgba(20,30,50,.02)}
+.nke-tab{position:absolute;bottom:0;height:24px;display:flex;align-items:center;gap:3px;min-width:0;padding:0 7px 0 12px;border:1px solid var(--line-strong);border-radius:9px 9px 0 0;background:var(--surface-soft);color:var(--text-soft);transition:height .13s ease,background .13s ease;box-shadow:0 -2px 5px rgba(20,30,50,.02)}
 .nke-tab.is-active{height:27px;background:var(--surface-solid);color:var(--primary);border-bottom-color:var(--surface-solid)}
 .nke-tab__dirty{flex:0 0 6px;width:6px;height:6px;border-radius:50%;background:var(--primary)}
 .nke-tab__select{flex:1 1 auto;min-width:0;min-height:22px;display:flex;align-items:center;justify-content:center;padding:0 1px;border:0;background:transparent;color:inherit;font-size:11px;font-weight:600;line-height:1.2;text-align:center;white-space:nowrap;overflow:hidden}
@@ -310,7 +310,7 @@ button:disabled,input:disabled{opacity:.42;cursor:not-allowed}
 .nke-pop-back .nke-poprow__hint{margin-left:auto}
 .nke-popcard{display:grid;grid-template-columns:minmax(0,1fr) 31px;align-items:center;gap:0;border-radius:7px;min-height:41px}
 .nke-popcard.is-current{background:var(--primary-soft)}
-.nke-popcard__select{min-width:0;display:flex;align-items:center;gap:8px;padding:8px 7px;border:0;background:transparent;text-align:left;color:var(--text);font-size:12px}
+.nke-popcard__select{min-width:0;display:flex;align-items:center;gap:8px;padding:8px 7px 8px 12px;border:0;background:transparent;text-align:left;color:var(--text);font-size:12px}
 .nke-popcard.is-current .nke-popcard__select{font-weight:700;color:var(--primary)}
 .nke-popcard__name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .nke-popcard__dot{width:7px;height:7px;flex:0 0 7px;border-radius:50%;background:var(--primary)}
@@ -333,9 +333,14 @@ button:disabled,input:disabled{opacity:.42;cursor:not-allowed}
 .nke-dialog-actions button{min-height:35px;padding:0 11px;border:1px solid var(--line);border-radius:9px;background:var(--surface-solid);font-size:12px}
 .nke-dialog-actions .nke-dialog-primary{color:white;background:var(--primary);border-color:var(--primary)}
 .nke-notice{position:absolute;bottom:45px;left:50%;transform:translateX(-50%);z-index:70;padding:9px 12px;max-width:92%;width:max-content;border:1px solid var(--line-strong);border-radius:10px;background:var(--surface-solid);box-shadow:var(--shadow-md);color:var(--primary);font-size:11px;text-align:center}
-@media(max-width:400px){.nke-workbench{padding:12px 2px 15px}.nke-menubar{padding:0 2px}.nke-menubar__left,.nke-menubar__right{gap:1px}.nke-menubar button{gap:3px;padding:0 3px;font-size:11px}.nke-menubar button svg{width:13px;height:13px}.nke-tab{padding:0 4px}.nke-tab__close{flex-basis:17px;width:17px}.nke-toolrow button{min-width:25px;padding:0 3px}}
+@media(max-width:400px){.nke-workbench{padding:12px 2px 15px}.nke-menubar{padding:0 2px}.nke-menubar__left,.nke-menubar__right{gap:1px}.nke-menubar button{gap:3px;padding:0 3px;font-size:11px}.nke-menubar button svg{width:13px;height:13px}.nke-tab{padding:0 4px 0 10px}.nke-tab__close{flex-basis:17px;width:17px}.nke-toolrow button{min-width:25px;padding:0 3px}}
 
 /* Unified right-hand slot for submenu value + arrow (never a fourth grid column). */
 .nke-poprow__tail{display:flex;align-items:center;justify-content:flex-end;gap:5px;max-width:115px;min-width:0}
 .nke-poprow__tail .nke-poprow__hint{min-width:0;max-width:91px}
 .nke-poprow__tail svg{flex-shrink:0;width:13px;height:13px}
+
+/* Build 020 · Clean syntax choices: no identical icons, only the selected checkmark. */
+.nke-poprow--syntax{grid-template-columns:minmax(0,1fr) 16px;gap:8px;padding-left:14px;padding-right:10px}
+.nke-poprow--syntax .nke-poprow__selection{width:16px;height:16px;display:grid;place-items:center}
+.nke-poprow--syntax .nke-poprow__selection svg{width:16px;height:16px;color:var(--primary)}
