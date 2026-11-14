@@ -49,6 +49,7 @@ Nowy interaktywny pokaz pod `/ui-kit/#floating-panels` stanowi niezależną prop
 - Panel Znajdź/Zamień: jeden lub dwa wiersze; uchwyt w obu, pola identycznej szerokości obliczonej na podstawie 10 liter W; licznik, nawigacja strzałkami SVG, pojedyncza i zbiorcza zamiana, zwykły tekst bez Regex.
 - Panel Szybkie formatowanie: przewijana lista poleceń, konfiguracja z Edycja → Szybkie formatowanie → Edytuj.
 - Dolny pasek skrótów: osobny tryb edycji, dodawanie/usuwanie i zmiana kolejności.
+- W trybie edycji sam widoczny przycisk jest powierzchnią przeciągania; nie ma dodatkowego uchwytu/ikony zasłaniającej jego zawartość. Kolejność można też zmieniać klawiszami strzałek.
 - Obie konfiguracje są odrębne, z demonstracyjnym zapisem w localStorage.
 - Wspólna zasada: niezależne okna, bez blokującego tła, przesuwanie za uchwyt, przygaszenie po utracie aktywności i zamknięcie wyłącznie przez górny czerwony występ.
 

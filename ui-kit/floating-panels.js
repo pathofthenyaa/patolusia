@@ -254,8 +254,8 @@
       const action = document.createElement('button');
       action.type = 'button';
       action.textContent = def[1];
-      action.title = def[2];
-      action.setAttribute('aria-label', def[2]);
+      action.title = state[kind].editing ? 'Przytrzymaj i przeciągnij, aby zmienić kolejność: ' + def[2] : def[2];
+      action.setAttribute('aria-label', state[kind].editing ? def[2] + '. Przeciągnij ten przycisk, aby zmienić kolejność.' : def[2]);
       action.addEventListener('click', () => {
         if (state[kind].editing) return;
         if (kind === 'format') formatCommand(id);
@@ -264,14 +264,8 @@
       item.append(action);
       if (state[kind].editing) {
         item.classList.add('is-edit');
-        const mover = document.createElement('button');
-        mover.type = 'button';
-        mover.className = 'nfp-move';
-        mover.textContent = '⠿';
-        mover.title = 'Przestaw: ' + def[2];
-        mover.setAttribute('aria-label', 'Przestaw: ' + def[2] + ' (przeciągnij lub użyj strzałek)');
-        item.append(mover);
-        wireSort(mover, item, track, kind);
+        // The visible tool button itself is the drag surface; no overlay handle.
+        wireSort(action, item, track, kind);
         const remove = document.createElement('button');
         remove.type = 'button';
         remove.className = 'nfp-remove';
@@ -294,17 +288,19 @@
     $('[data-nfp-format-add]').hidden = !formatEditing;
     $('[data-nfp-format-done]').hidden = !formatEditing;
   }
-  function wireSort(handle, item, track, kind) {
+  function wireSort(button, item, track, kind) {
     let dragging = null;
-    handle.addEventListener('pointerdown', (event) => {
+    let moved = false;
+    button.addEventListener('pointerdown', (event) => {
       if (event.button !== 0) return;
       dragging = event.pointerId;
-      handle.setPointerCapture(event.pointerId);
+      moved = false;
+      try { button.setPointerCapture(event.pointerId); } catch (_) { /* Pointer may already have ended. */ }
       item.classList.add('nfp-dragging');
+      button.classList.add('is-grabbing');
       event.preventDefault();
-      event.stopPropagation();
     });
-    handle.addEventListener('pointermove', (event) => {
+    button.addEventListener('pointermove', (event) => {
       if (dragging !== event.pointerId) return;
       const rect = track.getBoundingClientRect();
       if (event.clientX < rect.left + 20) track.scrollLeft -= 12;
@@ -314,19 +310,22 @@
         const bounds = child.getBoundingClientRect();
         return event.clientX < bounds.left + bounds.width / 2;
       });
+      const previous = [...track.children].indexOf(item);
       if (before) track.insertBefore(item, before);
       else track.append(item);
+      moved = moved || previous !== [...track.children].indexOf(item);
     });
     function finish(event) {
       if (event.pointerId !== dragging) return;
       dragging = null;
       item.classList.remove('nfp-dragging');
-      saveOrder(kind, track);
+      button.classList.remove('is-grabbing');
+      if (moved) saveOrder(kind, track);
     }
-    handle.addEventListener('pointerup', finish);
-    handle.addEventListener('pointercancel', finish);
-    handle.addEventListener('lostpointercapture', finish);
-    handle.addEventListener('keydown', (event) => {
+    button.addEventListener('pointerup', finish);
+    button.addEventListener('pointercancel', finish);
+    button.addEventListener('lostpointercapture', finish);
+    button.addEventListener('keydown', (event) => {
       const delta = event.key === 'ArrowLeft' ? -1 : event.key === 'ArrowRight' ? 1 : 0;
       if (!delta) return;
       event.preventDefault();
@@ -336,7 +335,7 @@
       if (delta < 0) track.insertBefore(item, target);
       else track.insertBefore(target, item);
       saveOrder(kind, track);
-      handle.focus();
+      button.focus();
     });
   }
   function saveOrder(kind, track) {
@@ -349,7 +348,7 @@
     if (kind === 'format') openPanel('format');
     renderKind(kind);
     if (!enabled) closeCatalog();
-    say(enabled ? 'Tryb edycji: ⠿ zmienia kolejność, × usuwa, + dodaje.' : 'Zapisano kolejność i zakończono edycję.');
+    say(enabled ? 'Tryb edycji: przeciągnij bezpośrednio przycisk, × usuwa, + dodaje.' : 'Zapisano kolejność i zakończono edycję.');
   }
   function showCatalog(kind) {
     catalogKind = kind;

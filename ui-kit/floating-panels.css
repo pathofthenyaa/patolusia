@@ -26,7 +26,6 @@
 #nfp-demo .nfp-shortcut.is-edit{background:var(--nfp-soft)}
 #nfp-demo .nfp-shortcut>button:first-child{width:31px;height:31px;border:0;border-radius:6px;background:transparent;color:var(--nfp-ink);font-size:13px}
 #nfp-demo .nfp-shortcut>button:first-child:active{background:var(--primary-soft)}
-#nfp-demo .nfp-shortcut.is-edit>button:first-child{pointer-events:none}
 #nfp-demo .nfp-ctrl{width:29px;height:31px;display:grid;place-items:center;border:0;border-radius:6px;background:transparent;color:var(--nfp-accent);font-size:18px}
 #nfp-demo .nfp-ctrl[aria-pressed="true"]{background:var(--primary-soft)}
 #nfp-demo .nfp-shortcuts button[hidden]{display:none}
@@ -65,10 +64,10 @@
 #nfp-demo .nfp-format-tool{position:relative;display:grid;place-items:center;flex:0 0 30px;width:30px;height:31px;border-radius:6px}
 #nfp-demo .nfp-format-tool.is-edit{background:var(--nfp-soft)}
 #nfp-demo .nfp-format-tool>button:first-child{width:28px;height:28px;padding:0;border:0;border-radius:5px;background:transparent;color:var(--nfp-ink);font:700 13px ui-monospace,monospace}
-#nfp-demo .nfp-format-tool.is-edit>button:first-child{pointer-events:none}
 #nfp-demo .nfp-format-toolbar{display:flex;align-items:center;gap:2px;flex:0 0 auto}
-#nfp-demo .nfp-move{position:absolute;inset:0;z-index:2;display:grid;place-items:center;padding:0;border:0;background:transparent;color:var(--nfp-accent);font-size:19px;touch-action:none;cursor:grab}
 #nfp-demo .nfp-remove{position:absolute;z-index:3;right:-2px;top:-2px;width:14px;height:14px;border:0;border-radius:50%;background:var(--danger);color:white;font-size:11px;line-height:12px;padding:0;display:grid;place-items:center}
+#nfp-demo .nfp-shortcut.is-edit>button:first-child,#nfp-demo .nfp-format-tool.is-edit>button:first-child{pointer-events:auto;position:relative;z-index:1;cursor:grab;touch-action:none;user-select:none;outline:1px dashed var(--nfp-accent);outline-offset:-3px;background:var(--primary-soft)}
+#nfp-demo .nfp-shortcut.is-edit>button:first-child.is-grabbing,#nfp-demo .nfp-format-tool.is-edit>button:first-child.is-grabbing{cursor:grabbing}
 #nfp-demo .nfp-dragging{outline:1px dashed var(--nfp-accent);background:var(--primary-soft)!important;opacity:.7}
 #nfp-demo .nfp-menu{position:absolute;top:34px;left:32px;z-index:22;width:205px;max-width:calc(100% - 40px);padding:5px;border:1px solid var(--nfp-edge);border-radius:0 0 10px 10px;background:var(--nfp-card);box-shadow:var(--shadow-md)}
 #nfp-demo .nfp-menu[hidden],#nfp-demo .nfp-catalog[hidden]{display:none}
