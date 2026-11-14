@@ -34,7 +34,9 @@
 #nfp-demo .nfp-palette[hidden]{display:none}
 #nfp-demo .nfp-palette.is-dim{opacity:.46;border-color:var(--nfp-edge);box-shadow:var(--shadow-sm)}
 #nfp-demo .nfp-palette.is-active{z-index:10}
-#nfp-demo .nfp-palette__close{position:absolute;right:4px;top:-27px;z-index:2;width:35px;height:30px;display:grid;place-items:center;padding:0;border:1px solid color-mix(in srgb,var(--danger) 30%,var(--nfp-card));border-bottom:0;border-radius:8px 8px 0 0;background:color-mix(in srgb,var(--danger) 14%,var(--nfp-card));color:var(--danger);font-size:18px;line-height:1}
+#nfp-demo .nfp-palette__close{position:absolute;right:5px;top:-19px;z-index:2;width:27px;height:22px;display:grid;place-items:center;padding:0;border:1px solid color-mix(in srgb,var(--danger) 30%,var(--nfp-card));border-bottom:0;border-radius:6px 6px 0 0;background:color-mix(in srgb,var(--danger) 14%,var(--nfp-card));color:var(--danger);line-height:1}
+#nfp-demo .nfp-palette__close svg{width:13px;height:13px;stroke-width:2.1}
+#nfp-demo .nfp-palette__close::before{content:"";position:absolute;inset:-5px;}
 #nfp-demo .nfp-palette__close:active{background:color-mix(in srgb,var(--danger) 28%,var(--nfp-card))}
 #nfp-demo .nfp-row{display:flex;align-items:center;gap:4px;min-height:30px;max-width:100%}
 #nfp-demo .nfp-row + .nfp-row{border-top:1px solid var(--nfp-edge);margin-top:3px;padding-top:3px;min-height:35px}
